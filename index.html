@@ -3,7 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인원현황판 Lite v1.0</title>
+
+  <script>
+
+const password = "0070";   // 원하는 비밀번호
+
+​
+
+const input = prompt("비밀번호를 입력하세요.");
+
+​
+
+if (input !== password) {
+
+    document.write("<h2 style='text-align:center;margin-top:100px;'>접근이 거부되었습니다.</h2>");
+
+    throw new Error("Wrong Password");
+
+}
+
+</script>
+  
+  <title>인원현황판 Lite v1.0</title>
 
 <link rel="stylesheet" href="style.css">
 </head>
