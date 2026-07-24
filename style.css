@@ -88,8 +88,10 @@ background:#bdbdbd;
 
 display:block;
 
-width:60%;
+width:100%;
 
+max-width:900px;
+  
 height:auto;
 
 }
