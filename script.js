@@ -48,10 +48,13 @@ const defaultPositions = [
 
 export default defaultPositions;
 
-people.forEach((person,index)=>{
+people.forEach((person, index) => {
 
-person.style.left = defaultPositions[index].x + "px";
-person.style.top = defaultPositions[index].y + "px";
+    person.x = defaultPositions[index].x;
+
+    person.y = defaultPositions[index].y;
+
+});
 
 enableDrag(person);
 
