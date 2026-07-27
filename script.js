@@ -46,12 +46,12 @@ const defaultPositions = [
 { x: 640, y: 330 }
 ];
 
-people.forEach(person => {
+people.forEach(person, index) => {
 
 person.style.left =
-  defaultPosition[index].x + "px";
-  person.style.top =
-    defaultPosition[index].y + "px";
+defaultPositions[index].x + "px";
+person.style.top =
+defaultPositions[index].y + "px";
   
 enableDrag(person);
 
@@ -187,7 +187,7 @@ person.style.top = item.top || person.style.top;
 
 updateAttendance();
 
-  savePosiotions();
+  savePoisotions();
   
 }
 
@@ -371,7 +371,6 @@ absentPeople.length = 0;
 etcPeople.length = 0;
 
 ​
-
 totalPeople.push(...total);
 
 workPeople.push(...work);
