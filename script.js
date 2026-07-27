@@ -282,12 +282,12 @@ person.style.top = defaultPositions[index].y + "px";
 
 const statusMap = {};
 
-updatePersonColor(selectedPerson,status);
-
 document.querySelectorAll(".person").forEach(person=>{
 
 statusMap[person.dataset.id]="출근";
 
+updatePersonColor(selectedPerson,status);
+  
 });
 
 updateAttendance();
