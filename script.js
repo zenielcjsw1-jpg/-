@@ -131,6 +131,18 @@ function savePositions() {
 
 const data = [];
 
+document.querySelectorAll(".person").forEach(person => {
+
+  data.push({
+    id: person.dataset.id,
+    left:person.style.left,
+    top:person.style.top,
+  
+    status:
+statusMap[person.dataset.id]
+});
+
+});
 
 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
@@ -159,10 +171,16 @@ document.querySelector(
 
 if (!person) return;
 
-person.style.left = item.left;
-person.style.top = item.top;
+person.style.left = item.left || person.style.left;
 
+person.style.top = item.top || person.style.top;
+
+  
+  statusMap[item.id] = item.status;
+  updatePersonColor(person,item.status);
 });
+
+updateAttendance();
 
 }
 
@@ -178,8 +196,14 @@ defaultPositions[index].x + "px";
 person.style.top =
 defaultPositions[index].y + "px";
 
+  statusMap[person.dataset.id] =
+    "출근";
+  updatePersonColor(person, "출근");
+
 });
 
+updateAttendace();
+  
 localStorage.removeItem(STORAGE_KEY);
 
 }
@@ -285,6 +309,8 @@ const statusMap = {};
 document.querySelectorAll(".person").forEach(person=>{
 
 statusMap[person.dataset.id]="출근";
+
+updatePersonColor(person,"출근");
   
 });
 
@@ -329,6 +355,24 @@ document.getElementById("workCount").innerText=work.length;
 document.getElementById("absentCount").innerText=absent.length;
 document.getElementById("etcCount").innerText=etc.length;
 
+  totalPeople.length = 0;
+
+workPeople.length = 0;
+
+absentPeople.length = 0;
+
+etcPeople.length = 0;
+
+​
+
+totalPeople.push(...total);
+
+workPeople.push(...work);
+
+absentPeople.push(...absent);
+
+etcPeople.push(...etc);
+
 }
 
 document.querySelectorAll(".person").forEach(person=>{
@@ -355,6 +399,8 @@ next="출근";
 
 statusMap[person.dataset.id]=next;
 
+updatePersonColor(person, next);
+  
 updateAttendance();
 
 });
@@ -445,4 +491,73 @@ person.style.background="#ffffff";
 }
  
 }
+
+
+
+
+/* ==========================
+출근부 팝업
+========================== */
+
+const totalPeople = [];
+
+const workPeople = [];
+
+const absentPeople = [];
+
+const etcPeople = [];
+
+function openPopup(title,list){
+
+document.getElementById("popupTitle").innerText=title;
+
+const box=document.getElementById("popupList");
+
+box.innerHTML="";
+
+list.forEach(name=>{
+
+const div=document.createElement("div");
+
+div.innerText=name;
+
+box.appendChild(div);
+
+});
+
+document.getElementById("popup").style.display="flex";
+
+}
+
+document.getElementById("closePopup").onclick=function(){
+
+document.getElementById("popup").style.display="none";
+
+};
+
+document.getElementById("totalBox").onclick=function(){
+
+openPopup("총원",totalPeople);
+
+};
+
+document.getElementById("workBox").onclick=function(){
+
+openPopup("출근",workPeople);
+
+};
+
+document.getElementById("absentBox").onclick=function(){
+
+openPopup("결근",absentPeople);
+
+};
+
+document.getElementById("etcBox").onclick=function(){
+
+openPopup("기타",etcPeople);
+
+};
+
+
 
