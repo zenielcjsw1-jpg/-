@@ -131,15 +131,6 @@ function savePositions() {
 
 const data = [];
 
-document.querySelectorAll(".person").forEach(person => {
-
-data.push({
-id: person.dataset.id,
-left: person.style.left,
-top: person.style.top
-});
-
-});
 
 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
@@ -291,6 +282,8 @@ person.style.top = defaultPositions[index].y + "px";
 
 const statusMap = {};
 
+updatePersonColor(selectedPerson,status);
+
 document.querySelectorAll(".person").forEach(person=>{
 
 statusMap[person.dataset.id]="출근";
@@ -408,3 +401,58 @@ document
 document.getElementById("statusPopup").style.display="none";
 
 };
+
+
+document.querySelectorAll(".status-btn").forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+if(!selectedPerson) return;
+
+const status = btn.dataset.status;
+
+statusMap[selectedPerson.dataset.id] = status;
+
+document.getElementById("statusPopup").style.display="none";
+
+updateAttendance();
+
+function updatePersonColor(person, status){
+
+switch(status){
+
+case "출근":
+person.style.background="#b7f7b2";
+break;
+
+case "결근":
+person.style.background="#ffb3b3";
+break;
+
+case "휴가":
+person.style.background="#fff3a3";
+break;
+
+case "병가":
+person.style.background="#ffd3a6";
+break;
+
+case "조퇴":
+person.style.background="#b9dcff";
+break;
+
+case "연장":
+person.style.background="#e0c4ff";
+break;
+
+default:
+person.style.background="#ffffff";
+
+}
+
+}
+
+  
+});
+
+});
