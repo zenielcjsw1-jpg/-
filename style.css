@@ -376,113 +376,6 @@ cursor:pointer;
 }
 
 
-/* ==========================
-출근부 팝업
-========================== */
-
-const totalPeople = [
-"성락훈",
-"김종용",
-"고목영",
-"임세호",
-"이상훈",
-"양승규",
-"김재영",
-"김병선",
-"김재욱",
-"이흥노",
-"장인택",
-"이건철",
-"임승현",
-"심항식",
-"홍용성",
-"남궁정",
-"김보경",
-"김경훈",
-"최성원",
-"미배정"
-];
-
-const workPeople = [
-"성락훈",
-"김종용",
-"고목영",
-"임세호",
-"이상훈",
-"양승규",
-"김재영",
-"김병선",
-"김재욱",
-"이흥노",
-"장인택",
-"이건철",
-"임승현",
-"심항식",
-"홍용성",
-"남궁정",
-"김보경",
-"김경훈",
-"최성원",
-"미배정"
-];
-
-const absentPeople = [];
-
-const etcPeople = [];
-
-function openPopup(title,list){
-
-document.getElementById("popupTitle").innerText=title;
-
-const box=document.getElementById("popupList");
-
-box.innerHTML="";
-
-list.forEach(name=>{
-
-const div=document.createElement("div");
-
-div.innerText=name;
-
-box.appendChild(div);
-
-});
-
-document.getElementById("popup").style.display="flex";
-
-}
-
-document.getElementById("closePopup").onclick=function(){
-
-document.getElementById("popup").style.display="none";
-
-};
-
-document.getElementById("totalBox").onclick=function(){
-
-openPopup("총원",totalPeople);
-
-};
-
-document.getElementById("workBox").onclick=function(){
-
-openPopup("출근",workPeople);
-
-};
-
-document.getElementById("absentBox").onclick=function(){
-
-openPopup("결근",absentPeople);
-
-};
-
-document.getElementById("etcBox").onclick=function(){
-
-openPopup("기타",etcPeople);
-
-};
-
-
 
 /* ==========================
 직원 상태 팝업
@@ -541,3 +434,5 @@ cursor:pointer;
 margin-top:10px;
 
 }
+
+
