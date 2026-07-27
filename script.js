@@ -46,16 +46,6 @@ const defaultPositions = [
 { x: 640, y: 330 }
 ];
 
-export default defaultPositions;
-
-people.forEach((person, index) => {
-
-    person.x = defaultPositions[index].x;
-
-    person.y = defaultPositions[index].y;
-
-});
-
 enableDrag(person);
 
 });
