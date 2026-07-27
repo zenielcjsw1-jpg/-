@@ -324,16 +324,6 @@ etc.push(name);
 
 });
 
-totalPeople.length=0;
-workPeople.length=0;
-absentPeople.length=0;
-etcPeople.length=0;
-
-totalPeople.push(...total);
-workPeople.push(...work);
-absentPeople.push(...absent);
-etcPeople.push(...etc);
-
 document.getElementById("totalCount").innerText=total.length;
 document.getElementById("workCount").innerText=work.length;
 document.getElementById("absentCount").innerText=absent.length;
@@ -416,6 +406,12 @@ updatePersonColor(selectedPerson,status);
 document.getElementById("statusPopup").style.display="none";
 
 updateAttendance();
+  
+});
+
+});
+
+function updatePersonColor(person, status){
 
 switch(status){
 
@@ -447,12 +443,6 @@ default:
 person.style.background="#ffffff";
 
 }
-
+ 
 }
 
-  
-});
-
-function updatePersonColor(person, status){
-  
-});
