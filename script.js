@@ -285,8 +285,6 @@ const statusMap = {};
 document.querySelectorAll(".person").forEach(person=>{
 
 statusMap[person.dataset.id]="출근";
-
-updatePersonColor(selectedPerson,status);
   
 });
 
@@ -413,11 +411,11 @@ const status = btn.dataset.status;
 
 statusMap[selectedPerson.dataset.id] = status;
 
+updatePersonColor(selectedPerson,status);
+  
 document.getElementById("statusPopup").style.display="none";
 
 updateAttendance();
-
-function updatePersonColor(person, status){
 
 switch(status){
 
@@ -455,4 +453,6 @@ person.style.background="#ffffff";
   
 });
 
+function updatePersonColor(person, status){
+  
 });
