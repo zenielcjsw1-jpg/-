@@ -380,3 +380,31 @@ updateAttendance();
 
 });
 
+/* ==========================
+직원 상태 팝업
+========================== */
+
+let selectedPerson = null;
+
+document.querySelectorAll(".person").forEach(person=>{
+
+person.addEventListener("click",()=>{
+
+selectedPerson = person;
+
+document.getElementById("statusTitle").innerText =
+person.innerText;
+
+document.getElementById("statusPopup").style.display="flex";
+
+});
+
+});
+
+document
+.getElementById("closeStatusPopup")
+.onclick=function(){
+
+document.getElementById("statusPopup").style.display="none";
+
+};
