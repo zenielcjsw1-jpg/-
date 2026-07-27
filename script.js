@@ -202,7 +202,7 @@ defaultPositions[index].y + "px";
 
 });
 
-updateAttendace();
+updateAttendance();
   
 localStorage.removeItem(STORAGE_KEY);
 
