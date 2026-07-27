@@ -182,6 +182,8 @@ person.style.top = item.top || person.style.top;
 
 updateAttendance();
 
+  savePosiotions();
+  
 }
 
 /* 초기화 */
@@ -403,6 +405,9 @@ updatePersonColor(person, next);
   
 updateAttendance();
 
+  savePositions();
+  
+
 });
 
 });
@@ -452,6 +457,8 @@ updatePersonColor(selectedPerson,status);
 document.getElementById("statusPopup").style.display="none";
 
 updateAttendance();
+
+  savePositions();
   
 });
 
@@ -509,23 +516,43 @@ const etcPeople = [];
 
 function openPopup(title,list){
 
-document.getElementById("popupTitle").innerText=title;
+document.getElementById("popupTitle").innerText = title;
 
-const box=document.getElementById("popupList");
+const box = document.getElementById("popupList");
 
-box.innerHTML="";
+box.innerHTML = "";
 
 list.forEach(name=>{
 
-const div=document.createElement("div");
+const div = document.createElement("div");
 
-div.innerText=name;
+div.innerText = name;
+
+div.style.cursor = "pointer";
+div.style.padding = "10px";
+
+div.onclick = function(){
+
+const person = [...document.querySelectorAll(".person")]
+.find(p=>p.innerText===name);
+
+if(!person) return;
+
+selectedPerson = person;
+
+document.getElementById("popup").style.display = "none";
+
+document.getElementById("statusTitle").innerText = name;
+
+document.getElementById("statusPopup").style.display = "flex";
+
+};
 
 box.appendChild(div);
 
 });
 
-document.getElementById("popup").style.display="flex";
+document.getElementById("popup").style.display = "flex";
 
 }
 
