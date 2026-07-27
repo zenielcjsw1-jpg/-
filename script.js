@@ -285,3 +285,98 @@ person.style.top = defaultPositions[index].y + "px";
 });
 
 
+/* ==========================
+직원 상태 관리
+========================== */
+
+const statusMap = {};
+
+document.querySelectorAll(".person").forEach(person=>{
+
+statusMap[person.dataset.id]="출근";
+
+});
+
+updateAttendance();
+
+function updateAttendance(){
+
+const total=[];
+
+const work=[];
+
+const absent=[];
+
+const etc=[];
+
+document.querySelectorAll(".person").forEach(person=>{
+
+const name=person.innerText;
+
+const state=statusMap[person.dataset.id];
+
+total.push(name);
+
+if(state==="출근"){
+
+work.push(name);
+
+}else if(state==="결근"){
+
+absent.push(name);
+
+}else{
+
+etc.push(name);
+
+}
+
+});
+
+totalPeople.length=0;
+workPeople.length=0;
+absentPeople.length=0;
+etcPeople.length=0;
+
+totalPeople.push(...total);
+workPeople.push(...work);
+absentPeople.push(...absent);
+etcPeople.push(...etc);
+
+document.getElementById("totalCount").innerText=total.length;
+document.getElementById("workCount").innerText=work.length;
+document.getElementById("absentCount").innerText=absent.length;
+document.getElementById("etcCount").innerText=etc.length;
+
+}
+
+document.querySelectorAll(".person").forEach(person=>{
+
+person.addEventListener("dblclick",()=>{
+
+const current=statusMap[person.dataset.id];
+
+let next="출근";
+
+if(current==="출근"){
+
+next="결근";
+
+}else if(current==="결근"){
+
+next="기타";
+
+}else{
+
+next="출근";
+
+}
+
+statusMap[person.dataset.id]=next;
+
+updateAttendance();
+
+});
+
+});
+
