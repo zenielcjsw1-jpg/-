@@ -283,3 +283,12 @@ person.style.top = defaultPositions[index].y + "px";
 });
 
 console.log("인원현황판 Lite v1.0 실행 완료");
+
+document.getElementById("totalCount").innerText = 25;
+
+document.getElementById("workCount").innerText = 21;
+
+document.getElementById("absentCount").innerText = 2;
+
+document.getElementById("etcCount").innerText = 2;
+
