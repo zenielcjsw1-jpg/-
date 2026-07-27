@@ -48,6 +48,11 @@ const defaultPositions = [
 
 people.forEach(person => {
 
+person.style.left =
+  defaultPosition[index].x + "px";
+  person.style.top =
+    defaultPosition[index].y + "px";
+  
 enableDrag(person);
 
 });
