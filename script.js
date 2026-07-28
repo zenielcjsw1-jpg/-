@@ -46,7 +46,7 @@ const defaultPositions = [
 { x: 640, y: 330 }
 ];
 
-people.forEach(person, index) => {
+people.forEach((person, index) => {
 
 person.style.left =
 defaultPositions[index].x + "px";
@@ -186,8 +186,6 @@ person.style.top = item.top || person.style.top;
 });
 
 updateAttendance();
-
-  savePoisotions();
   
 }
 
@@ -370,7 +368,6 @@ absentPeople.length = 0;
 
 etcPeople.length = 0;
 
-​
 totalPeople.push(...total);
 
 workPeople.push(...work);
@@ -408,9 +405,7 @@ statusMap[person.dataset.id]=next;
 updatePersonColor(person, next);
   
 updateAttendance();
-
-  savePositions();
-  
+ 
 
 });
 
@@ -461,8 +456,6 @@ updatePersonColor(selectedPerson,status);
 document.getElementById("statusPopup").style.display="none";
 
 updateAttendance();
-
-  savePositions();
   
 });
 
