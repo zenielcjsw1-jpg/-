@@ -446,32 +446,33 @@ document.getElementById("statusPopup").style.display="flex";
 
 });
 
-document
-.getElementById("closeStatusPopup")
-.onclick=function(){
+document.getElementById("closeStatusPopup").onclick = function () {
 
-document.getElementById("statusPopup").style.display="none";
+    document.getElementById("statusPopup").style.display = "none";
+
+    selectedPerson = null;
 
 };
 
+document.querySelectorAll(".status-btn").forEach(btn => {
 
-document.querySelectorAll(".status-btn").forEach(btn=>{
+    btn.addEventListener("click", () => {
 
-btn.addEventListener("click",()=>{
+        if (!selectedPerson) return;
 
-if(!selectedPerson) return;
+        const status = btn.dataset.status;
 
-const status = btn.dataset.status;
+        statusMap[selectedPerson.dataset.id] = status;
 
-statusMap[selectedPerson.dataset.id] = status;
+        updatePersonColor(selectedPerson, status);
 
-updatePersonColor(selectedPerson,status);
-  
-document.getElementById("statusPopup").style.display="none";
+        updateAttendance();
 
-updateAttendance();
-  
-});
+        document.getElementById("statusPopup").style.display = "none";
+
+        selectedPerson = null;
+
+    });
 
 });
 
