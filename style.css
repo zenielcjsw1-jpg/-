@@ -23,7 +23,7 @@ width:100%;
 
 height:60px;
 
-background:#6EC6E8;
+background:#82B8D9;
 
 color:white;
 
@@ -64,8 +64,18 @@ height:36px;
 
 border:none;
 border-radius:10px;
-
+    
+#saveBtn{
 background:#55B88A;
+}
+
+    #loadBtn{
+background:#5DADE2;
+}
+
+    #resetBtn{
+background:#E57373;
+}
 
 color:white;
 
@@ -92,7 +102,7 @@ transform:scale(.96);
 #board{
     position:relative;
     width:100%;
-    height:calc(100vh - 115px);
+    height:calc(100vh - 60px);
     overflow:hidden;
     background:#bdbdbd;
 }
@@ -231,7 +241,7 @@ height:55px;
 
 #board{
 
-height:calc(100vh - 105px);
+height:calc(100vh - 50px);
 
 }
 
