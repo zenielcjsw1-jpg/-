@@ -20,35 +20,47 @@ overflow:hidden;
 header{
 
 width:100%;
-height:55px;
+
+height:60px;
 
 background:#6EC6E8;
 
-color:#ffffff;
+color:white;
 
 display:flex;
-justify-content:center;
+
 align-items:center;
 
+justify-content:space-between;
+
+padding:0 20px;
+
 font-size:20px;
+
 font-weight:bold;
 
 }
 
 #toolbar{
-height:60px;
-background:#ffffff;
+
+height:auto;
+
+background:transparent;
+
 display:flex;
-justify-content:center;
+
 align-items:center;
-gap:15px;
-border-bottom:1px solid #cccccc;
+
+gap:10px;
+
+border:none;
+
 }
 
 #toolbar button{
 
-width:110px;
-height:42px;
+width:90px;
+height:36px;
 
 border:none;
 border-radius:10px;
