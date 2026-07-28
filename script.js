@@ -5,57 +5,63 @@ script.js (3-1)
 
 const people = document.querySelectorAll(".person");
 const board = document.getElementById("board");
-
 const defaultPositions = [
-// ===== 왼쪽 =====
-{ x: 120, y: 80 },
-{ x: 210, y: 80 },
 
-{ x: 120, y: 130 },
-{ x: 210, y: 130 },
+/* 왼쪽 */
 
-{ x: 120, y: 180 },
-{ x: 210, y: 180 },
+{ x:0.24, y:0.11 },
+{ x:0.34, y:0.11 },
 
-{ x: 120, y: 230 },
-{ x: 210, y: 230 },
+{ x:0.24, y:0.18 },
+{ x:0.34, y:0.18 },
 
-{ x: 120, y: 280 },
-{ x: 210, y: 280 },
+{ x:0.24, y:0.25 },
+{ x:0.34, y:0.25 },
 
-{ x: 120, y: 330 },
-{ x: 210, y: 330 },
+{ x:0.24, y:0.32 },
+{ x:0.34, y:0.32 },
 
-// ===== 오른쪽 =====
-{ x: 550, y: 80 },
-{ x: 640, y: 80 },
+{ x:0.24, y:0.39 },
+{ x:0.34, y:0.39 },
 
-{ x: 550, y: 130 },
-{ x: 640, y: 130 },
+{ x:0.24, y:0.46 },
+{ x:0.34, y:0.46 },
 
-{ x: 550, y: 180 },
-{ x: 640, y: 180 },
 
-{ x: 550, y: 230 },
-{ x: 640, y: 230 },
+/* 오른쪽 */
 
-{ x: 550, y: 280 },
-{ x: 640, y: 280 },
+{ x:0.63, y:0.11 },
+{ x:0.73, y:0.11 },
 
-{ x: 550, y: 330 },
-{ x: 640, y: 330 }
+{ x:0.63, y:0.18 },
+{ x:0.73, y:0.18 },
+
+{ x:0.63, y:0.25 },
+{ x:0.73, y:0.25 },
+
+{ x:0.63, y:0.32 },
+{ x:0.73, y:0.32 },
+
+{ x:0.63, y:0.39 },
+{ x:0.73, y:0.39 },
+
+{ x:0.63, y:0.46 },
+{ x:0.73, y:0.46 }
+
 ];
 
 people.forEach((person, index) => {
 
 person.style.left =
-defaultPositions[index].x + "px";
+(board.clientWidth * defaultPositions[index].x) + "px";
+
 person.style.top =
-defaultPositions[index].y + "px";
-  
+(board.clientHeight * defaultPositions[index].y) + "px";
+
 enableDrag(person);
 
 });
+
 
 
 function enableDrag(target){
@@ -196,10 +202,10 @@ document.querySelectorAll(".person")
 .forEach((person, index) => {
 
 person.style.left =
-defaultPositions[index].x + "px";
+(board.clientWidth * defaultPositions[index].x) + "px";
 
 person.style.top =
-defaultPositions[index].y + "px";
+(board.clientHeight * defaultPositions[index].y) + "px";
 
   statusMap[person.dataset.id] =
     "출근";
@@ -250,16 +256,19 @@ e.preventDefault();
 });
 
 /* 창 크기가 변경되어도 현재 위치 유지 */
-window.addEventListener("resize", () => {
+window.addEventListener("resize",()=>{
 
-const saved = localStorage.getItem(STORAGE_KEY);
+document.querySelectorAll(".person").forEach((person,index)=>{
 
-if (saved) {
-loadPositions();
-}
+person.style.left =
+(board.clientWidth * defaultPositions[index].x) + "px";
+
+person.style.top =
+(board.clientHeight * defaultPositions[index].y) + "px";
 
 });
 
+});
 /* 더블클릭 확대 방지(모바일) */
 let lastTouchEnd = 0;
 
