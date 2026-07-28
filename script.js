@@ -309,6 +309,11 @@ person.style.top = defaultPositions[index].y + "px";
 직원 상태 관리
 ========================== */
 
+const totalPeople = [];
+const workPeople = [];
+const absentPeople = [];
+const etcPeople = [];
+
 const statusMap = {};
 
 document.querySelectorAll(".person").forEach(person=>{
@@ -502,14 +507,6 @@ person.style.background="#ffffff";
 /* ==========================
 출근부 팝업
 ========================== */
-
-const totalPeople = [];
-
-const workPeople = [];
-
-const absentPeople = [];
-
-const etcPeople = [];
 
 function openPopup(title,list){
 
