@@ -259,14 +259,27 @@ gap:15px;
 }
 
 .attendance-panel{
+
 font-size:24px;
+
 margin-bottom:15px;
+
 text-align:center;
-color:#FF8A4C;
-background:#ffffff;
-border-radius:12px;
+
+color:#4A5568;
+
+background:#F8FAFC;
+
+border-radius:16px;
+
 padding:18px;
-box-shadow:0 3px 10px rgba(0, 0, 0, .15);
+
+box-shadow:0 4px 12px rgba(0,0,0,.12);
+
+border-left:6px solid #F5B041;
+
+font-weight:bold;
+
 }
 
 .attendance-item{
@@ -275,17 +288,19 @@ justify-content:space-between;
 align-items:center;
 padding:14px;
 margin-top:10px;
-background:#f8f8f8;
+background:#ffffff;
 border-radius:8px;
 font-size:17px;
 font-weight:bold;
-border:1px solid #ddd;
+border:1px solid #E5E7EB;
 cursor:pointer;
 transition:.2s;
+border-radius:12px;
+    
 }
 
 .attendance-item:hover{
-background:#eaf4ff;
+background:#FFF7ED;
 transform:translateX(3px);
 }
 
