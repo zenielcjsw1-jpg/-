@@ -22,7 +22,7 @@ header{
 width:100%;
 height:55px;
 
-background:#A7B8C8;
+background:#6EC6E8;
 
 color:#ffffff;
 
@@ -53,7 +53,7 @@ height:42px;
 border:none;
 border-radius:10px;
 
-background:#6F8F8B;
+background:#55B88A;
 
 color:white;
 
@@ -123,9 +123,9 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-background:#555B61;
+background:#4B5563;
 
-border:2px solid #333;
+border:2px solid #374151;
 
 border-radius:8px;
 
@@ -262,7 +262,7 @@ gap:15px;
 font-size:24px;
 margin-bottom:15px;
 text-align:center;
-color:#1976d2;
+color:#FF8A4C;
 background:#ffffff;
 border-radius:12px;
 padding:18px;
