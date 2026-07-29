@@ -78,12 +78,26 @@ border-radius:10px;
 background:#55B88A;
 }
 
-    #loadBtn{
+#saveBtn:hover{
+background:#3FA36F;
+}
+
+
+#loadBtn{
 background:#5DADE2;
 }
 
-    #resetBtn{
+#loadBtn:hover{
+background:#3488C7;
+}
+
+
+#resetBtn{
 background:#E57373;
+}
+
+#resetBtn:hover{
+background:#C94F4F;
 }
 
 color:white;
