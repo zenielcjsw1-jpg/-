@@ -255,10 +255,23 @@ document.addEventListener("dragstart", (e) => {
 e.preventDefault();
 });
 
-/* 창 크기가 변경되어도 현재 위치 유지 */
-window.addEventListener("resize",()=>{
 
-document.querySelectorAll(".person").forEach((person,index)=>{
+/* ==========================
+최초 실행 자동 배치 유지
+========================== */
+
+let firstLoad = true;
+
+
+window.addEventListener("load",()=>{
+
+const saved = localStorage.getItem(STORAGE_KEY);
+
+
+if(!saved && firstLoad){
+
+document.querySelectorAll(".person")
+.forEach((person,index)=>{
 
 person.style.left =
 (board.clientWidth * defaultPositions[index].x) + "px";
@@ -268,7 +281,13 @@ person.style.top =
 
 });
 
+firstLoad = false;
+
+}
+
 });
+
+
 /* 더블클릭 확대 방지(모바일) */
 let lastTouchEnd = 0;
 
