@@ -163,36 +163,40 @@ z-index:100;
 pointer-events:none;
 
 }
+
+
 .person{
 
 position:absolute;
 
-width:80px;
-height:32px;
+width:84px;
+height:34px;
 
 display:flex;
 
 align-items:center;
 justify-content:center;
 
-background:#4B5563;
+background:#7F9DBD;
 
-border:2px solid #374151;
+border:1px solid #5D7FA3;
 
-border-radius:8px;
+border-radius:10px;
 
 font-size:14px;
-font-weight:bold;
+font-weight:700;
 
 color:#FFFFFF;
+
+letter-spacing:-0.3px;
 
 cursor:grab;
 
 touch-action:none;
 
-box-shadow:2px 3px 8px rgba(0,0,0,.35);
+box-shadow:0 2px 5px rgba(0,0,0,.18);
 
-transition:box-shadow .15s;
+transition:all .2s;
 
 pointer-events:auto;
 
@@ -200,11 +204,14 @@ padding:0;
 
 }
 
+
 .person:active{
 
 cursor:grabbing;
 
-box-shadow:4px 4px 10px rgba(0,0,0,.35);
+transform:scale(1.05);
+
+box-shadow:0 6px 12px rgba(0,0,0,.25);
 
 z-index:9999;
 
