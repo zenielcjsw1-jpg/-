@@ -51,7 +51,6 @@ function getWarehouseRect(){
 return warehouse.getBoundingClientRect();
 
 }
-
 function resizePeopleLayer(){
 
 const rect = getWarehouseRect();
