@@ -590,5 +590,36 @@ openPopup("기타",etcPeople);
 
 };
 
+/* ==========================
+출근부 날짜 표시
+========================== */
 
+function updateTodayDate(){
+
+const today = new Date();
+
+const year = today.getFullYear();
+
+const month = today.getMonth()+1;
+
+const date = today.getDate();
+
+const day = [
+"일",
+"월",
+"화",
+"수",
+"목",
+"금",
+"토"
+][today.getDay()];
+
+
+document.getElementById("todayDate").innerText =
+`${year}년 ${month}월 ${date}일 (${day})`;
+
+}
+
+
+updateTodayDate();
 
