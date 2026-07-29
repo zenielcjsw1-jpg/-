@@ -664,3 +664,37 @@ document.getElementById("todayDate").innerText =
 
 updateTodayDate();
 
+
+/* ==========================
+상태만 저장
+========================== */
+
+function saveStatusOnly(){
+
+const data = [];
+
+
+document.querySelectorAll(".person").forEach(person=>{
+
+data.push({
+
+id:person.dataset.id,
+
+left:person.style.left,
+
+top:person.style.top,
+
+status:statusMap[person.dataset.id]
+
+});
+
+});
+
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(data)
+);
+
+
+}
