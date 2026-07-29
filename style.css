@@ -192,10 +192,15 @@ display:flex;
 
 align-items:center;
 justify-content:center;
+.person{
 
-background:#2F80ED;
+background:#37474F;
 
-border:1px solid #1B5FB8;
+border:1px solid #263238;
+
+color:white;
+
+}
 
 border-radius:10px;
 
