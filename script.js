@@ -473,28 +473,50 @@ document.getElementById("closeStatusPopup").onclick = function () {
 
 };
 
+/* ==========================
+상태 변경 연동
+이름표 ↔ 출근부
+========================== */
+
 document.querySelectorAll(".status-btn").forEach(btn => {
 
     btn.addEventListener("click", () => {
 
         if (!selectedPerson) return;
 
+
         const status = btn.dataset.status;
 
+
+        // 상태 저장
         statusMap[selectedPerson.dataset.id] = status;
 
-        updatePersonColor(selectedPerson, status);
 
+        // 이름표 색상 변경
+        updatePersonColor(
+            selectedPerson,
+            status
+        );
+
+
+        // 출근부 숫자 즉시 갱신
         updateAttendance();
 
+
+        // 변경 즉시 자동 저장
+        saveStatusOnly();
+
+
+        // 팝업 닫기
         document.getElementById("statusPopup").style.display = "none";
 
+
         selectedPerson = null;
+
 
     });
 
 });
-
 function updatePersonColor(person, status){
 
 switch(status){
