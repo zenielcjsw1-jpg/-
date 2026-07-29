@@ -62,7 +62,7 @@ enableDrag(person);
 
 });
 
-
+let isDragging = false;
 
 function enableDrag(target){
 
@@ -84,6 +84,8 @@ startY = point.clientY;
 moveX = target.offsetLeft;
 moveY = target.offsetTop;
 
+isDragging = false;
+  
 document.addEventListener("mousemove",dragMove);
 document.addEventListener("mouseup",dragEnd);
 
@@ -110,6 +112,8 @@ if(y<0) y=0;
 if(x>maxX) x=maxX;
 if(y>maxY) y=maxY;
 
+isDragging = true;
+  
 target.style.left = x+"px";
 target.style.top = y+"px";
 
@@ -453,6 +457,14 @@ let selectedPerson = null;
 document.querySelectorAll(".person").forEach(person=>{
 
 person.addEventListener("click",()=>{
+
+if(isDragging){
+
+isDragging = false;
+
+return;
+
+}
 
 selectedPerson = person;
 
