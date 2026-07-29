@@ -117,14 +117,38 @@ const point = e.touches ? e.touches[0] : e;
 let x = moveX + (point.clientX-startX);
 let y = moveY + (point.clientY-startY);
 
-const maxX = board.clientWidth - target.offsetWidth;
-const maxY = board.clientHeight - target.offsetHeight;
 
-if(x<0) x=0;
-if(y<0) y=0;
+const imageRect = getWarehouseRect();
+const boardRect = getBoardRect();
 
-if(x>maxX) x=maxX;
-if(y>maxY) y=maxY;
+
+const minX = imageRect.left - boardRect.left;
+const minY = imageRect.top - boardRect.top;
+
+
+const maxX =
+minX + imageRect.width - target.offsetWidth;
+
+const maxY =
+minY + imageRect.height - target.offsetHeight;
+
+
+if(x < minX) x = minX;
+
+if(y < minY) y = minY;
+
+
+if(x > maxX) x = maxX;
+
+if(y > maxY) y = maxY;
+
+
+isDragging = true;
+
+
+target.style.left = x+"px";
+
+target.style.top = y+"px";
 
 isDragging = true;
   
