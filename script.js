@@ -327,8 +327,11 @@ if (e.key === "Escape") {
 
 document.querySelectorAll(".person").forEach((person, index) => {
 
-person.style.left = defaultPositions[index].x + "px";
-person.style.top = defaultPositions[index].y + "px";
+person.style.left =
+(board.clientWidth * defaultPositions[index].x) + "px";
+
+person.style.top =
+(board.clientHeight * defaultPositions[index].y) + "px";
 
 });
 
