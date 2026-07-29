@@ -192,13 +192,14 @@ display:flex;
 
 align-items:center;
 justify-content:center;
-.person{
 
-background:#37474F;
+background:rgba(55,71,79,0.72);
 
-border:1px solid #263238;
+border:1px solid rgba(38,50,56,0.75);
 
-color:white;
+color:#ffffff;
+
+backdrop-filter:blur(2px);
 
 }
 
