@@ -86,18 +86,20 @@ resizePeopleLayer();
 
 people.forEach((person, index) => {
 
-const imageRect = getWarehouseRect();
+
+const layerRect = peopleLayer.getBoundingClientRect();
 
 
 person.style.left =
-(imageRect.width * defaultPositions[index].x) + "px";
+(layerRect.width * defaultPositions[index].x) + "px";
 
 
 person.style.top =
-(imageRect.height * defaultPositions[index].y) + "px";
+(layerRect.height * defaultPositions[index].y) + "px";
 
 
 enableDrag(person);
+
 
 });
 
