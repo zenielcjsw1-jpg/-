@@ -5,6 +5,7 @@ script.js (3-1)
 
 const people = document.querySelectorAll(".person");
 const board = document.getElementById("board");
+const warehouse = document.getElementById("warehouse");
 
 
 const defaultPositions = [
@@ -45,13 +46,31 @@ const defaultPositions = [
 
 ];
 
+function getWarehouseRect(){
+
+return warehouse.getBoundingClientRect();
+
+}
+
+function getBoardRect(){
+
+return board.getBoundingClientRect();
+
+}
+
+
 people.forEach((person, index) => {
 
+const boardRect = getBoardRect();
+const imageRect = getWarehouseRect();
+
 person.style.left =
-(board.clientWidth * defaultPositions[index].x) + "px";
+(imageRect.left - boardRect.left) +
+(imageRect.width * defaultPositions[index].x) + "px";
 
 person.style.top =
-(board.clientHeight * defaultPositions[index].y) + "px";
+(imageRect.top - boardRect.top) +
+(imageRect.height * defaultPositions[index].y) + "px";
 
 enableDrag(person);
 
