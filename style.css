@@ -546,4 +546,22 @@ margin-top:10px;
 
 }
 
+/* ==========================
+출근부 날짜 표시
+========================== */
 
+#todayDate{
+
+font-size:16px;
+
+color:#666;
+
+margin-top:8px;
+
+margin-bottom:15px;
+
+font-weight:bold;
+
+text-align:center;
+
+}
