@@ -86,16 +86,16 @@ resizePeopleLayer();
 
 people.forEach((person, index) => {
 
-const boardRect = getBoardRect();
 const imageRect = getWarehouseRect();
 
+
 person.style.left =
-(imageRect.left - boardRect.left) +
 (imageRect.width * defaultPositions[index].x) + "px";
 
+
 person.style.top =
-(imageRect.top - boardRect.top) +
 (imageRect.height * defaultPositions[index].y) + "px";
+
 
 enableDrag(person);
 
@@ -268,11 +268,15 @@ function resetPositions() {
 document.querySelectorAll(".person")
 .forEach((person, index) => {
 
+const imageRect = getWarehouseRect();
+
+
 person.style.left =
-(board.clientWidth * defaultPositions[index].x) + "px";
+(imageRect.width * defaultPositions[index].x) + "px";
+
 
 person.style.top =
-(board.clientHeight * defaultPositions[index].y) + "px";
+(imageRect.height * defaultPositions[index].y) + "px";
 
   statusMap[person.dataset.id] =
     "출근";
@@ -340,11 +344,15 @@ if(!saved && firstLoad){
 document.querySelectorAll(".person")
 .forEach((person,index)=>{
 
+const imageRect = getWarehouseRect();
+
+
 person.style.left =
-(board.clientWidth * defaultPositions[index].x) + "px";
+(imageRect.width * defaultPositions[index].x) + "px";
+
 
 person.style.top =
-(board.clientHeight * defaultPositions[index].y) + "px";
+(imageRect.height * defaultPositions[index].y) + "px";
 
 });
 
