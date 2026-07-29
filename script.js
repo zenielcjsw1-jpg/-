@@ -6,7 +6,7 @@ script.js (3-1)
 const people = document.querySelectorAll(".person");
 const board = document.getElementById("board");
 const warehouse = document.getElementById("warehouse");
-
+const peopleLayer = document.getElementById("peopleLayer");
 
 const defaultPositions = [
 
@@ -52,12 +52,37 @@ return warehouse.getBoundingClientRect();
 
 }
 
+function resizePeopleLayer(){
+
+const rect = getWarehouseRect();
+
+const boardRect = getBoardRect();
+
+
+peopleLayer.style.left =
+(rect.left - boardRect.left) + "px";
+
+
+peopleLayer.style.top =
+(rect.top - boardRect.top) + "px";
+
+
+peopleLayer.style.width =
+rect.width + "px";
+
+
+peopleLayer.style.height =
+rect.height + "px";
+
+}
+
 function getBoardRect(){
 
 return board.getBoundingClientRect();
 
 }
 
+resizePeopleLayer();
 
 people.forEach((person, index) => {
 
@@ -751,3 +776,10 @@ JSON.stringify(data)
 
 
 }
+
+
+window.addEventListener("resize",()=>{
+
+resizePeopleLayer();
+
+});
