@@ -135,11 +135,26 @@ function getPersonPercent(person){
 /* 비율 좌표를 화면에 적용 */
 function setPersonPercent(person, x, y){
 
-    const pos = toPixel(x, y);
 
-    person.style.left = pos.x + "px";
+const pos = toPixel(x, y);
 
-    person.style.top = pos.y + "px";
+
+/* 화면 표시 */
+
+person.style.left =
+pos.x + "px";
+
+
+person.style.top =
+pos.y + "px";
+
+
+/* V2.2 좌표 기억 */
+
+person.dataset.x = x;
+
+person.dataset.y = y;
+
 
 }
 
