@@ -309,33 +309,67 @@ function loadPositions() {
 
 const saved = localStorage.getItem(STORAGE_KEY);
 
+
 if (!saved) {
+
 alert("저장된 데이터가 없습니다.");
+
 return;
+
 }
+
 
 const data = JSON.parse(saved);
 
+
 data.forEach(item => {
+
 
 const person =
 document.querySelector(
 '.person[data-id="' + item.id + '"]'
 );
 
+
 if (!person) return;
 
-person.style.left = item.left || person.style.left;
 
-person.style.top = item.top || person.style.top;
+/* V2.2 이미지 기준 좌표 적용 */
 
-  
-  statusMap[item.id] = item.status;
-  updatePersonColor(person,item.status);
+if(
+item.x !== undefined &&
+item.y !== undefined
+){
+
+setPersonPercent(
+
+person,
+
+item.x,
+
+item.y
+
+);
+
+}
+
+
+/* 상태 복원 */
+
+statusMap[item.id] = item.status;
+
+updatePersonColor(
+person,
+item.status
+);
+
+
 });
 
+
 updateAttendance();
-  
+
+
 }
 
 /* 초기화 */
