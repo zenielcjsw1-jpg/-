@@ -148,20 +148,17 @@ resizePeopleLayer();
 
 people.forEach((person, index) => {
 
+    setPersonPercent(
 
-const layerRect = peopleLayer.getBoundingClientRect();
+        person,
 
+        defaultPositions[index].x,
 
-person.style.left =
-(layerRect.width * defaultPositions[index].x) + "px";
+        defaultPositions[index].y
 
+    );
 
-person.style.top =
-(layerRect.height * defaultPositions[index].y) + "px";
-
-
-enableDrag(person);
-
+    enableDrag(person);
 
 });
 
