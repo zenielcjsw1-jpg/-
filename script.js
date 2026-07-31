@@ -518,32 +518,44 @@ e.preventDefault();
 
 let firstLoad = true;
 
-
 window.addEventListener("load",()=>{
 
-const saved = localStorage.getItem(STORAGE_KEY);
+
+const saved =
+localStorage.getItem(STORAGE_KEY);
+
 
 
 if(!saved && firstLoad){
 
+
+
 document.querySelectorAll(".person")
 .forEach((person,index)=>{
 
-const imageRect = getWarehouseRect();
 
 
-person.style.left =
-(imageRect.width * defaultPositions[index].x) + "px";
+setPersonPercent(
+
+person,
+
+defaultPositions[index].x,
+
+defaultPositions[index].y
+
+);
 
 
-person.style.top =
-(imageRect.height * defaultPositions[index].y) + "px";
 
 });
 
+
+
 firstLoad = false;
 
+
 }
+
 
 });
 
