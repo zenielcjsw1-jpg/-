@@ -78,25 +78,6 @@ rect.height + "px";
 
 }
 
-const boardRect = getBoardRect();
-
-
-peopleLayer.style.left =
-(rect.left - boardRect.left) + "px";
-
-
-peopleLayer.style.top =
-(rect.top - boardRect.top) + "px";
-
-
-peopleLayer.style.width =
-rect.width + "px";
-
-
-peopleLayer.style.height =
-rect.height + "px";
-
-}
 
 function getBoardRect(){
 
