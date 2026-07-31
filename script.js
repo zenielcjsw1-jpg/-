@@ -231,16 +231,17 @@ if(y > maxY) y = maxY;
 
 isDragging = true;
 
+/* peopleLayer 기준 좌표로 변환 */
+const layerRect = peopleLayer.getBoundingClientRect();
 
-target.style.left = x+"px";
+const localX = x - (imageRect.left - boardRect.left);
+const localY = y - (imageRect.top - boardRect.top);
 
-target.style.top = y+"px";
+/* 좌표 적용 */
+target.style.left = localX + "px";
+target.style.top = localY + "px"
 
-isDragging = true;
-  
-target.style.left = x+"px";
-target.style.top = y+"px";
-
+    
 }
 
 function dragEnd(){
