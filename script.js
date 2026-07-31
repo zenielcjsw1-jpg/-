@@ -520,19 +520,30 @@ savePositions();
 /* ESC 누르면 초기 위치로 복귀(저장은 유지) */
 document.addEventListener("keydown", (e) => {
 
+
 if (e.key === "Escape") {
 
-document.querySelectorAll(".person").forEach((person, index) => {
 
-person.style.left =
-(board.clientWidth * defaultPositions[index].x) + "px";
+document.querySelectorAll(".person")
+.forEach((person,index)=>{
 
-person.style.top =
-(board.clientHeight * defaultPositions[index].y) + "px";
+
+setPersonPercent(
+
+person,
+
+defaultPositions[index].x,
+
+defaultPositions[index].y
+
+);
+
 
 });
 
+
 }
+
 
 });
 
