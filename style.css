@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v1.0
+인원현황판 Lite v2.2
 style.css
 =========================== */
 
@@ -180,7 +180,6 @@ pointer-events:auto;
 
 }
 
-
 .person{
 
 position:absolute;
@@ -193,32 +192,49 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-background:rgba(55,71,79,0.72);
 
-border:1px solid rgba(38,50,56,0.75);
+/* ==========================
+이름표 음영 개선 (4차 STEP 1)
+========================== */
 
-color:#ffffff;
+background:rgba(255,255,255,0.78);
 
-backdrop-filter:blur(2px);
-
-}
+border:1px solid rgba(120,120,120,0.35);
 
 border-radius:10px;
 
+
+/* 글자 */
+
 font-size:14px;
+
 font-weight:700;
 
-color:#FFFFFF;
+color:#333333;
 
 letter-spacing:-0.3px;
+
+
+/* 드래그 */
 
 cursor:grab;
 
 touch-action:none;
 
-box-shadow:0 2px 5px rgba(0,0,0,.18);
+
+/* 입체감 */
+
+box-shadow:
+0 3px 8px rgba(0,0,0,0.18);
+
+
+/* 배경과 자연스럽게 융합 */
+
+backdrop-filter:blur(3px);
+
 
 transition:all .2s;
+
 
 pointer-events:auto;
 
