@@ -123,7 +123,7 @@ function getPersonPercent(person){
 
     return toPercent(
 
-        person.offsetLeft,
+        person.style.Left,
 
         person.offsetTop
 
