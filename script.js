@@ -121,12 +121,17 @@ function toPixel(percentX, percentY){
 /* 현재 이름표의 이미지 기준 비율 좌표 */
 function getPersonPercent(person){
 
+    const x =
+    parseFloat(person.style.left);
+
+
+    const y =
+    parseFloat(person.style.top);
+
+
     return toPercent(
-
-        person.style.Left,
-
-        person.offsetTop
-
+        x,
+        y
     );
 
 }
