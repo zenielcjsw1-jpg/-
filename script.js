@@ -261,11 +261,50 @@ target.style.top = localY + "px"
 
 function dragEnd(){
 
-document.removeEventListener("mousemove",dragMove);
-document.removeEventListener("mouseup",dragEnd);
 
-document.removeEventListener("touchmove",dragMove);
-document.removeEventListener("touchend",dragEnd);
+document.removeEventListener(
+"mousemove",
+dragMove
+);
+
+
+document.removeEventListener(
+"mouseup",
+dragEnd
+);
+
+
+document.removeEventListener(
+"touchmove",
+dragMove
+);
+
+
+document.removeEventListener(
+"touchend",
+dragEnd
+);
+
+
+
+/* =====================
+V2.2 좌표 저장
+드래그 종료 시
+이미지 기준 비율 변환
+===================== */
+
+
+const percent =
+getPersonPercent(target);
+
+
+target.dataset.x =
+percent.x;
+
+
+target.dataset.y =
+percent.y;
+
 
 }
 
