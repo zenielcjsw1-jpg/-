@@ -490,17 +490,6 @@ document
 .getElementById("resetBtn")
 .addEventListener("click", resetPositions);
 
-/* 프로그램 시작 시 자동 불러오기 */
-
-window.addEventListener("load", () => {
-
-if (localStorage.getItem(STORAGE_KEY)) {
-
-loadPositions();
-
-}
-
-});
 
 /* ==========================
 script.js (3-3)
@@ -517,48 +506,6 @@ e.preventDefault();
 최초 실행 자동 배치 유지
 ========================== */
 
-let firstLoad = true;
-
-window.addEventListener("load",()=>{
-
-
-const saved =
-localStorage.getItem(STORAGE_KEY);
-
-
-
-if(!saved && firstLoad){
-
-
-
-document.querySelectorAll(".person")
-.forEach((person,index)=>{
-
-
-
-setPersonPercent(
-
-person,
-
-defaultPositions[index].x,
-
-defaultPositions[index].y
-
-);
-
-
-
-});
-
-
-
-firstLoad = false;
-
-
-}
-
-
-});
 
 
 /* 더블클릭 확대 방지(모바일) */
@@ -1065,13 +1012,49 @@ refreshPeoplePosition();
 
 });
 
-
-/* 최초 실행 */
+/* ==========================
+V2.2 최초 실행 통합
+========================== */
 
 window.addEventListener("load",()=>{
 
 
 resizePeopleLayer();
+
+
+
+const saved =
+localStorage.getItem(STORAGE_KEY);
+
+
+
+if(saved){
+
+    loadPositions();
+
+}
+else{
+
+
+document.querySelectorAll(".person")
+.forEach((person,index)=>{
+
+
+setPersonPercent(
+
+person,
+
+defaultPositions[index].x,
+
+defaultPositions[index].y
+
+);
+
+
+});
+
+
+}
 
 
 });
