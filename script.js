@@ -292,6 +292,11 @@ document.querySelectorAll(".person").forEach(person => {
 const pos = getPersonPercent(person);
 
 
+person.dataset.x = pos.x;
+
+person.dataset.y = pos.y;
+
+
 data.push({
 
     id: person.dataset.id,
