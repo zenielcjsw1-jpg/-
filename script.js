@@ -214,9 +214,6 @@ e.preventDefault();
 
 const point = e.touches ? e.touches[0] : e;
 
-let x = moveX + (point.clientX-startX);
-let y = moveY + (point.clientY-startY);
-
 const imageRect = getWarehouseRect();
 
 
