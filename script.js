@@ -970,24 +970,45 @@ const data = [];
 
 document.querySelectorAll(".person").forEach(person=>{
 
+
+const pos = getPersonPercent(person);
+
+
+
+person.dataset.x = pos.x;
+
+person.dataset.y = pos.y;
+
+
+
 data.push({
 
-id:person.dataset.id,
+id: person.dataset.id,
 
-left:person.style.left,
 
-top:person.style.top,
+x: pos.x,
 
-status:statusMap[person.dataset.id]
+
+y: pos.y,
+
+
+status:
+statusMap[person.dataset.id]
+
 
 });
 
+
 });
+
 
 
 localStorage.setItem(
+
 STORAGE_KEY,
+
 JSON.stringify(data)
+
 );
 
 
