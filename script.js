@@ -373,30 +373,46 @@ updateAttendance();
 }
 
 /* 초기화 */
+
 function resetPositions() {
+
 
 document.querySelectorAll(".person")
 .forEach((person, index) => {
 
-const imageRect = getWarehouseRect();
+
+setPersonPercent(
+
+person,
+
+defaultPositions[index].x,
+
+defaultPositions[index].y
+
+);
 
 
-person.style.left =
-(imageRect.width * defaultPositions[index].x) + "px";
+
+statusMap[person.dataset.id] = "출근";
 
 
-person.style.top =
-(imageRect.height * defaultPositions[index].y) + "px";
+updatePersonColor(
 
-  statusMap[person.dataset.id] =
-    "출근";
-  updatePersonColor(person, "출근");
+person,
+
+"출근"
+
+);
+
 
 });
 
+
 updateAttendance();
-  
+
+
 localStorage.removeItem(STORAGE_KEY);
+
 
 }
 
