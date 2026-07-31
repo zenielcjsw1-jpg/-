@@ -65,7 +65,6 @@ gap:10px;
 border:none;
 
 }
-
 #toolbar button{
 
 width:90px;
@@ -73,42 +72,73 @@ height:36px;
 
 border:none;
 border-radius:10px;
-    
-#saveBtn{
-background:#55B88A;
-}
-
-#saveBtn:hover{
-background:#3FA36F;
-}
-
-
-#loadBtn{
-background:#5DADE2;
-}
-
-#loadBtn:hover{
-background:#3488C7;
-}
-
-
-#resetBtn{
-background:#E57373;
-}
-
-#resetBtn:hover{
-background:#C94F4F;
-}
 
 color:white;
 
 font-size:15px;
+
 font-weight:bold;
 
 cursor:pointer;
 
 transition:.2s;
+
 }
+
+
+/* 저장 버튼 */
+
+#saveBtn{
+
+background:#55B88A;
+
+}
+
+#saveBtn:hover{
+
+background:#3FA36F;
+
+}
+
+
+/* 불러오기 버튼 */
+
+#loadBtn{
+
+background:#5DADE2;
+
+}
+
+#loadBtn:hover{
+
+background:#3488C7;
+
+}
+
+
+/* 초기화 버튼 */
+
+#resetBtn{
+
+background:#E57373;
+
+}
+
+#resetBtn:hover{
+
+background:#C94F4F;
+
+}
+
+
+
+#toolbar button:active{
+
+transform:scale(.96);
+
+}
+
+
 
 #toolbar button:hover{
 
