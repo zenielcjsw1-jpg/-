@@ -1020,23 +1020,15 @@ refreshPeoplePosition();
 
 
 });
-
-/* ==========================
-V2.2 최초 실행 통합
-========================== */
-
 window.addEventListener("load",()=>{
 
 resizePeopleLayer();
 
 refreshPeoplePosition();
 
-});
-
 
 const saved =
 localStorage.getItem(STORAGE_KEY);
-
 
 
 if(saved){
@@ -1066,6 +1058,5 @@ defaultPositions[index].y
 
 
 }
-
 
 });
