@@ -923,14 +923,69 @@ JSON.stringify(data)
 }
 
 
-window.addEventListener("resize",()=>{
+/* ==========================
+V2.2 화면 변경 대응
+========================== */
+
+
+function refreshPeoplePosition(){
+
 
 resizePeopleLayer();
+
+
+document.querySelectorAll(".person")
+.forEach(person=>{
+
+
+const savedX = person.dataset.x;
+
+const savedY = person.dataset.y;
+
+
+if(
+savedX !== undefined &&
+savedY !== undefined
+){
+
+
+setPersonPercent(
+
+person,
+
+Number(savedX),
+
+Number(savedY)
+
+);
+
+
+}
+
 
 });
 
+
+}
+
+
+/* 화면 크기 변경 */
+
+window.addEventListener("resize",()=>{
+
+
+refreshPeoplePosition();
+
+
+});
+
+
+/* 최초 실행 */
+
 window.addEventListener("load",()=>{
 
+
 resizePeopleLayer();
+
 
 });
