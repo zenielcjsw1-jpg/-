@@ -318,7 +318,7 @@ script.js (3-2)
 저장 / 불러오기 / 초기화
 ========================== */
 
-const STORAGE_KEY = "personnelBoardLite_v1";
+const STORAGE_KEY = "personnelBoardLite_v22";
 
 /* 저장 */
 function savePositions() {
