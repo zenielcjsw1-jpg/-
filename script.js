@@ -85,6 +85,65 @@ return board.getBoundingClientRect();
 
 }
 
+/* ==========================
+V2.2 좌표 엔진
+========================== */
+
+/* 이미지 기준 px → 비율 */
+function toPercent(pxX, pxY){
+
+    const rect = getWarehouseRect();
+
+    return {
+
+        x : pxX / rect.width,
+
+        y : pxY / rect.height
+
+    };
+
+}
+
+/* 이미지 기준 비율 → px */
+function toPixel(percentX, percentY){
+
+    const rect = getWarehouseRect();
+
+    return {
+
+        x : rect.width * percentX,
+
+        y : rect.height * percentY
+
+    };
+
+}
+
+/* 현재 이름표의 이미지 기준 비율 좌표 */
+function getPersonPercent(person){
+
+    return toPercent(
+
+        person.offsetLeft,
+
+        person.offsetTop
+
+    );
+
+}
+
+/* 비율 좌표를 화면에 적용 */
+function setPersonPercent(person, x, y){
+
+    const pos = toPixel(x, y);
+
+    person.style.left = pos.x + "px";
+
+    person.style.top = pos.y + "px";
+
+}
+
+
 resizePeopleLayer();
 
 people.forEach((person, index) => {
