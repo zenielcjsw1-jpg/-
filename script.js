@@ -155,9 +155,12 @@ pos.y + "px";
 
 /* V2.2 좌표 기억 */
 
-person.dataset.x = x;
+person.dataset.x =
+Number(x.toFixed(4));
 
-person.dataset.y = y;
+
+person.dataset.y =
+Number(y.toFixed(4));
 
 
 }
@@ -247,7 +250,14 @@ if(localY > maxY) localY = maxY;
 
 
 
-isDragging = true;
+if(
+Math.abs(point.clientX-startX) > 5 ||
+Math.abs(point.clientY-startY) > 5
+){
+
+    isDragging = true;
+
+}
 
 
 
@@ -300,11 +310,11 @@ getPersonPercent(target);
 
 
 target.dataset.x =
-percent.x;
+Number(percent.x.toFixed(4));
 
 
 target.dataset.y =
-percent.y;
+Number(percent.y.toFixed(4));
 
 
 }
@@ -339,17 +349,16 @@ person.dataset.y = pos.y;
 
 data.push({
 
-    id: person.dataset.id,
+id: person.dataset.id,
 
-    x: pos.x,
+x: Number(pos.x.toFixed(4)),
 
-    y: pos.y,
+y: Number(pos.y.toFixed(4)),
 
-    status:
-    statusMap[person.dataset.id]
+status:
+statusMap[person.dataset.id]
 
 });
-
 
 });
 
@@ -1018,9 +1027,11 @@ V2.2 최초 실행 통합
 
 window.addEventListener("load",()=>{
 
-
 resizePeopleLayer();
 
+refreshPeoplePosition();
+
+});
 
 
 const saved =
