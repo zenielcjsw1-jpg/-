@@ -273,18 +273,32 @@ const data = [];
 
 document.querySelectorAll(".person").forEach(person => {
 
-  data.push({
+
+const pos = getPersonPercent(person);
+
+
+data.push({
+
     id: person.dataset.id,
-    left:person.style.left,
-    top:person.style.top,
-  
+
+    x: pos.x,
+
+    y: pos.y,
+
     status:
-statusMap[person.dataset.id]
-});
+    statusMap[person.dataset.id]
 
 });
 
-localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+});
+
+
+localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(data)
+);
+
 
 alert("저장되었습니다.");
 
