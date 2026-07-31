@@ -218,44 +218,44 @@ const point = e.touches ? e.touches[0] : e;
 let x = moveX + (point.clientX-startX);
 let y = moveY + (point.clientY-startY);
 
-
 const imageRect = getWarehouseRect();
-const boardRect = getBoardRect();
 
 
-const minX = imageRect.left - boardRect.left;
-const minY = imageRect.top - boardRect.top;
+let localX = moveX + (point.clientX-startX);
+let localY = moveY + (point.clientY-startY);
+
 
 
 const maxX =
-minX + imageRect.width - target.offsetWidth;
+imageRect.width - target.offsetWidth;
+
 
 const maxY =
-minY + imageRect.height - target.offsetHeight;
+imageRect.height - target.offsetHeight;
 
 
-if(x < minX) x = minX;
 
-if(y < minY) y = minY;
+if(localX < 0) localX = 0;
+
+if(localY < 0) localY = 0;
 
 
-if(x > maxX) x = maxX;
+if(localX > maxX) localX = maxX;
 
-if(y > maxY) y = maxY;
+if(localY > maxY) localY = maxY;
+
 
 
 isDragging = true;
 
-/* peopleLayer 기준 좌표로 변환 */
-const layerRect = peopleLayer.getBoundingClientRect();
 
-const localX = x - (imageRect.left - boardRect.left);
-const localY = y - (imageRect.top - boardRect.top);
 
-/* 좌표 적용 */
-target.style.left = localX + "px";
-target.style.top = localY + "px"
+target.style.left =
+localX + "px";
 
+
+target.style.top =
+localY + "px";
     
 }
 
