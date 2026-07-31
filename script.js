@@ -1,6 +1,5 @@
 /* ==========================
-인원현황판 Lite v1.0
-script.js (3-1)
+인원현황판 Lite v2.2
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -962,7 +961,6 @@ updateTodayDate();
 /* ==========================
 상태만 저장
 ========================== */
-
 function saveStatusOnly(){
 
 const data = [];
@@ -985,22 +983,17 @@ data.push({
 
 id: person.dataset.id,
 
-
 x: pos.x,
 
-
 y: pos.y,
-
 
 status:
 statusMap[person.dataset.id]
 
-
 });
 
 
 });
-
 
 
 localStorage.setItem(
