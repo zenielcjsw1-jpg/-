@@ -570,6 +570,50 @@ const etcPeople = [];
 
 const statusMap = {};
 
+/* ==========================
+   v2.3 상태 디자인 설정
+========================== */
+
+const statusConfig = {
+
+"출근":{
+    color:"#D8F3DC",
+    icon:"🟢"
+},
+
+"휴가":{
+    color:"#FFF3BF",
+    icon:"🏝️"
+},
+
+"병가":{
+    color:"#FFD8A8",
+    icon:"🩹"
+},
+
+"결근":{
+    color:"#FFC9C9",
+    icon:"⛔"
+},
+
+"조퇴":{
+    color:"#D0EBFF",
+    icon:"🚪"
+},
+
+"연장":{
+    color:"#E5DBFF",
+    icon:"🌙"
+}
+
+};
+
+
+
+
+
+
+
 document.querySelectorAll(".person").forEach(person=>{
 
 statusMap[person.dataset.id]="출근";
@@ -592,7 +636,8 @@ const etc=[];
 
 document.querySelectorAll(".person").forEach(person=>{
 
-const name=person.innerText;
+const name =
+person.dataset.name || person.innerText;
 
 const state=statusMap[person.dataset.id];
 
@@ -691,7 +736,7 @@ return;
 selectedPerson = person;
 
 document.getElementById("statusTitle").innerText =
-person.innerText;
+person.dataset.name || person.innerText;
 
 document.getElementById("statusPopup").style.display="flex";
 
@@ -751,43 +796,43 @@ document.querySelectorAll(".status-btn").forEach(btn => {
     });
 
 });
-function updatePersonColor(person, status){
 
-switch(status){
+function updatePersonColor(person,status){
 
-case "출근":
-person.style.background="#b7f7b2";
-break;
+const config =
+statusConfig[status];
 
-case "결근":
-person.style.background="#ffb3b3";
-break;
 
-case "휴가":
-person.style.background="#fff3a3";
-break;
+if(!config) return;
 
-case "병가":
-person.style.background="#ffd3a6";
-break;
 
-case "조퇴":
-person.style.background="#b9dcff";
-break;
+/* 색상 */
 
-case "연장":
-person.style.background="#e0c4ff";
-break;
+person.style.background =
+config.color;
 
-default:
-person.style.background="#ffffff";
+
+/* 아이콘 + 이름 표시 */
+
+const name =
+person.dataset.name ||
+person.innerText;
+
+
+person.dataset.name = name;
+
+
+person.innerHTML =
+`
+<span class="status-icon">
+${config.icon}
+</span>
+<span class="person-name">
+${name}
+</span>
+`;
 
 }
- 
-}
-
-
-
 
 /* ==========================
 출근부 팝업
@@ -813,7 +858,7 @@ div.style.padding = "10px";
 div.onclick = function(){
 
 const person = [...document.querySelectorAll(".person")]
-.find(p=>p.innerText===name);
+.find(p=>p.dataset.name===name);
 
 if(!person) return;
 
