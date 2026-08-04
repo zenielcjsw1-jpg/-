@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script>
 const password = "0070";   // 원하는 비밀번호
 const input = prompt("비밀번호를 입력하세요.");
@@ -12,48 +11,34 @@ const input = prompt("비밀번호를 입력하세요.");
     throw new Error("Wrong Password");}
 </script>
   
-  <title>인원현황판 Lite v2.1</title>
-
+  <title>인원현황판 Lite v2.2</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     
 <header>
-
 <div class="title">
-인원현황판 Lite v2.1 ☆☆
+인원현황판 Lite v2.2 ☆☆
 </div>
-
 <div id="toolbar">
-
-<button>저장</button>
-<button>불러오기</button>
-<button>초기화</button>
-
+<button id="saveBtn">저장</button>
+<button id="loadBtn">불러오기</button>
+<button id="resetBtn">초기화</button>
 </div>
-
 </header>
-
-
 <div class="main-layout">
-
 <div class="left-panel">
-
 <!-- 기존 창고 이미지 -->
 <!-- 기존 이름표 -->
 <!-- 기존 버튼 -->
 <!-- 기존 코드 전부 -->
     
 <main id="board">
-
 <img
 id="warehouse"
 src="images/warehouse.png"
 alt="창고 도면">
-
 <div id="peopleLayer">
-
 <div class="person" data-id="1">성락훈</div>
 <div class="person" data-id="2">김종용</div>
 <div class="person" data-id="3">고목영</div>
@@ -74,91 +59,55 @@ alt="창고 도면">
 <div class="person" data-id="18">김경훈</div>
 <div class="person" data-id="19">최성원</div>
 <div class="person" data-id="20">미배정</div>
-
 </div>
-
 </main>
     
 </div>
-
 <div class="right-panel">
-
 <div class="attendance-panel">
-
 <h2>출근부</h2>
-
 <div id="todayDate"></div>
-
 <div class="attendance-item" id="totalBox">
 총원 <span id="totalCount">0</span>
 </div>
-
 <div class="attendance-item" id="workBox">
 출근 <span id="workCount">0</span>
 </div>
-
 <div class="attendance-item" id="absentBox">
 결근 <span id="absentCount">0</span>
 </div>
-
 <div class="attendance-item" id="etcBox">
 기타 <span id="etcCount">0</span>
 </div>
-
 </div>
-
 <div class="lite-v3">
-Lite v3.0
+Lite v2.2
 </div>
-
 </div>
-
 </div>
-
 <!-- 출근부 팝업 -->
-
 <div id="popup" class="popup">
-
 <div class="popup-box">
-
 <h3 id="popupTitle">목록</h3>
-
 <div id="popupList"></div>
-
 <button id="closePopup">닫기</button>
-
      </div>
-
 </div>
     
 <!-- 직원 상태 선택 -->
-
 <div id="statusPopup" class="popup">
-
 <div class="popup-box">
-
 <h3 id="statusTitle">직원 상태</h3>
-
 <button class="status-btn" data-status="출근">🟢 출근</button>
-
 <button class="status-btn" data-status="결근">🔴 결근</button>
-
 <button class="status-btn" data-status="휴가">🟡 휴가</button>
-
 <button class="status-btn" data-status="병가">🟠 병가</button>
-
 <button class="status-btn" data-status="조퇴">🔵 조퇴</button>
-
 <button class="status-btn" data-status="연장">🟣 연장</button>
-
 <button id="closeStatusPopup">닫기</button>
-
 </div>
-
 </div>
-
 <script src="script.js"></script>
     
 </body>
-
 </html>
