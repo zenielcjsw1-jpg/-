@@ -75,13 +75,7 @@ text-shadow:
 
 }
 
-header .title{
 
-font-size:30px;
-
-font-weight:bold;
-
-}
 
 #toolbar{
 
@@ -434,49 +428,130 @@ flex-direction:column;
 gap:15px;
 }
 
+
+/* ==========================
+v2.3 출근 현황판 디자인
+========================== */
+
+
 .attendance-panel{
 
-font-size:24px;
-
-margin-bottom:15px;
+font-size:22px;
 
 text-align:center;
 
-color:#4A5568;
+color:#334155;
 
-background:#F8FAFC;
+background:#ffffff;
+
+border-radius:20px;
+
+padding:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+border:none;
+
+}
+
+
+
+.attendance-panel h2{
+
+font-size:26px;
+
+margin-bottom:5px;
+
+}
+
+
+
+.attendance-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:16px;
+
+margin-top:12px;
 
 border-radius:16px;
 
-padding:18px;
-
-box-shadow:0 4px 12px rgba(0,0,0,.12);
-
-border-left:6px solid #F5B041;
-
-font-weight:bold;
-
-}
-
-.attendance-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px;
-margin-top:10px;
-background:#ffffff;
-border-radius:12px;
-font-size:17px;
-font-weight:bold;
-border:1px solid #E5E7EB;
 cursor:pointer;
+
 transition:.2s;
+
+border:none;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,.08);
+
 }
+
+
 
 .attendance-item:hover{
-background:#FFF7ED;
-transform:translateX(3px);
+
+transform:translateY(-3px);
+
 }
+
+
+
+.attendance-title{
+
+font-size:17px;
+
+font-weight:bold;
+
+}
+
+
+
+.attendance-number{
+
+font-size:26px;
+
+font-weight:800;
+
+}
+
+
+
+.total-card{
+
+background:#F1F5F9;
+
+}
+
+
+
+.work-card{
+
+background:#DCFCE7;
+
+}
+
+
+
+.absent-card{
+
+background:#FEE2E2;
+
+}
+
+
+
+.etc-card{
+
+background:#EDE9FE;
+
+}
+
 
 
 
