@@ -568,6 +568,8 @@ const workPeople = [];
 const absentPeople = [];
 const etcPeople = [];
 
+
+
 const statusMap = {};
 
 /* ==========================
@@ -604,6 +606,13 @@ const statusConfig = {
 "연장":{
     color:"#E5DBFF",
     icon:"🌙"
+    
+},
+    
+"기타":{
+    color:"#E5E7EB",
+    icon:"📌"
+    
 }
 
 };
