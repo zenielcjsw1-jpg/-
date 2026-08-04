@@ -166,19 +166,8 @@ Number(y.toFixed(4));
 }
 
 
-resizePeopleLayer();
-
-people.forEach((person, index) => {
-
-    setPersonPercent(
-
-        person,
-
-        defaultPositions[index].x,
-
-        defaultPositions[index].y
-
-    );
+/* 드래그 핸들러만 미리 연결 (좌표 배치는 이미지 로드 후 window.load에서 처리) */
+people.forEach((person) => {
 
     enableDrag(person);
 
@@ -509,12 +498,6 @@ script.js (3-3)
 document.addEventListener("dragstart", (e) => {
 e.preventDefault();
 });
-
-
-/* ==========================
-최초 실행 자동 배치 유지
-========================== */
-
 
 
 /* 더블클릭 확대 방지(모바일) */
@@ -1022,22 +1005,7 @@ refreshPeoplePosition();
 });
 window.addEventListener("load",()=>{
 
-resizePeopleLayer();
-
-refreshPeoplePosition();
-
-
-const saved =
-localStorage.getItem(STORAGE_KEY);
-
-
-if(saved){
-
-    loadPositions();
-
-}
-else{
-
+/* 이미지 로드가 끝난 시점이므로 여기서 최초 배치 진행 */
 
 document.querySelectorAll(".person")
 .forEach((person,index)=>{
@@ -1056,6 +1024,17 @@ defaultPositions[index].y
 
 });
 
+
+resizePeopleLayer();
+
+
+const saved =
+localStorage.getItem(STORAGE_KEY);
+
+
+if(saved){
+
+    loadPositions();
 
 }
 
