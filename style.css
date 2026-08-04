@@ -250,29 +250,28 @@ pointer-events:none;
 pointer-events:auto;
 
 }
-
 .person{
 
 position:absolute;
 
-width:84px;
-height:34px;
+width:95px;
+height:38px;
 
 display:flex;
 
 align-items:center;
 justify-content:center;
 
+gap:4px;
 
-/* ==========================
-이름표 음영 개선 (4차 STEP 1)
-========================== */
 
-background:rgba(255,255,255,0.78);
+/* v2.3 이름표 카드 디자인 */
 
-border:1px solid rgba(120,120,120,0.35);
+background:rgba(255,255,255,0.85);
 
-border-radius:10px;
+border:1px solid rgba(255,255,255,0.9);
+
+border-radius:14px;
 
 
 /* 글자 */
@@ -281,7 +280,7 @@ font-size:14px;
 
 font-weight:700;
 
-color:#333333;
+color:#333;
 
 letter-spacing:-0.3px;
 
@@ -296,15 +295,17 @@ touch-action:none;
 /* 입체감 */
 
 box-shadow:
-0 3px 8px rgba(0,0,0,0.18);
+0 5px 14px rgba(0,0,0,0.22);
 
 
-/* 배경과 자연스럽게 융합 */
+/* 배경 융합 */
 
-backdrop-filter:blur(3px);
+backdrop-filter:blur(4px);
 
 
-transition:all .2s;
+transition:
+transform .2s ease,
+box-shadow .2s ease;
 
 
 pointer-events:auto;
@@ -313,14 +314,14 @@ padding:0;
 
 }
 
-
 .person:active{
 
 cursor:grabbing;
 
-transform:scale(1.05);
+transform:scale(1.08);
 
-box-shadow:0 6px 12px rgba(0,0,0,.25);
+box-shadow:
+0 8px 18px rgba(0,0,0,.28);
 
 z-index:9999;
 
@@ -354,8 +355,8 @@ font-size:14px;
 
 .person{
 
-width:80px;
-height:32px;
+width:90px;
+height:36px;
 
 padding:0;
 
@@ -656,3 +657,34 @@ font-weight:bold;
 text-align:center;
 
 }
+
+
+/* ==========================
+v2.3 상태 아이콘 정렬
+========================== */
+
+.status-icon{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:15px;
+
+}
+
+
+.person-name{
+
+display:inline-flex;
+
+align-items:center;
+
+font-size:14px;
+
+font-weight:700;
+
+}
+
