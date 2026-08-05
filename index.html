@@ -121,14 +121,42 @@ alt="창고 도면">
 
 
 
-<div class="attendance-item work-card" id="workBox">
+<div class="attendance-item work-oesik-card" id="oesikBox">
 
 <div class="attendance-title">
-🟢 출근
+🍱 출근(외식)
 </div>
 
 <div class="attendance-number">
-<span id="workCount">0</span>명
+<span id="oesikCount">0</span>명
+</div>
+
+</div>
+
+
+
+<div class="attendance-item work-seokgan-card" id="seokganBox">
+
+<div class="attendance-title">
+🌇 출근(석간)
+</div>
+
+<div class="attendance-number">
+<span id="seokganCount">0</span>명
+</div>
+
+</div>
+
+
+
+<div class="attendance-item work-gwangyeok-card" id="gwangyeokBox">
+
+<div class="attendance-title">
+🚌 출근(광역)
+</div>
+
+<div class="attendance-number">
+<span id="gwangyeokCount">0</span>명
 </div>
 
 </div>
@@ -185,8 +213,16 @@ Lite v2.2
 <div class="popup-box">
 <h3 id="statusTitle">직원 상태</h3>
 
-    <button class="status-btn" data-status="출근">
-<span>🟢</span> 출근
+    <button class="status-btn" data-status="외식">
+<span>🍱</span> 출근(외식)
+</button>
+
+    <button class="status-btn" data-status="석간">
+<span>🌙</span> 출근(석간)
+</button>
+
+    <button class="status-btn" data-status="광역">
+<span>🚌</span> 출근(광역)
 </button>
 
 <button class="status-btn" data-status="결근">
@@ -206,7 +242,7 @@ Lite v2.2
 </button>
 
 <button class="status-btn" data-status="연장">
-<span>🌙</span> 연장
+<span>🌇</span> 연장
 </button>
     
 <button id="closeStatusPopup">닫기</button>
