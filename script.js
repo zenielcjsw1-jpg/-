@@ -451,14 +451,14 @@ defaultPositions[index].y
 
 
 
-statusMap[person.dataset.id] = "출근";
+statusMap[person.dataset.id] = "외식";
 
 
 updatePersonColor(
 
 person,
 
-"출근"
+"외식"
 
 );
 
@@ -564,7 +564,9 @@ defaultPositions[index].y
 ========================== */
 
 const totalPeople = [];
-const workPeople = [];
+const oesikPeople = [];
+const seokganPeople = [];
+const gwangyeokPeople = [];
 const absentPeople = [];
 const etcPeople = [];
 
@@ -578,9 +580,19 @@ const statusMap = {};
 
 const statusConfig = {
 
-"출근":{
+"외식":{
     color:"#D8F3DC",
-    icon:"🟢"
+    icon:"🍱"
+},
+
+"석간":{
+    color:"#FFF3BF",
+    icon:"🌇"
+},
+
+"광역":{
+    color:"#D0EBFF",
+    icon:"🚌"
 },
 
 "휴가":{
@@ -617,6 +629,9 @@ const statusConfig = {
 
 };
 
+/* 세 가지 출근 상태를 하나로 묶어 판별할 때 사용 */
+const WORK_STATUSES = ["외식", "석간", "광역"];
+
 
 
 
@@ -625,9 +640,9 @@ const statusConfig = {
 
 document.querySelectorAll(".person").forEach(person=>{
 
-statusMap[person.dataset.id]="출근";
+statusMap[person.dataset.id]="외식";
 
-updatePersonColor(person,"출근");
+updatePersonColor(person,"외식");
   
 });
 
@@ -637,7 +652,11 @@ function updateAttendance(){
 
 const total=[];
 
-const work=[];
+const oesik=[];
+
+const seokgan=[];
+
+const gwangyeok=[];
 
 const absent=[];
 
@@ -652,9 +671,17 @@ const state=statusMap[person.dataset.id];
 
 total.push(name);
 
-if(state==="출근"){
+if(state==="외식"){
 
-work.push(name);
+oesik.push(name);
+
+}else if(state==="석간"){
+
+seokgan.push(name);
+
+}else if(state==="광역"){
+
+gwangyeok.push(name);
 
 }else if(state==="결근"){
 
@@ -669,13 +696,19 @@ etc.push(name);
 });
 
 document.getElementById("totalCount").innerText=total.length;
-document.getElementById("workCount").innerText=work.length;
+document.getElementById("oesikCount").innerText=oesik.length;
+document.getElementById("seokganCount").innerText=seokgan.length;
+document.getElementById("gwangyeokCount").innerText=gwangyeok.length;
 document.getElementById("absentCount").innerText=absent.length;
 document.getElementById("etcCount").innerText=etc.length;
 
   totalPeople.length = 0;
 
-workPeople.length = 0;
+oesikPeople.length = 0;
+
+seokganPeople.length = 0;
+
+gwangyeokPeople.length = 0;
 
 absentPeople.length = 0;
 
@@ -683,7 +716,11 @@ etcPeople.length = 0;
 
 totalPeople.push(...total);
 
-workPeople.push(...work);
+oesikPeople.push(...oesik);
+
+seokganPeople.push(...seokgan);
+
+gwangyeokPeople.push(...gwangyeok);
 
 absentPeople.push(...absent);
 
@@ -697,9 +734,9 @@ person.addEventListener("dblclick",()=>{
 
 const current=statusMap[person.dataset.id];
 
-let next="출근";
+let next="외식";
 
-if(current==="출근"){
+if(WORK_STATUSES.includes(current)){
 
 next="결근";
 
@@ -709,7 +746,7 @@ next="기타";
 
 }else{
 
-next="출근";
+next="외식";
 
 }
 
@@ -901,9 +938,21 @@ openPopup("총원",totalPeople);
 
 };
 
-document.getElementById("workBox").onclick=function(){
+document.getElementById("oesikBox").onclick=function(){
 
-openPopup("출근",workPeople);
+openPopup("출근(외식)",oesikPeople);
+
+};
+
+document.getElementById("seokganBox").onclick=function(){
+
+openPopup("출근(석간)",seokganPeople);
+
+};
+
+document.getElementById("gwangyeokBox").onclick=function(){
+
+openPopup("출근(광역)",gwangyeokPeople);
 
 };
 
