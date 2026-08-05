@@ -488,6 +488,94 @@ width:100%;
 height:calc(100vh - 115px);
 }
 
+/* ==========================
+v3.0 TODAY 패널
+========================== */
+
+.left-todo{
+
+width:14%;
+
+padding:12px;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.center-board{
+
+width:66%;
+
+position:relative;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:visible;
+
+}
+
+/* =========================================================
+STEP 1-2 (3)
+오늘업무 카드 디자인
+========================================================= */
+
+.todo-panel{
+
+height:100%;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:18px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+/* =========================================================
+STEP 1-2 (4)
+오늘업무 제목 디자인
+========================================================= */
+
+.todo-panel h2{
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#334155;
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+/* =========================================================
+STEP 1-2 (5)
+오늘업무 리스트 영역
+========================================================= */
+
+.todo-list{
+
+    flex:1;
+
+    overflow-y:auto;
+
+}
+
 .left-panel{
 
 width:78%;
