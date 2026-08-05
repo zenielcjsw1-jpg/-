@@ -552,9 +552,24 @@ background:#F1F5F9;
 
 
 
-.work-card{
+/* 출근(외식) */
+.work-oesik-card{
 
 background:#DCFCE7;
+
+}
+
+/* 출근(석간) */
+.work-seokgan-card{
+
+background:#FEF3C7;
+
+}
+
+/* 출근(광역) */
+.work-gwangyeok-card{
+
+background:#DBEAFE;
 
 }
 
@@ -624,6 +639,10 @@ border-radius:12px;
 padding:20px;
 
 box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+max-height:85vh;
+
+overflow-y:auto;
 
 }
 
@@ -732,7 +751,9 @@ background .2s;
 
 .status-btn:hover{
 
-background:#E0F2FE;
+background:#1976d2;
+
+color:white;
 
 transform:translateY(-2px);
 
@@ -743,13 +764,6 @@ transform:translateY(-2px);
 .status-btn span{
 
 font-size:20px;
-
-}
-.status-btn:hover{
-
-background:#1976d2;
-
-color:white;
 
 }
 
@@ -830,4 +844,3 @@ font-size:14px;
 font-weight:700;
 
 }
-
