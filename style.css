@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 style.css
 =========================== */
 
@@ -18,7 +18,7 @@ overflow:hidden;
 }
 
 /* ===========================
-   v2.3 고급 헤더 디자인
+   고급 헤더 디자인
 =========================== */
 
 header{
@@ -54,6 +54,8 @@ box-shadow:
 
 z-index:200;
 
+gap:20px;
+
 }
 
 /* 하단 골드 라인 - 시그니처 요소 */
@@ -85,7 +87,7 @@ opacity:.85;
 
 
 /* ==========================
-v2.3 제목 디자인
+제목 디자인
 ========================== */
 
 .title{
@@ -95,6 +97,8 @@ display:flex;
 align-items:center;
 
 gap:14px;
+
+flex-shrink:0;
 
 }
 
@@ -123,6 +127,17 @@ line-height:1.15;
 }
 
 
+.title-row{
+
+display:flex;
+
+align-items:baseline;
+
+gap:10px;
+
+}
+
+
 .main-title{
 
 font-family:"Gowun Batang","Malgun Gothic",serif;
@@ -140,26 +155,91 @@ text-shadow:0 2px 8px rgba(0,0,0,.4);
 }
 
 
-.version-title{
+.version-badge{
 
 font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
 
 font-size:11px;
 
+font-weight:600;
+
+letter-spacing:1.5px;
+
+text-transform:uppercase;
+
+color:#182533;
+
+background:
+linear-gradient(
+135deg,
+#D9A566,
+#E8C48A
+);
+
+padding:3px 11px;
+
+border-radius:20px;
+
+box-shadow:0 2px 6px rgba(0,0,0,.25);
+
+}
+
+
+/* ==========================
+헤더 중앙 태그라인
+========================== */
+
+.header-tagline{
+
+flex:1;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:14px;
+
+min-width:0;
+
+}
+
+.header-tagline .tagline-line{
+
+width:44px;
+
+height:1px;
+
+background:
+linear-gradient(
+90deg,
+transparent,
+#D9A566,
+transparent
+);
+
+flex-shrink:0;
+
+}
+
+.header-tagline .tagline-text{
+
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+
+font-size:12.5px;
+
 font-weight:300;
 
 letter-spacing:2.5px;
-
-text-transform:uppercase;
 
 color:#D9A566;
 
 opacity:.9;
 
-margin-top:5px;
+white-space:nowrap;
 
 }
-
 
 
 #toolbar{
@@ -175,6 +255,8 @@ align-items:center;
 gap:10px;
 
 border:none;
+
+flex-shrink:0;
 
 }
 
@@ -298,19 +380,13 @@ transform:scale(.96);
 
 display:block;
 
-max-width:100%;
+width:100%;
 
-max-height:100%;
-
-width:auto;
-
-height:auto;
+height:100%;
 
 object-fit:contain;
 
 object-position:center;
-
-margin:auto;
 
 filter:brightness(1.12) contrast(1.05);
 
@@ -413,6 +489,12 @@ z-index:9999;
 header{
 
 font-size:18px;
+
+}
+
+.header-tagline{
+
+display:none;
 
 }
 
@@ -520,7 +602,7 @@ align-items:center;
 
 overflow:visible;
 
-padding:8px 8px 0 8px;
+padding:0;
 
 }
 
@@ -538,11 +620,11 @@ flex-direction:column;
 
 .dev-note{
 
-height:34px;
+height:120px;
 
 flex-shrink:0;
 
-margin-top:6px;
+margin-top:0;
 
 border:2px dashed #bbb;
 
@@ -554,7 +636,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:13px;
+font-size:18px;
 
 font-weight:700;
 
@@ -613,7 +695,7 @@ flex-direction:column;
 
     display:flex;
 
-    gap:8px;
+    gap:6px;
 
     margin-bottom:12px;
 
@@ -623,15 +705,17 @@ flex-direction:column;
 
     flex:1;
 
+    min-width:0;
+
     height:38px;
 
     border:1px solid #E2E8F0;
 
     border-radius:10px;
 
-    padding:0 12px;
+    padding:0 10px;
 
-    font-size:14px;
+    font-size:13px;
 
     font-family:inherit;
 
@@ -649,9 +733,10 @@ flex-direction:column;
 
 }
 
-#todoAddBtn{
+#todoAddBtn,
+#todoResetBtn{
 
-    width:56px;
+    flex-shrink:0;
 
     height:38px;
 
@@ -659,21 +744,41 @@ flex-direction:column;
 
     border-radius:10px;
 
-    background:#334155;
-
-    color:#fff;
-
-    font-size:14px;
+    font-size:13px;
 
     font-weight:bold;
 
     cursor:pointer;
+
+    padding:0 12px;
+
+}
+
+#todoAddBtn{
+
+    background:#334155;
+
+    color:#fff;
 
 }
 
 #todoAddBtn:hover{
 
     background:#1E293B;
+
+}
+
+#todoResetBtn{
+
+    background:#F1F5F9;
+
+    color:#64748B;
+
+}
+
+#todoResetBtn:hover{
+
+    background:#E2E8F0;
 
 }
 
@@ -691,8 +796,6 @@ flex-direction:column;
 
     align-items:center;
 
-    justify-content:space-between;
-
     gap:8px;
 
     padding:10px 12px;
@@ -703,9 +806,49 @@ flex-direction:column;
 
     border-radius:10px;
 
-    font-size:14px;
+    font-size:13px;
 
     color:#334155;
+
+    transition:background .2s;
+
+}
+
+.todo-item.is-progress{
+
+    background:#FEF3C7;
+
+}
+
+.todo-item.is-done{
+
+    background:#DCFCE7;
+
+}
+
+.todo-num{
+
+    flex-shrink:0;
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    background:#E2E8F0;
+
+    color:#475569;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
 
 }
 
@@ -713,29 +856,65 @@ flex-direction:column;
 
     flex:1;
 
+    min-width:0;
+
     word-break:break-all;
 
 }
 
-.todo-item button.todo-delete{
+.todo-item.is-done span.todo-text{
 
-    border:none;
-
-    background:transparent;
+    text-decoration:line-through;
 
     color:#94A3B8;
 
-    font-size:16px;
+}
 
-    cursor:pointer;
+.todo-actions{
 
-    line-height:1;
+    display:flex;
+
+    gap:4px;
+
+    flex-shrink:0;
 
 }
 
-.todo-item button.todo-delete:hover{
+.todo-action-btn{
 
-    color:#E57373;
+    border:none;
+
+    border-radius:8px;
+
+    background:#EEF2F6;
+
+    color:#64748B;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    padding:6px 8px;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+
+}
+
+.todo-action-btn.progress-btn.active{
+
+    background:#F59E0B;
+
+    color:#fff;
+
+}
+
+.todo-action-btn.done-btn.active{
+
+    background:#22C55E;
+
+    color:#fff;
 
 }
 
@@ -768,6 +947,12 @@ flex-direction:column;
 
 
 .attendance-panel{
+
+flex:7 1 0;
+
+min-height:0;
+
+overflow-y:auto;
 
 font-size:22px;
 
@@ -863,8 +1048,8 @@ background:#F1F5F9;
 
 
 
-/* 출근(외식) */
-.work-oesik-card{
+/* 출근(주간) */
+.work-day-card{
 
 background:#DCFCE7;
 
@@ -873,7 +1058,7 @@ background:#DCFCE7;
 /* 출근(석간) */
 .work-seokgan-card{
 
-background:#FEF3C7;
+background:#FEF9C3;
 
 }
 
@@ -888,6 +1073,13 @@ background:#DBEAFE;
 .floor1-card{
 
 background:#E0F2FE;
+
+}
+
+/* 사무실 */
+.office-card{
+
+background:#FCE7F3;
 
 }
 
@@ -914,7 +1106,9 @@ background:#EDE9FE;
 
 .note-panel{
 
-flex:1;
+flex:3 1 0;
+
+min-height:0;
 
 background:#ffffff;
 
@@ -928,8 +1122,6 @@ box-shadow:
 display:flex;
 
 flex-direction:column;
-
-min-height:0;
 
 }
 
