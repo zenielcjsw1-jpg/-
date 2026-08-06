@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v2.2
+인원현황판 Lite v2.3
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -85,7 +85,7 @@ return board.getBoundingClientRect();
 }
 
 /* ==========================
-V2.2 좌표 엔진
+좌표 엔진
 ========================== */
 
 /* 이미지 기준 px → 비율 */
@@ -153,7 +153,7 @@ person.style.top =
 pos.y + "px";
 
 
-/* V2.2 좌표 기억 */
+/* 좌표 기억 */
 
 person.dataset.x =
 Number(x.toFixed(4));
@@ -196,7 +196,7 @@ moveX = target.offsetLeft;
 moveY = target.offsetTop;
 
 isDragging = false;
-  
+
 document.addEventListener("mousemove",dragMove);
 document.addEventListener("mouseup",dragEnd);
 
@@ -256,7 +256,7 @@ localX + "px";
 
 target.style.top =
 localY + "px";
-    
+
 }
 
 function dragEnd(){
@@ -288,7 +288,7 @@ dragEnd
 
 
 /* =====================
-V2.2 좌표 저장
+좌표 저장
 드래그 종료 시
 이미지 기준 비율 변환
 ===================== */
@@ -319,6 +319,7 @@ script.js (3-2)
 ========================== */
 
 const STORAGE_KEY = "personnelBoardLite_v22";
+const NOTE_KEY = "personnelBoardLite_note";
 
 /* 저장 */
 function savePositions() {
@@ -358,6 +359,9 @@ localStorage.setItem(
 );
 
 
+saveNote();
+
+
 alert("저장되었습니다.");
 
 }
@@ -392,7 +396,7 @@ document.querySelector(
 if (!person) return;
 
 
-/* V2.2 이미지 기준 좌표 적용 */
+/* 이미지 기준 좌표 적용 */
 
 if(
 item.x !== undefined &&
@@ -412,13 +416,18 @@ item.y
 }
 
 
-/* 상태 복원 */
+/* 상태 복원 (알 수 없는 상태값은 '기타'로 안전하게 처리) */
 
-statusMap[item.id] = item.status;
+const restoredStatus =
+(item.status && statusConfig[item.status])
+? item.status
+: "기타";
+
+statusMap[item.id] = restoredStatus;
 
 updatePersonColor(
 person,
-item.status
+restoredStatus
 );
 
 
@@ -575,7 +584,7 @@ const etcPeople = [];
 const statusMap = {};
 
 /* ==========================
-   v2.3 상태 디자인 설정
+   상태 디자인 설정
 ========================== */
 
 const statusConfig = {
@@ -587,7 +596,7 @@ const statusConfig = {
 
 "석간":{
     color:"#FFF3BF",
-    icon:"🌇"
+    icon:"🌙"
 },
 
 "광역":{
@@ -617,14 +626,20 @@ const statusConfig = {
 
 "연장":{
     color:"#E5DBFF",
-    icon:"🌙"
-    
+    icon:"🌇"
+
 },
-    
+
 "기타":{
     color:"#E5E7EB",
     icon:"📌"
+
+}
     
+ "1층":{
+    color:"#E5E7EB",
+    icon:"1️⃣"
+
 }
 
 };
@@ -643,7 +658,7 @@ document.querySelectorAll(".person").forEach(person=>{
 statusMap[person.dataset.id]="외식";
 
 updatePersonColor(person,"외식");
-  
+
 });
 
 updateAttendance();
@@ -753,9 +768,9 @@ next="외식";
 statusMap[person.dataset.id]=next;
 
 updatePersonColor(person, next);
-  
+
 updateAttendance();
- 
+
 
 });
 
@@ -1052,7 +1067,33 @@ JSON.stringify(data)
 }
 
 /* ==========================
-V2.2 화면 변경 대응
+특이사항 메모장
+========================== */
+
+const noteText = document.getElementById("noteText");
+
+/* 불러오기 */
+noteText.value = localStorage.getItem(NOTE_KEY) || "";
+
+/* 입력할 때마다 자동 저장 */
+noteText.addEventListener("input", () => {
+
+saveNote();
+
+});
+
+function saveNote(){
+
+localStorage.setItem(
+NOTE_KEY,
+noteText.value
+);
+
+}
+
+
+/* ==========================
+화면 변경 대응
 ========================== */
 
 
