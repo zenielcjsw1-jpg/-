@@ -56,7 +56,7 @@ z-index:200;
 
 }
 
-/* v2.4 하단 골드 라인 - 시그니처 요소 */
+/* 하단 골드 라인 - 시그니처 요소 */
 header::after{
 
 content:"";
@@ -344,7 +344,7 @@ justify-content:center;
 gap:4px;
 
 
-/* v2.3 이름표 카드 디자인 */
+/* 이름표 카드 디자인 */
 
 background:rgba(255,255,255,0.85);
 
@@ -485,11 +485,11 @@ border-radius:8px;
 .main-layout{
 display:flex;
 width:100%;
-height:calc(100vh - 115px);
+height:calc(100vh - 70px);
 }
 
 /* ==========================
-v3.0 TODAY 패널
+TODAY 패널 (좌측)
 ========================== */
 
 .left-todo{
@@ -506,7 +506,7 @@ flex-direction:column;
 
 .center-board{
 
-width:66%;
+width:64%;
 
 position:relative;
 
@@ -520,8 +520,15 @@ overflow:visible;
 
 }
 
+.right-panel{
+width:22%;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
 /* =========================================================
-STEP 1-2 (3)
 오늘업무 카드 디자인
 ========================================================= */
 
@@ -544,11 +551,6 @@ flex-direction:column;
 
 }
 
-/* =========================================================
-STEP 1-2 (4)
-오늘업무 제목 디자인
-========================================================= */
-
 .todo-panel h2{
 
     font-size:24px;
@@ -563,23 +565,13 @@ STEP 1-2 (4)
 
 }
 
-/* =========================================================
-STEP 1-2 (5)
-오늘업무 리스트 영역
-========================================================= */
-
 .todo-list{
 
     flex:1;
 
     overflow-y:auto;
-   
-}
 
-/* =========================================================
-STEP 1-2 (6)
-오늘업무 안내문 디자인
-========================================================= */
+}
 
 .todo-empty{
 
@@ -595,12 +587,6 @@ STEP 1-2 (6)
 
 }
 
-/* =========================================================
-STEP 1-2 (7)
-v3.0 패널 공통 여백
-(향후 TODAY, 특이사항 패널 공통 사용)
-========================================================= */
-
 .left-todo,
 .center-board,
 .right-panel{
@@ -609,34 +595,9 @@ v3.0 패널 공통 여백
 
 }
 
-.left-panel{
-
-width:78%;
-
-position:relative;
-
-overflow:visible;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-}
-
-
-.right-panel{
-width:22%;
-padding:10px;
-display:flex;
-flex-direction:column;
-gap:15px;
-}
-
 
 /* ==========================
-v2.3 출근 현황판 디자인
+출근 현황판 디자인
 ========================== */
 
 
@@ -774,16 +735,77 @@ background:#EDE9FE;
 }
 
 
+/* ==========================
+특이사항 메모장
+========================== */
 
+.note-panel{
 
-.lite-v3{
 flex:1;
-border:2px dashed #bbb;
-border-radius:10px;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:16px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
 display:flex;
-align-items:center;
-justify-content:center;
-color:#999;
+
+flex-direction:column;
+
+min-height:0;
+
+}
+
+.note-panel h2{
+
+font-size:18px;
+
+font-weight:800;
+
+color:#334155;
+
+margin-bottom:10px;
+
+text-align:center;
+
+}
+
+#noteText{
+
+flex:1;
+
+resize:none;
+
+border:1px solid #E2E8F0;
+
+border-radius:12px;
+
+padding:12px;
+
+font-family:inherit;
+
+font-size:14px;
+
+line-height:1.6;
+
+color:#334155;
+
+outline:none;
+
+user-select:text;
+
+-webkit-user-select:text;
+
+}
+
+#noteText:focus{
+
+border-color:#5DADE2;
+
 }
 
 
@@ -883,10 +905,6 @@ cursor:pointer;
 /* ==========================
 직원 상태 팝업
 ========================== */
-/* ==========================
-v2.3 상태 선택 버튼
-========================== */
-
 
 .status-btn{
 
@@ -1001,7 +1019,7 @@ text-align:center;
 
 
 /* ==========================
-v2.3 상태 아이콘 정렬
+상태 아이콘 정렬
 ========================== */
 
 .status-icon{
