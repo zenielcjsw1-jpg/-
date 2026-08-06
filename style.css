@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.0
 style.css
 =========================== */
 
@@ -278,7 +278,9 @@ transform:scale(.96);
 
     width:100%;
 
-    height:100%;
+    flex:1;
+
+    min-height:0;
 
     overflow:visible;
 
@@ -518,6 +520,48 @@ align-items:center;
 
 overflow:visible;
 
+padding:8px 8px 0 8px;
+
+}
+
+.board-wrap{
+
+width:100%;
+
+height:100%;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.dev-note{
+
+height:34px;
+
+flex-shrink:0;
+
+margin-top:6px;
+
+border:2px dashed #bbb;
+
+border-radius:10px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:13px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#999;
+
 }
 
 .right-panel{
@@ -565,11 +609,133 @@ flex-direction:column;
 
 }
 
+.todo-input-row{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:12px;
+
+}
+
+#todoInput{
+
+    flex:1;
+
+    height:38px;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:10px;
+
+    padding:0 12px;
+
+    font-size:14px;
+
+    font-family:inherit;
+
+    outline:none;
+
+    user-select:text;
+
+    -webkit-user-select:text;
+
+}
+
+#todoInput:focus{
+
+    border-color:#5DADE2;
+
+}
+
+#todoAddBtn{
+
+    width:56px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#334155;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+#todoAddBtn:hover{
+
+    background:#1E293B;
+
+}
+
 .todo-list{
 
     flex:1;
 
     overflow-y:auto;
+
+}
+
+.todo-item{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    background:#F8FAFC;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    color:#334155;
+
+}
+
+.todo-item span.todo-text{
+
+    flex:1;
+
+    word-break:break-all;
+
+}
+
+.todo-item button.todo-delete{
+
+    border:none;
+
+    background:transparent;
+
+    color:#94A3B8;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    line-height:1;
+
+}
+
+.todo-item button.todo-delete:hover{
+
+    color:#E57373;
 
 }
 
@@ -715,6 +881,13 @@ background:#FEF3C7;
 .work-gwangyeok-card{
 
 background:#DBEAFE;
+
+}
+
+/* 1층 */
+.floor1-card{
+
+background:#E0F2FE;
 
 }
 
