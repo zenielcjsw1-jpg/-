@@ -1,220 +1,1221 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-const password = "0070";   // 원하는 비밀번호
-const input = prompt("비밀번호를 입력하세요.");
-    if (input !== password) {
-    document.write("<h2 style='text-align:center;margin-top:100px;'>접근이 거부되었습니다.</h2>");
-    throw new Error("Wrong Password");}
-</script>
+/* ===========================
+인원현황판 Lite v3.0
+style.css
+=========================== */
 
-  <title>인원현황판 Lite v2.3</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-user-select:none;
+user-select:none;
+font-family:"Malgun Gothic","맑은 고딕",sans-serif;
+}
 
-<header>
+body{
+background:#ececec;
+overflow:hidden;
+}
 
-<div class="title">
-<span class="title-icon">🏭</span>
-<div class="title-text">
-<div class="main-title">인원현황판</div>
-<div class="version-title">Lite v2.3</div>
-</div>
-</div>
+/* ===========================
+   v2.3 고급 헤더 디자인
+=========================== */
 
-<div id="toolbar">
-<button id="saveBtn">저장</button>
-<button id="loadBtn">불러오기</button>
-<button id="resetBtn">초기화</button>
-</div>
-</header>
+header{
 
-<div class="main-layout">
+width:100%;
 
-<!-- 좌측: 오늘업무 -->
-<div class="left-todo">
-    <div class="todo-panel">
-        <h2>📋 TODAY</h2>
-        <div class="todo-input-row">
-            <input type="text" id="todoInput" placeholder="업무를 입력하세요">
-            <button id="todoAddBtn">추가</button>
-        </div>
+height:70px;
 
-        <div class="todo-list" id="todoList">
-            <p class="todo-empty" id="todoEmpty">
-                오늘 업무를 추가하세요.
-            </p>
-        </div>
-    </div>
-</div>
+position:relative;
 
-<!-- 중앙: 창고 도면 -->
-<div class="center-board">
+background:
+linear-gradient(
+135deg,
+#182533 0%,
+#233A50 55%,
+#2C4A64 100%
+);
 
-<div class="board-wrap">
+color:white;
 
-<main id="board">
-<img
-id="warehouse"
-src="image/warehouse.png"
-alt="창고 도면">
+display:flex;
 
-<div id="peopleLayer">
+align-items:center;
 
-<div class="person" data-id="1" data-name="성락훈">성락훈</div>
-<div class="person" data-id="2" data-name="김종용">김종용</div>
-<div class="person" data-id="3" data-name="고목영">고목영</div>
-<div class="person" data-id="4" data-name="임세호">임세호</div>
-<div class="person" data-id="5" data-name="이상훈">이상훈</div>
+justify-content:space-between;
 
-<div class="person" data-id="6" data-name="양승규">양승규</div>
-<div class="person" data-id="7" data-name="김재영">김재영</div>
-<div class="person" data-id="8" data-name="김병선">김병선</div>
-<div class="person" data-id="9" data-name="김재욱">김재욱</div>
-<div class="person" data-id="10" data-name="이흥노">이흥노</div>
+padding:0 25px;
 
-<div class="person" data-id="11" data-name="장인택">장인택</div>
-<div class="person" data-id="12" data-name="이건철">이건철</div>
-<div class="person" data-id="13" data-name="임승현">임승현</div>
+font-weight:bold;
 
-<div class="person" data-id="14" data-name="심항식">심항식</div>
-<div class="person" data-id="15" data-name="홍용성">홍용성</div>
+box-shadow:
+0 4px 16px rgba(0,0,0,0.32);
 
-<div class="person" data-id="16" data-name="남궁정">남궁정</div>
-<div class="person" data-id="17" data-name="김경훈">김경훈</div>
-<div class="person" data-id="18" data-name="최성원">최성원</div>
-<div class="person" data-id="19" data-name="김석원">김석원</div>
-<div class="person" data-id="20" data-name="양모균">양모균</div>
-<div class="person" data-id="21" data-name="주용진">주용진</div>
-<div class="person" data-id="22" data-name="신입">신입</div>
+z-index:200;
 
-</div>
+}
 
-</main>
+/* 하단 골드 라인 - 시그니처 요소 */
+header::after{
 
-<div class="dev-note">개발예정 v4.0</div>
+content:"";
 
-</div>  <!-- board-wrap -->
+position:absolute;
 
-</div>  <!-- center-board -->
+left:0;
+right:0;
+bottom:0;
 
-<!-- 우측: 출근 현황 + 특이사항 -->
-<div class="right-panel">
+height:2px;
 
-<div class="attendance-panel">
+background:
+linear-gradient(
+90deg,
+transparent,
+#D9A566 45%,
+#E8C48A 50%,
+#D9A566 55%,
+transparent
+);
 
-<h2>📋 출근 현황</h2>
+opacity:.85;
 
-<div id="todayDate"></div>
+}
 
-<div class="attendance-item total-card" id="totalBox">
-<div class="attendance-title">👥 총원</div>
-<div class="attendance-number"><span id="totalCount">0</span>명</div>
-</div>
 
-<div class="attendance-item work-oesik-card" id="oesikBox">
-<div class="attendance-title">🍱 출근(외식)</div>
-<div class="attendance-number"><span id="oesikCount">0</span>명</div>
-</div>
+/* ==========================
+v2.3 제목 디자인
+========================== */
 
-<div class="attendance-item work-seokgan-card" id="seokganBox">
-<div class="attendance-title">🌇 출근(석간)</div>
-<div class="attendance-number"><span id="seokganCount">0</span>명</div>
-</div>
+.title{
 
-<div class="attendance-item work-gwangyeok-card" id="gwangyeokBox">
-<div class="attendance-title">🚌 출근(광역)</div>
-<div class="attendance-number"><span id="gwangyeokCount">0</span>명</div>
-</div>
+display:flex;
 
-<div class="attendance-item floor1-card" id="floor1Box">
-<div class="attendance-title">1️⃣ 1층</div>
-<div class="attendance-number"><span id="floor1Count">0</span>명</div>
-</div>
+align-items:center;
 
-<div class="attendance-item absent-card" id="absentBox">
-<div class="attendance-title">⛔ 결근</div>
-<div class="attendance-number"><span id="absentCount">0</span>명</div>
-</div>
+gap:14px;
 
-<div class="attendance-item etc-card" id="etcBox">
-<div class="attendance-title">📌 기타</div>
-<div class="attendance-number"><span id="etcCount">0</span>명</div>
-</div>
+}
 
-</div>
 
-<!-- 특이사항 메모장 -->
-<div class="note-panel">
-<h2>📝 특이사항</h2>
-<textarea id="noteText" placeholder="특이사항을 입력하세요." spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
-</div>
+.title-icon{
 
-</div>  <!-- right-panel -->
+font-size:46px;
 
-</div>  <!-- main-layout -->
+line-height:1;
 
-<!-- 출근부 팝업 -->
-<div id="popup" class="popup">
-<div class="popup-box">
-<h3 id="popupTitle">목록</h3>
-<div id="popupList"></div>
-<button id="closePopup">닫기</button>
-     </div>
-</div>
+filter:
+drop-shadow(0 0 10px rgba(217,165,102,.6))
+drop-shadow(0 2px 4px rgba(0,0,0,.4));
 
-<!-- 직원 상태 선택 -->
-<div id="statusPopup" class="popup">
-<div class="popup-box">
-<h3 id="statusTitle">직원 상태</h3>
+}
 
-    <button class="status-btn" data-status="외식">
-<span>🍱</span> 출근(외식)
-</button>
 
-    <button class="status-btn" data-status="석간">
-<span>🌙</span> 출근(석간)
-</button>
+.title-text{
 
-    <button class="status-btn" data-status="광역">
-<span>🚌</span> 출근(광역)
-</button>
+display:flex;
 
-<button class="status-btn" data-status="결근">
-<span>⛔</span> 결근
-</button>
+flex-direction:column;
 
-<button class="status-btn" data-status="휴가">
-<span>🏝️</span> 휴가
-</button>
+line-height:1.15;
 
-<button class="status-btn" data-status="병가">
-<span>🩹</span> 병가
-</button>
+}
 
-<button class="status-btn" data-status="조퇴">
-<span>🚪</span> 조퇴
-</button>
 
-<button class="status-btn" data-status="연장">
-<span>🌇</span> 연장
-</button>
+.main-title{
 
-<button class="status-btn" data-status="1층">
-<span>1️⃣</span> 1층
-</button>
+font-family:"Gowun Batang","Malgun Gothic",serif;
 
-<button id="closeStatusPopup">닫기</button>
-</div>
-</div>
-<script src="script.js"></script>
+font-size:29px;
 
-</body>
-</html>
+font-weight:700;
+
+letter-spacing:1.5px;
+
+color:#F5EFE6;
+
+text-shadow:0 2px 8px rgba(0,0,0,.4);
+
+}
+
+
+.version-title{
+
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+
+font-size:11px;
+
+font-weight:300;
+
+letter-spacing:2.5px;
+
+text-transform:uppercase;
+
+color:#D9A566;
+
+opacity:.9;
+
+margin-top:5px;
+
+}
+
+
+
+#toolbar{
+
+height:auto;
+
+background:transparent;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+border:none;
+
+}
+
+#toolbar button{
+
+width:90px;
+
+height:38px;
+
+border:none;
+
+border-radius:12px;
+
+color:white;
+
+font-size:14px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:
+transform .2s,
+box-shadow .2s;
+
+box-shadow:
+0 3px 8px rgba(0,0,0,0.15);
+
+}
+
+
+/* 버튼 hover */
+
+#toolbar button:hover{
+
+transform:translateY(-2px);
+
+box-shadow:
+0 6px 12px rgba(0,0,0,0.22);
+
+}
+
+
+/* 저장 버튼 */
+
+#saveBtn{
+
+background:#55B88A;
+
+}
+
+#saveBtn:hover{
+
+background:#3FA36F;
+
+}
+
+
+/* 불러오기 버튼 */
+
+#loadBtn{
+
+background:#5DADE2;
+
+}
+
+#loadBtn:hover{
+
+background:#3488C7;
+
+}
+
+
+/* 초기화 버튼 */
+
+#resetBtn{
+
+background:#E57373;
+
+}
+
+#resetBtn:hover{
+
+background:#C94F4F;
+
+}
+
+
+
+#toolbar button:active{
+
+transform:scale(.96);
+
+}
+
+
+
+#board{
+
+    position:relative;
+
+    width:100%;
+
+    flex:1;
+
+    min-height:0;
+
+    overflow:visible;
+
+    background:#d7d7d7;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+#warehouse{
+
+display:block;
+
+max-width:100%;
+
+max-height:100%;
+
+width:auto;
+
+height:auto;
+
+object-fit:contain;
+
+object-position:center;
+
+margin:auto;
+
+filter:brightness(1.12) contrast(1.05);
+
+}
+
+#peopleLayer{
+
+position:absolute;
+
+z-index:100;
+
+pointer-events:none;
+
+}
+
+.person{
+
+pointer-events:auto;
+
+}
+.person{
+
+position:absolute;
+
+width:95px;
+height:38px;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+gap:4px;
+
+
+/* 이름표 카드 디자인 */
+
+background:rgba(255,255,255,0.85);
+
+border:1px solid rgba(255,255,255,0.9);
+
+border-radius:14px;
+
+
+/* 글자 */
+
+font-size:14px;
+
+font-weight:700;
+
+color:#333;
+
+letter-spacing:-0.3px;
+
+
+/* 드래그 */
+
+cursor:grab;
+
+touch-action:none;
+
+
+/* 입체감 */
+
+box-shadow:
+0 5px 14px rgba(0,0,0,0.22);
+
+
+/* 배경 융합 */
+
+backdrop-filter:blur(4px);
+
+
+transition:
+transform .2s ease,
+box-shadow .2s ease;
+
+
+pointer-events:auto;
+
+padding:0;
+
+}
+
+.person:active{
+
+cursor:grabbing;
+
+transform:scale(1.08);
+
+box-shadow:
+0 8px 18px rgba(0,0,0,.28);
+
+z-index:9999;
+
+}
+
+@media (max-width:900px){
+
+header{
+
+font-size:18px;
+
+}
+
+#toolbar{
+
+gap:8px;
+
+padding:0 8px;
+
+}
+
+#toolbar button{
+
+flex:1;
+
+height:44px;
+
+font-size:14px;
+
+}
+
+.person{
+
+width:90px;
+height:36px;
+
+padding:0;
+
+font-size:13px;
+
+}
+
+}
+
+@media (max-width:500px){
+
+header{
+
+height:50px;
+
+font-size:17px;
+
+}
+
+#toolbar{
+
+height:55px;
+
+}
+
+#board{
+
+height:calc(100vh - 50px);
+
+}
+
+.person{
+
+width:80px;
+height:32px;
+
+font-size:12px;
+
+padding:0;
+
+border-radius:8px;
+
+}
+
+}
+
+.main-layout{
+display:flex;
+width:100%;
+height:calc(100vh - 70px);
+}
+
+/* ==========================
+TODAY 패널 (좌측)
+========================== */
+
+.left-todo{
+
+width:14%;
+
+padding:12px;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.center-board{
+
+width:64%;
+
+position:relative;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:visible;
+
+padding:8px 8px 0 8px;
+
+}
+
+.board-wrap{
+
+width:100%;
+
+height:100%;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.dev-note{
+
+height:34px;
+
+flex-shrink:0;
+
+margin-top:6px;
+
+border:2px dashed #bbb;
+
+border-radius:10px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:13px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#999;
+
+}
+
+.right-panel{
+width:22%;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+/* =========================================================
+오늘업무 카드 디자인
+========================================================= */
+
+.todo-panel{
+
+height:100%;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:18px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.todo-panel h2{
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#334155;
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+.todo-input-row{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:12px;
+
+}
+
+#todoInput{
+
+    flex:1;
+
+    height:38px;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:10px;
+
+    padding:0 12px;
+
+    font-size:14px;
+
+    font-family:inherit;
+
+    outline:none;
+
+    user-select:text;
+
+    -webkit-user-select:text;
+
+}
+
+#todoInput:focus{
+
+    border-color:#5DADE2;
+
+}
+
+#todoAddBtn{
+
+    width:56px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#334155;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+#todoAddBtn:hover{
+
+    background:#1E293B;
+
+}
+
+.todo-list{
+
+    flex:1;
+
+    overflow-y:auto;
+
+}
+
+.todo-item{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    background:#F8FAFC;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    color:#334155;
+
+}
+
+.todo-item span.todo-text{
+
+    flex:1;
+
+    word-break:break-all;
+
+}
+
+.todo-item button.todo-delete{
+
+    border:none;
+
+    background:transparent;
+
+    color:#94A3B8;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    line-height:1;
+
+}
+
+.todo-item button.todo-delete:hover{
+
+    color:#E57373;
+
+}
+
+.todo-empty{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#94A3B8;
+
+    line-height:1.8;
+
+}
+
+.left-todo,
+.center-board,
+.right-panel{
+
+    transition:all .25s ease;
+
+}
+
+
+/* ==========================
+출근 현황판 디자인
+========================== */
+
+
+.attendance-panel{
+
+font-size:22px;
+
+text-align:center;
+
+color:#334155;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+border:none;
+
+}
+
+
+
+.attendance-panel h2{
+
+font-size:26px;
+
+margin-bottom:5px;
+
+}
+
+
+
+.attendance-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:16px;
+
+margin-top:12px;
+
+border-radius:16px;
+
+cursor:pointer;
+
+transition:.2s;
+
+border:none;
+
+box-shadow:
+0 3px 10px rgba(0,0,0,.08);
+
+}
+
+
+
+.attendance-item:hover{
+
+transform:translateY(-3px);
+
+}
+
+
+
+.attendance-title{
+
+font-size:17px;
+
+font-weight:bold;
+
+}
+
+
+
+.attendance-number{
+
+font-size:26px;
+
+font-weight:800;
+
+}
+
+
+
+.total-card{
+
+background:#F1F5F9;
+
+}
+
+
+
+/* 출근(외식) */
+.work-oesik-card{
+
+background:#DCFCE7;
+
+}
+
+/* 출근(석간) */
+.work-seokgan-card{
+
+background:#FEF3C7;
+
+}
+
+/* 출근(광역) */
+.work-gwangyeok-card{
+
+background:#DBEAFE;
+
+}
+
+/* 1층 */
+.floor1-card{
+
+background:#E0F2FE;
+
+}
+
+
+
+.absent-card{
+
+background:#FEE2E2;
+
+}
+
+
+
+.etc-card{
+
+background:#EDE9FE;
+
+}
+
+
+/* ==========================
+특이사항 메모장
+========================== */
+
+.note-panel{
+
+flex:1;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:16px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+display:flex;
+
+flex-direction:column;
+
+min-height:0;
+
+}
+
+.note-panel h2{
+
+font-size:18px;
+
+font-weight:800;
+
+color:#334155;
+
+margin-bottom:10px;
+
+text-align:center;
+
+}
+
+#noteText{
+
+flex:1;
+
+resize:none;
+
+border:1px solid #E2E8F0;
+
+border-radius:12px;
+
+padding:12px;
+
+font-family:inherit;
+
+font-size:14px;
+
+line-height:1.6;
+
+color:#334155;
+
+outline:none;
+
+user-select:text;
+
+-webkit-user-select:text;
+
+}
+
+#noteText:focus{
+
+border-color:#5DADE2;
+
+}
+
+
+/* ===========================
+출근부 팝업
+=========================== */
+
+.popup{
+
+display:none;
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.45);
+
+justify-content:center;
+align-items:center;
+
+z-index:99999;
+
+}
+
+.popup-box{
+
+width:320px;
+
+background:#fff;
+
+border-radius:12px;
+
+padding:20px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+max-height:85vh;
+
+overflow-y:auto;
+
+}
+
+.popup-box h3{
+
+margin-bottom:15px;
+
+text-align:center;
+
+color:#1976d2;
+
+}
+
+#popupList{
+
+max-height:350px;
+
+overflow:auto;
+
+margin-bottom:20px;
+
+}
+
+#popupList div{
+
+padding:8px;
+
+border-bottom:1px solid #ddd;
+
+}
+
+#closePopup{
+
+width:100%;
+
+height:42px;
+
+border:none;
+
+border-radius:8px;
+
+background:#1976d2;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+
+/* ==========================
+직원 상태 팝업
+========================== */
+
+.status-btn{
+
+width:100%;
+
+height:48px;
+
+margin-bottom:10px;
+
+border:none;
+
+border-radius:14px;
+
+
+font-size:17px;
+
+font-weight:700;
+
+
+cursor:pointer;
+
+
+background:#F8FAFC;
+
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:8px;
+
+
+box-shadow:
+0 3px 8px rgba(0,0,0,.08);
+
+
+transition:
+transform .2s,
+background .2s;
+
+}
+
+
+
+.status-btn:hover{
+
+background:#1976d2;
+
+color:white;
+
+transform:translateY(-2px);
+
+}
+
+
+
+.status-btn span{
+
+font-size:20px;
+
+}
+
+#closeStatusPopup{
+
+
+width:100%;
+
+height:45px;
+
+border:none;
+
+border-radius:12px;
+
+
+background:#64748B;
+
+color:white;
+
+
+font-size:16px;
+
+font-weight:bold;
+
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+/* ==========================
+출근부 날짜 표시
+========================== */
+
+#todayDate{
+
+font-size:16px;
+
+color:#666;
+
+margin-top:8px;
+
+margin-bottom:15px;
+
+font-weight:bold;
+
+text-align:center;
+
+}
+
+
+/* ==========================
+상태 아이콘 정렬
+========================== */
+
+.status-icon{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:15px;
+
+}
+
+
+.person-name{
+
+display:inline-flex;
+
+align-items:center;
+
+font-size:14px;
+
+font-weight:700;
+
+}
