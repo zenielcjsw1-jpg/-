@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.0
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -41,7 +41,12 @@ const defaultPositions = [
 { x:0.66, y:0.37 },
 
 { x:0.56, y:0.44 },
-{ x:0.66, y:0.44 }
+{ x:0.66, y:0.44 },
+
+/* 신규 인원 추가 배치 */
+
+{ x:0.36, y:0.51 },
+{ x:0.46, y:0.51 }
 
 ];
 
@@ -576,6 +581,7 @@ const totalPeople = [];
 const oesikPeople = [];
 const seokganPeople = [];
 const gwangyeokPeople = [];
+const floor1People = [];
 const absentPeople = [];
 const etcPeople = [];
 
@@ -602,6 +608,11 @@ const statusConfig = {
 "광역":{
     color:"#D0EBFF",
     icon:"🚌"
+},
+
+"1층":{
+    color:"#E0F2FE",
+    icon:"1️⃣"
 },
 
 "휴가":{
@@ -635,17 +646,11 @@ const statusConfig = {
     icon:"📌"
 
 }
-    
- "1층":{
-    color:"#E5E7EB",
-    icon:"1️⃣"
-
-}
 
 };
 
 /* 세 가지 출근 상태를 하나로 묶어 판별할 때 사용 */
-const WORK_STATUSES = ["외식", "석간", "광역"];
+const WORK_STATUSES = ["외식", "석간", "광역", "1층"];
 
 
 
@@ -673,6 +678,8 @@ const seokgan=[];
 
 const gwangyeok=[];
 
+const floor1=[];
+
 const absent=[];
 
 const etc=[];
@@ -698,6 +705,10 @@ seokgan.push(name);
 
 gwangyeok.push(name);
 
+}else if(state==="1층"){
+
+floor1.push(name);
+
 }else if(state==="결근"){
 
 absent.push(name);
@@ -714,6 +725,7 @@ document.getElementById("totalCount").innerText=total.length;
 document.getElementById("oesikCount").innerText=oesik.length;
 document.getElementById("seokganCount").innerText=seokgan.length;
 document.getElementById("gwangyeokCount").innerText=gwangyeok.length;
+document.getElementById("floor1Count").innerText=floor1.length;
 document.getElementById("absentCount").innerText=absent.length;
 document.getElementById("etcCount").innerText=etc.length;
 
@@ -724,6 +736,8 @@ oesikPeople.length = 0;
 seokganPeople.length = 0;
 
 gwangyeokPeople.length = 0;
+
+floor1People.length = 0;
 
 absentPeople.length = 0;
 
@@ -736,6 +750,8 @@ oesikPeople.push(...oesik);
 seokganPeople.push(...seokgan);
 
 gwangyeokPeople.push(...gwangyeok);
+
+floor1People.push(...floor1);
 
 absentPeople.push(...absent);
 
@@ -971,6 +987,12 @@ openPopup("출근(광역)",gwangyeokPeople);
 
 };
 
+document.getElementById("floor1Box").onclick=function(){
+
+openPopup("1층",floor1People);
+
+};
+
 document.getElementById("absentBox").onclick=function(){
 
 openPopup("결근",absentPeople);
@@ -1093,6 +1115,128 @@ noteText.value
 
 
 /* ==========================
+오늘업무 (TODO)
+========================== */
+
+const TODO_KEY = "personnelBoardLite_todo";
+
+const todoInput = document.getElementById("todoInput");
+const todoAddBtn = document.getElementById("todoAddBtn");
+const todoList = document.getElementById("todoList");
+
+let todoItems = [];
+
+function loadTodos(){
+
+const saved = localStorage.getItem(TODO_KEY);
+
+todoItems = saved ? JSON.parse(saved) : [];
+
+renderTodos();
+
+}
+
+function saveTodos(){
+
+localStorage.setItem(
+TODO_KEY,
+JSON.stringify(todoItems)
+);
+
+}
+
+function renderTodos(){
+
+todoList.innerHTML = "";
+
+if(todoItems.length === 0){
+
+const empty = document.createElement("p");
+
+empty.className = "todo-empty";
+
+empty.id = "todoEmpty";
+
+empty.innerText = "오늘 업무를 추가하세요.";
+
+todoList.appendChild(empty);
+
+return;
+
+}
+
+todoItems.forEach((text, index) => {
+
+const item = document.createElement("div");
+
+item.className = "todo-item";
+
+const span = document.createElement("span");
+
+span.className = "todo-text";
+
+span.innerText = text;
+
+const delBtn = document.createElement("button");
+
+delBtn.className = "todo-delete";
+
+delBtn.innerText = "✕";
+
+delBtn.addEventListener("click", () => {
+
+todoItems.splice(index, 1);
+
+saveTodos();
+
+renderTodos();
+
+});
+
+item.appendChild(span);
+
+item.appendChild(delBtn);
+
+todoList.appendChild(item);
+
+});
+
+}
+
+function addTodo(){
+
+const value = todoInput.value.trim();
+
+if(value === "") return;
+
+todoItems.push(value);
+
+todoInput.value = "";
+
+saveTodos();
+
+renderTodos();
+
+}
+
+todoAddBtn.addEventListener("click", addTodo);
+
+todoInput.addEventListener("keydown", (e) => {
+
+if(e.key === "Enter"){
+
+e.preventDefault();
+
+addTodo();
+
+}
+
+});
+
+loadTodos();
+
+
+/* ==========================
 화면 변경 대응
 ========================== */
 
@@ -1147,9 +1291,23 @@ refreshPeoplePosition();
 
 
 });
-window.addEventListener("load",()=>{
+/* ==========================
+초기 배치 (레이아웃 안정화 후 실행)
+========================== */
 
-/* 이미지 로드가 끝난 시점이므로 여기서 최초 배치 진행 */
+function initBoardPositions(){
+
+/* 이미지가 아직 실제 크기로 렌더링되지 않았다면 다음 프레임에 재시도 */
+
+const rect = getWarehouseRect();
+
+if(rect.width === 0 || rect.height === 0){
+
+requestAnimationFrame(initBoardPositions);
+
+return;
+
+}
 
 document.querySelectorAll(".person")
 .forEach((person,index)=>{
@@ -1182,4 +1340,20 @@ if(saved){
 
 }
 
+}
+
+/* 이미지가 캐시되어 이미 로드된 경우도 대응 */
+
+if(warehouse.complete){
+
+requestAnimationFrame(initBoardPositions);
+
+}else{
+
+warehouse.addEventListener("load", () => {
+
+requestAnimationFrame(initBoardPositions);
+
 });
+
+}
