@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -171,7 +171,7 @@ Number(y.toFixed(4));
 }
 
 
-/* 드래그 핸들러만 미리 연결 (좌표 배치는 이미지 로드 후 window.load에서 처리) */
+/* 드래그 핸들러만 미리 연결 (좌표 배치는 이미지 로드 후 처리) */
 people.forEach((person) => {
 
     enableDrag(person);
@@ -319,7 +319,6 @@ target.addEventListener("touchstart",dragStart,{passive:false});
 }
 
 /* ==========================
-script.js (3-2)
 저장 / 불러오기 / 초기화
 ========================== */
 
@@ -465,14 +464,14 @@ defaultPositions[index].y
 
 
 
-statusMap[person.dataset.id] = "외식";
+statusMap[person.dataset.id] = "주간";
 
 
 updatePersonColor(
 
 person,
 
-"외식"
+"주간"
 
 );
 
@@ -504,7 +503,6 @@ document
 
 
 /* ==========================
-script.js (3-3)
 최종 마무리
 ========================== */
 
@@ -578,10 +576,11 @@ defaultPositions[index].y
 ========================== */
 
 const totalPeople = [];
-const oesikPeople = [];
+const dayPeople = [];
 const seokganPeople = [];
 const gwangyeokPeople = [];
 const floor1People = [];
+const officePeople = [];
 const absentPeople = [];
 const etcPeople = [];
 
@@ -595,13 +594,13 @@ const statusMap = {};
 
 const statusConfig = {
 
-"외식":{
+"주간":{
     color:"#D8F3DC",
-    icon:"🍱"
+    icon:"☀️"
 },
 
 "석간":{
-    color:"#FFF3BF",
+    color:"#FEF9C3",
     icon:"🌙"
 },
 
@@ -615,8 +614,13 @@ const statusConfig = {
     icon:"1️⃣"
 },
 
+"사무실":{
+    color:"#FCE7F3",
+    icon:"🏢"
+},
+
 "휴가":{
-    color:"#FFF3BF",
+    color:"#FDE68A",
     icon:"🏝️"
 },
 
@@ -631,7 +635,7 @@ const statusConfig = {
 },
 
 "조퇴":{
-    color:"#D0EBFF",
+    color:"#BAE6FD",
     icon:"🚪"
 },
 
@@ -649,8 +653,11 @@ const statusConfig = {
 
 };
 
-/* 세 가지 출근 상태를 하나로 묶어 판별할 때 사용 */
-const WORK_STATUSES = ["외식", "석간", "광역", "1층"];
+/* 근무 성격의 상태 (더블클릭 순환 판별용) */
+const WORK_STATUSES = ["주간", "석간", "광역", "1층", "사무실"];
+
+/* 결근 카드에 함께 집계할 상태 */
+const ABSENT_STATUSES = ["결근", "휴가", "병가", "조퇴"];
 
 
 
@@ -660,9 +667,9 @@ const WORK_STATUSES = ["외식", "석간", "광역", "1층"];
 
 document.querySelectorAll(".person").forEach(person=>{
 
-statusMap[person.dataset.id]="외식";
+statusMap[person.dataset.id]="주간";
 
-updatePersonColor(person,"외식");
+updatePersonColor(person,"주간");
 
 });
 
@@ -672,13 +679,15 @@ function updateAttendance(){
 
 const total=[];
 
-const oesik=[];
+const day=[];
 
 const seokgan=[];
 
 const gwangyeok=[];
 
 const floor1=[];
+
+const office=[];
 
 const absent=[];
 
@@ -693,9 +702,9 @@ const state=statusMap[person.dataset.id];
 
 total.push(name);
 
-if(state==="외식"){
+if(state==="주간"){
 
-oesik.push(name);
+day.push(name);
 
 }else if(state==="석간"){
 
@@ -709,7 +718,11 @@ gwangyeok.push(name);
 
 floor1.push(name);
 
-}else if(state==="결근"){
+}else if(state==="사무실"){
+
+office.push(name);
+
+}else if(ABSENT_STATUSES.includes(state)){
 
 absent.push(name);
 
@@ -722,16 +735,17 @@ etc.push(name);
 });
 
 document.getElementById("totalCount").innerText=total.length;
-document.getElementById("oesikCount").innerText=oesik.length;
+document.getElementById("dayCount").innerText=day.length;
 document.getElementById("seokganCount").innerText=seokgan.length;
 document.getElementById("gwangyeokCount").innerText=gwangyeok.length;
 document.getElementById("floor1Count").innerText=floor1.length;
+document.getElementById("officeCount").innerText=office.length;
 document.getElementById("absentCount").innerText=absent.length;
 document.getElementById("etcCount").innerText=etc.length;
 
   totalPeople.length = 0;
 
-oesikPeople.length = 0;
+dayPeople.length = 0;
 
 seokganPeople.length = 0;
 
@@ -739,19 +753,23 @@ gwangyeokPeople.length = 0;
 
 floor1People.length = 0;
 
+officePeople.length = 0;
+
 absentPeople.length = 0;
 
 etcPeople.length = 0;
 
 totalPeople.push(...total);
 
-oesikPeople.push(...oesik);
+dayPeople.push(...day);
 
 seokganPeople.push(...seokgan);
 
 gwangyeokPeople.push(...gwangyeok);
 
 floor1People.push(...floor1);
+
+officePeople.push(...office);
 
 absentPeople.push(...absent);
 
@@ -765,7 +783,7 @@ person.addEventListener("dblclick",()=>{
 
 const current=statusMap[person.dataset.id];
 
-let next="외식";
+let next="주간";
 
 if(WORK_STATUSES.includes(current)){
 
@@ -777,7 +795,7 @@ next="기타";
 
 }else{
 
-next="외식";
+next="주간";
 
 }
 
@@ -969,9 +987,9 @@ openPopup("총원",totalPeople);
 
 };
 
-document.getElementById("oesikBox").onclick=function(){
+document.getElementById("dayBox").onclick=function(){
 
-openPopup("출근(외식)",oesikPeople);
+openPopup("출근(주간)",dayPeople);
 
 };
 
@@ -990,6 +1008,12 @@ openPopup("출근(광역)",gwangyeokPeople);
 document.getElementById("floor1Box").onclick=function(){
 
 openPopup("1층",floor1People);
+
+};
+
+document.getElementById("officeBox").onclick=function(){
+
+openPopup("사무실",officePeople);
 
 };
 
@@ -1116,12 +1140,15 @@ noteText.value
 
 /* ==========================
 오늘업무 (TODO)
+- 번호 자동 생성
+- 삭제 대신 '작업중' / '완료' 버튼으로 처리 상태 표시
 ========================== */
 
 const TODO_KEY = "personnelBoardLite_todo";
 
 const todoInput = document.getElementById("todoInput");
 const todoAddBtn = document.getElementById("todoAddBtn");
+const todoResetBtn = document.getElementById("todoResetBtn");
 const todoList = document.getElementById("todoList");
 
 let todoItems = [];
@@ -1165,27 +1192,47 @@ return;
 
 }
 
-todoItems.forEach((text, index) => {
+todoItems.forEach((todo, index) => {
 
 const item = document.createElement("div");
 
 item.className = "todo-item";
 
+if(todo.state === "progress") item.classList.add("is-progress");
+
+if(todo.state === "done") item.classList.add("is-done");
+
+
+const num = document.createElement("span");
+
+num.className = "todo-num";
+
+num.innerText = index + 1;
+
+
 const span = document.createElement("span");
 
 span.className = "todo-text";
 
-span.innerText = text;
+span.innerText = todo.text;
 
-const delBtn = document.createElement("button");
 
-delBtn.className = "todo-delete";
+const actions = document.createElement("div");
 
-delBtn.innerText = "✕";
+actions.className = "todo-actions";
 
-delBtn.addEventListener("click", () => {
 
-todoItems.splice(index, 1);
+const progressBtn = document.createElement("button");
+
+progressBtn.className = "todo-action-btn progress-btn";
+
+if(todo.state === "progress") progressBtn.classList.add("active");
+
+progressBtn.innerText = "작업중";
+
+progressBtn.addEventListener("click", () => {
+
+todo.state = (todo.state === "progress") ? "pending" : "progress";
 
 saveTodos();
 
@@ -1193,9 +1240,36 @@ renderTodos();
 
 });
 
+
+const doneBtn = document.createElement("button");
+
+doneBtn.className = "todo-action-btn done-btn";
+
+if(todo.state === "done") doneBtn.classList.add("active");
+
+doneBtn.innerText = "완료";
+
+doneBtn.addEventListener("click", () => {
+
+todo.state = (todo.state === "done") ? "pending" : "done";
+
+saveTodos();
+
+renderTodos();
+
+});
+
+
+actions.appendChild(progressBtn);
+
+actions.appendChild(doneBtn);
+
+
+item.appendChild(num);
+
 item.appendChild(span);
 
-item.appendChild(delBtn);
+item.appendChild(actions);
 
 todoList.appendChild(item);
 
@@ -1209,7 +1283,7 @@ const value = todoInput.value.trim();
 
 if(value === "") return;
 
-todoItems.push(value);
+todoItems.push({ text:value, state:"pending" });
 
 todoInput.value = "";
 
@@ -1230,6 +1304,20 @@ e.preventDefault();
 addTodo();
 
 }
+
+});
+
+todoResetBtn.addEventListener("click", () => {
+
+if(todoItems.length === 0) return;
+
+if(!confirm("오늘 업무 목록을 모두 초기화할까요?")) return;
+
+todoItems = [];
+
+saveTodos();
+
+renderTodos();
 
 });
 
@@ -1291,6 +1379,7 @@ refreshPeoplePosition();
 
 
 });
+
 /* ==========================
 초기 배치 (레이아웃 안정화 후 실행)
 ========================== */
