@@ -42,8 +42,13 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="left-todo">
     <div class="todo-panel">
         <h2>📋 TODAY</h2>
-        <div class="todo-list">
-            <p class="todo-empty">
+        <div class="todo-input-row">
+            <input type="text" id="todoInput" placeholder="업무를 입력하세요">
+            <button id="todoAddBtn">추가</button>
+        </div>
+
+        <div class="todo-list" id="todoList">
+            <p class="todo-empty" id="todoEmpty">
                 오늘 업무를 추가하세요.
             </p>
         </div>
@@ -52,6 +57,8 @@ const input = prompt("비밀번호를 입력하세요.");
 
 <!-- 중앙: 창고 도면 -->
 <div class="center-board">
+
+<div class="board-wrap">
 
 <main id="board">
 <img
@@ -92,6 +99,10 @@ alt="창고 도면">
 
 </main>
 
+<div class="dev-note">개발예정 v4.0</div>
+
+</div>  <!-- board-wrap -->
+
 </div>  <!-- center-board -->
 
 <!-- 우측: 출근 현황 + 특이사항 -->
@@ -123,6 +134,11 @@ alt="창고 도면">
 <div class="attendance-number"><span id="gwangyeokCount">0</span>명</div>
 </div>
 
+<div class="attendance-item floor1-card" id="floor1Box">
+<div class="attendance-title">1️⃣ 1층</div>
+<div class="attendance-number"><span id="floor1Count">0</span>명</div>
+</div>
+
 <div class="attendance-item absent-card" id="absentBox">
 <div class="attendance-title">⛔ 결근</div>
 <div class="attendance-number"><span id="absentCount">0</span>명</div>
@@ -138,7 +154,7 @@ alt="창고 도면">
 <!-- 특이사항 메모장 -->
 <div class="note-panel">
 <h2>📝 특이사항</h2>
-<textarea id="noteText" placeholder="특이사항을 입력하세요."></textarea>
+<textarea id="noteText" placeholder="특이사항을 입력하세요." spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
 </div>
 
 </div>  <!-- right-panel -->
@@ -189,8 +205,9 @@ alt="창고 도면">
 
 <button class="status-btn" data-status="연장">
 <span>🌇</span> 연장
-    
-</button><button class="status-btn" data-status="1층">
+</button>
+
+<button class="status-btn" data-status="1층">
 <span>1️⃣</span> 1층
 </button>
 
