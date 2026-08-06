@@ -24,9 +24,17 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="title">
 <span class="title-icon">🏭</span>
 <div class="title-text">
-<div class="main-title">인원현황판</div>
-<div class="version-title">Lite v2.3</div>
+<div class="title-row">
+<span class="main-title">인원현황판</span>
+<span class="version-badge">Lite v2.3</span>
 </div>
+</div>
+</div>
+
+<div class="header-tagline">
+<span class="tagline-line"></span>
+<span class="tagline-text">오늘도 안전하고 정확한 인원관리</span>
+<span class="tagline-line"></span>
 </div>
 
 <div id="toolbar">
@@ -45,6 +53,7 @@ const input = prompt("비밀번호를 입력하세요.");
         <div class="todo-input-row">
             <input type="text" id="todoInput" placeholder="업무를 입력하세요">
             <button id="todoAddBtn">추가</button>
+            <button id="todoResetBtn">초기화</button>
         </div>
 
         <div class="todo-list" id="todoList">
@@ -99,7 +108,7 @@ alt="창고 도면">
 
 </main>
 
-<div class="dev-note">개발예정 v4.0</div>
+<div class="dev-note">🚧 개발예정 v4.0</div>
 
 </div>  <!-- board-wrap -->
 
@@ -119,13 +128,13 @@ alt="창고 도면">
 <div class="attendance-number"><span id="totalCount">0</span>명</div>
 </div>
 
-<div class="attendance-item work-oesik-card" id="oesikBox">
-<div class="attendance-title">🍱 출근(외식)</div>
-<div class="attendance-number"><span id="oesikCount">0</span>명</div>
+<div class="attendance-item work-day-card" id="dayBox">
+<div class="attendance-title">☀️ 출근(주간)</div>
+<div class="attendance-number"><span id="dayCount">0</span>명</div>
 </div>
 
 <div class="attendance-item work-seokgan-card" id="seokganBox">
-<div class="attendance-title">🌇 출근(석간)</div>
+<div class="attendance-title">🌙 출근(석간)</div>
 <div class="attendance-number"><span id="seokganCount">0</span>명</div>
 </div>
 
@@ -137,6 +146,11 @@ alt="창고 도면">
 <div class="attendance-item floor1-card" id="floor1Box">
 <div class="attendance-title">1️⃣ 1층</div>
 <div class="attendance-number"><span id="floor1Count">0</span>명</div>
+</div>
+
+<div class="attendance-item office-card" id="officeBox">
+<div class="attendance-title">🏢 사무실</div>
+<div class="attendance-number"><span id="officeCount">0</span>명</div>
 </div>
 
 <div class="attendance-item absent-card" id="absentBox">
@@ -175,8 +189,8 @@ alt="창고 도면">
 <div class="popup-box">
 <h3 id="statusTitle">직원 상태</h3>
 
-    <button class="status-btn" data-status="외식">
-<span>🍱</span> 출근(외식)
+    <button class="status-btn" data-status="주간">
+<span>☀️</span> 출근(주간)
 </button>
 
     <button class="status-btn" data-status="석간">
@@ -185,6 +199,14 @@ alt="창고 도면">
 
     <button class="status-btn" data-status="광역">
 <span>🚌</span> 출근(광역)
+</button>
+
+<button class="status-btn" data-status="1층">
+<span>1️⃣</span> 1층
+</button>
+
+<button class="status-btn" data-status="사무실">
+<span>🏢</span> 사무실
 </button>
 
 <button class="status-btn" data-status="결근">
@@ -205,10 +227,6 @@ alt="창고 도면">
 
 <button class="status-btn" data-status="연장">
 <span>🌇</span> 연장
-</button>
-
-<button class="status-btn" data-status="1층">
-<span>1️⃣</span> 1층
 </button>
 
 <button id="closeStatusPopup">닫기</button>
