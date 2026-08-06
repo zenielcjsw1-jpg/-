@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.0
 ========================== */
 
 const people = document.querySelectorAll(".person");
