@@ -10,75 +10,47 @@ const input = prompt("비밀번호를 입력하세요.");
     document.write("<h2 style='text-align:center;margin-top:100px;'>접근이 거부되었습니다.</h2>");
     throw new Error("Wrong Password");}
 </script>
-  
-  <title>인원현황판 Lite v2.2</title>
+
+  <title>인원현황판 Lite v2.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+
 <header>
 
-    
 <div class="title">
-
-<span class="title-icon">
-🏭
-</span>
-
+<span class="title-icon">🏭</span>
 <div class="title-text">
-
-<div class="main-title">
-인원현황판
+<div class="main-title">인원현황판</div>
+<div class="version-title">Lite v2.3</div>
+</div>
 </div>
 
-<div class="version-title">
-Lite v2.3
-</div>
-
-</div>
-
-</div>
-
-
-
-    
 <div id="toolbar">
 <button id="saveBtn">저장</button>
 <button id="loadBtn">불러오기</button>
 <button id="resetBtn">초기화</button>
 </div>
 </header>
+
 <div class="main-layout">
 
+<!-- 좌측: 오늘업무 -->
 <div class="left-todo">
-
     <div class="todo-panel">
-
         <h2>📋 TODAY</h2>
-
         <div class="todo-list">
-
-    <p class="todo-empty">
-
-        오늘 업무를 추가하세요.
-
-    </p>
-
-</div>
-
+            <p class="todo-empty">
+                오늘 업무를 추가하세요.
+            </p>
+        </div>
     </div>
-
 </div>
-    
-<div class="left-todo">
-<!-- 기존 창고 이미지 -->
-<!-- 기존 이름표 -->
-<!-- 기존 버튼 -->
-<!-- 기존 코드 전부 -->
-    
+
+<!-- 중앙: 창고 도면 -->
 <div class="center-board">
 
 <main id="board">
@@ -88,7 +60,7 @@ src="image/warehouse.png"
 alt="창고 도면">
 
 <div id="peopleLayer">
-    
+
 <div class="person" data-id="1" data-name="성락훈">성락훈</div>
 <div class="person" data-id="2" data-name="김종용">김종용</div>
 <div class="person" data-id="3" data-name="고목영">고목영</div>
@@ -104,7 +76,7 @@ alt="창고 도면">
 <div class="person" data-id="11" data-name="장인택">장인택</div>
 <div class="person" data-id="12" data-name="이건철">이건철</div>
 <div class="person" data-id="13" data-name="임승현">임승현</div>
-     
+
 <div class="person" data-id="14" data-name="심항식">심항식</div>
 <div class="person" data-id="15" data-name="홍용성">홍용성</div>
 
@@ -116,117 +88,61 @@ alt="창고 도면">
 
 </div>
 
-    
 </main>
-    
+
 </div>  <!-- center-board -->
 
-    
+<!-- 우측: 출근 현황 + 특이사항 -->
 <div class="right-panel">
+
 <div class="attendance-panel">
 
-    
-<div class="attendance-panel">
-
-<h2>
-📋 출근 현황
-</h2>
+<h2>📋 출근 현황</h2>
 
 <div id="todayDate"></div>
 
-
 <div class="attendance-item total-card" id="totalBox">
-
-<div class="attendance-title">
-👥 총원
+<div class="attendance-title">👥 총원</div>
+<div class="attendance-number"><span id="totalCount">0</span>명</div>
 </div>
-
-<div class="attendance-number">
-<span id="totalCount">0</span>명
-</div>
-
-</div>
-
-
 
 <div class="attendance-item work-oesik-card" id="oesikBox">
-
-<div class="attendance-title">
-🍱 출근(외식)
+<div class="attendance-title">🍱 출근(외식)</div>
+<div class="attendance-number"><span id="oesikCount">0</span>명</div>
 </div>
-
-<div class="attendance-number">
-<span id="oesikCount">0</span>명
-</div>
-
-</div>
-
-
 
 <div class="attendance-item work-seokgan-card" id="seokganBox">
-
-<div class="attendance-title">
-🌇 출근(석간)
+<div class="attendance-title">🌇 출근(석간)</div>
+<div class="attendance-number"><span id="seokganCount">0</span>명</div>
 </div>
-
-<div class="attendance-number">
-<span id="seokganCount">0</span>명
-</div>
-
-</div>
-
-
 
 <div class="attendance-item work-gwangyeok-card" id="gwangyeokBox">
-
-<div class="attendance-title">
-🚌 출근(광역)
+<div class="attendance-title">🚌 출근(광역)</div>
+<div class="attendance-number"><span id="gwangyeokCount">0</span>명</div>
 </div>
-
-<div class="attendance-number">
-<span id="gwangyeokCount">0</span>명
-</div>
-
-</div>
-
-
 
 <div class="attendance-item absent-card" id="absentBox">
-
-<div class="attendance-title">
-⛔ 결근
+<div class="attendance-title">⛔ 결근</div>
+<div class="attendance-number"><span id="absentCount">0</span>명</div>
 </div>
-
-<div class="attendance-number">
-<span id="absentCount">0</span>명
-</div>
-
-</div>
-
-
 
 <div class="attendance-item etc-card" id="etcBox">
-
-<div class="attendance-title">
-📌 기타
-</div>
-
-<div class="attendance-number">
-<span id="etcCount">0</span>명
+<div class="attendance-title">📌 기타</div>
+<div class="attendance-number"><span id="etcCount">0</span>명</div>
 </div>
 
 </div>
 
-
+<!-- 특이사항 메모장 -->
+<div class="note-panel">
+<h2>📝 특이사항</h2>
+<textarea id="noteText" placeholder="특이사항을 입력하세요."></textarea>
 </div>
 
+</div>  <!-- right-panel -->
 
-    
-<div class="lite-v3">
-Lite v2.2
-</div>
-</div>
-</div>
+</div>  <!-- main-layout -->
+
 <!-- 출근부 팝업 -->
 <div id="popup" class="popup">
 <div class="popup-box">
@@ -235,7 +151,7 @@ Lite v2.2
 <button id="closePopup">닫기</button>
      </div>
 </div>
-    
+
 <!-- 직원 상태 선택 -->
 <div id="statusPopup" class="popup">
 <div class="popup-box">
@@ -272,11 +188,11 @@ Lite v2.2
 <button class="status-btn" data-status="연장">
 <span>🌙</span> 연장
 </button>
-    
+
 <button id="closeStatusPopup">닫기</button>
 </div>
 </div>
 <script src="script.js"></script>
-    
+
 </body>
 </html>
