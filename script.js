@@ -1,11 +1,15 @@
 /* ==========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 ========================== */
 
 const people = document.querySelectorAll(".person");
 const board = document.getElementById("board");
 const warehouse = document.getElementById("warehouse");
 const peopleLayer = document.getElementById("peopleLayer");
+
+/* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
+const STORAGE_KEY = "personnelBoardLite_v24";
+const NOTE_KEY = "personnelBoardLite_note";
 
 const defaultPositions = [
 
@@ -86,6 +90,83 @@ rect.height + "px";
 function getBoardRect(){
 
 return board.getBoundingClientRect();
+
+}
+
+/* ==========================
+초기 배치 (레이아웃 안정화 후 실행)
+- 뒤쪽 코드에서 오류가 나더라도 이름표 배치/드래그가
+  항상 정상 동작하도록 최대한 앞쪽에서 등록해둠
+========================== */
+
+function initBoardPositions(){
+
+/* 이미지가 아직 실제 크기로 렌더링되지 않았다면 다음 프레임에 재시도 */
+
+const rect = getWarehouseRect();
+
+if(rect.width === 0 || rect.height === 0){
+
+requestAnimationFrame(initBoardPositions);
+
+return;
+
+}
+
+document.querySelectorAll(".person")
+.forEach((person,index)=>{
+
+
+setPersonPercent(
+
+person,
+
+defaultPositions[index].x,
+
+defaultPositions[index].y
+
+);
+
+
+});
+
+
+resizePeopleLayer();
+
+
+try{
+
+const saved =
+localStorage.getItem(STORAGE_KEY);
+
+
+if(saved){
+
+    loadPositions(true);
+
+}
+
+}catch(err){
+
+console.error("저장된 배치 불러오기 중 오류", err);
+
+}
+
+}
+
+/* 이미지가 캐시되어 이미 로드된 경우도 대응 */
+
+if(warehouse.complete){
+
+requestAnimationFrame(initBoardPositions);
+
+}else{
+
+warehouse.addEventListener("load", () => {
+
+requestAnimationFrame(initBoardPositions);
+
+});
 
 }
 
@@ -322,9 +403,6 @@ target.addEventListener("touchstart",dragStart,{passive:false});
 저장 / 불러오기 / 초기화
 ========================== */
 
-const STORAGE_KEY = "personnelBoardLite_v22";
-const NOTE_KEY = "personnelBoardLite_note";
-
 /* 저장 */
 function savePositions() {
 
@@ -371,24 +449,49 @@ alert("저장되었습니다.");
 }
 
 /* 불러오기 */
-function loadPositions() {
+function loadPositions(silent) {
 
 const saved = localStorage.getItem(STORAGE_KEY);
 
 
 if (!saved) {
 
-alert("저장된 데이터가 없습니다.");
+if(!silent) alert("저장된 데이터가 없습니다.");
 
 return;
 
 }
 
 
-const data = JSON.parse(saved);
+let data;
+
+try{
+
+data = JSON.parse(saved);
+
+}catch(err){
+
+console.error("저장 데이터 파싱 실패, 초기화합니다.", err);
+
+localStorage.removeItem(STORAGE_KEY);
+
+return;
+
+}
+
+
+if(!Array.isArray(data)){
+
+localStorage.removeItem(STORAGE_KEY);
+
+return;
+
+}
 
 
 data.forEach(item => {
+
+try{
 
 
 const person =
@@ -434,11 +537,24 @@ person,
 restoredStatus
 );
 
+}catch(err){
+
+console.error("한 명의 데이터를 복원하는 중 오류가 발생해 건너뜁니다.", err);
+
+}
 
 });
 
 
+try{
+
 updateAttendance();
+
+}catch(err){
+
+console.error("출근 현황 갱신 중 오류", err);
+
+}
 
 
 }
@@ -673,7 +789,15 @@ updatePersonColor(person,"주간");
 
 });
 
+try{
+
 updateAttendance();
+
+}catch(err){
+
+console.error("초기 출근 현황 계산 중 오류", err);
+
+}
 
 function updateAttendance(){
 
@@ -734,14 +858,22 @@ etc.push(name);
 
 });
 
-document.getElementById("totalCount").innerText=total.length;
-document.getElementById("dayCount").innerText=day.length;
-document.getElementById("seokganCount").innerText=seokgan.length;
-document.getElementById("gwangyeokCount").innerText=gwangyeok.length;
-document.getElementById("floor1Count").innerText=floor1.length;
-document.getElementById("officeCount").innerText=office.length;
-document.getElementById("absentCount").innerText=absent.length;
-document.getElementById("etcCount").innerText=etc.length;
+function setCountText(id, value){
+
+const el = document.getElementById(id);
+
+if(el) el.innerText = value;
+
+}
+
+setCountText("totalCount", total.length);
+setCountText("dayCount", day.length);
+setCountText("seokganCount", seokgan.length);
+setCountText("gwangyeokCount", gwangyeok.length);
+setCountText("floor1Count", floor1.length);
+setCountText("officeCount", office.length);
+setCountText("absentCount", absent.length);
+setCountText("etcCount", etc.length);
 
   totalPeople.length = 0;
 
@@ -1116,6 +1248,21 @@ JSON.stringify(data)
 특이사항 메모장
 ========================== */
 
+function saveNote(){
+
+const el = document.getElementById("noteText");
+
+if(!el) return;
+
+localStorage.setItem(
+NOTE_KEY,
+el.value
+);
+
+}
+
+try{
+
 const noteText = document.getElementById("noteText");
 
 /* 불러오기 */
@@ -1128,12 +1275,9 @@ saveNote();
 
 });
 
-function saveNote(){
+}catch(err){
 
-localStorage.setItem(
-NOTE_KEY,
-noteText.value
-);
+console.error("특이사항 메모장 초기화 중 오류", err);
 
 }
 
@@ -1142,7 +1286,10 @@ noteText.value
 오늘업무 (TODO)
 - 번호 자동 생성
 - 삭제 대신 '작업중' / '완료' 버튼으로 처리 상태 표시
+- 다른 영역에서 오류가 나도 이 블록은 독립적으로 항상 동작하도록 try/catch로 감쌈
 ========================== */
+
+try{
 
 const TODO_KEY = "personnelBoardLite_todo";
 
@@ -1323,6 +1470,12 @@ renderTodos();
 
 loadTodos();
 
+}catch(err){
+
+console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
+
+}
+
 
 /* ==========================
 화면 변경 대응
@@ -1379,70 +1532,3 @@ refreshPeoplePosition();
 
 
 });
-
-/* ==========================
-초기 배치 (레이아웃 안정화 후 실행)
-========================== */
-
-function initBoardPositions(){
-
-/* 이미지가 아직 실제 크기로 렌더링되지 않았다면 다음 프레임에 재시도 */
-
-const rect = getWarehouseRect();
-
-if(rect.width === 0 || rect.height === 0){
-
-requestAnimationFrame(initBoardPositions);
-
-return;
-
-}
-
-document.querySelectorAll(".person")
-.forEach((person,index)=>{
-
-
-setPersonPercent(
-
-person,
-
-defaultPositions[index].x,
-
-defaultPositions[index].y
-
-);
-
-
-});
-
-
-resizePeopleLayer();
-
-
-const saved =
-localStorage.getItem(STORAGE_KEY);
-
-
-if(saved){
-
-    loadPositions();
-
-}
-
-}
-
-/* 이미지가 캐시되어 이미 로드된 경우도 대응 */
-
-if(warehouse.complete){
-
-requestAnimationFrame(initBoardPositions);
-
-}else{
-
-warehouse.addEventListener("load", () => {
-
-requestAnimationFrame(initBoardPositions);
-
-});
-
-}
