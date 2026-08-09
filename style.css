@@ -378,7 +378,7 @@ width:100%;
 
 height:100%;
 
-object-fit:cover;
+object-fit:contain;
 
 object-position:center;
 
@@ -397,13 +397,6 @@ pointer-events:none;
 }
 
 .person{
-
-pointer-events:auto;
-
-}
-.person{
-
-position:absolute;
 
 width:95px;
 height:38px;
@@ -455,7 +448,6 @@ backdrop-filter:blur(4px);
 
 
 transition:
-transform .2s ease,
 box-shadow .2s ease;
 
 
@@ -465,7 +457,28 @@ padding:0;
 
 }
 
-.person:active{
+/* 창고 이미지 위에 배치된 상태 */
+.person.on-board{
+
+position:absolute;
+
+}
+
+/* 대기 영역(초기 상태)에 놓인 상태 */
+.person.staging{
+
+position:static;
+
+margin:4px;
+
+}
+
+/* 드래그 중 (뷰포트 기준 자유 이동) */
+.person.dragging{
+
+position:fixed;
+
+z-index:99999;
 
 cursor:grabbing;
 
@@ -474,7 +487,59 @@ transform:scale(1.08);
 box-shadow:
 0 8px 18px rgba(0,0,0,.28);
 
-z-index:9999;
+}
+
+.staging-area{
+
+flex-shrink:0;
+
+margin-top:8px;
+
+min-height:64px;
+
+max-height:150px;
+
+overflow-y:auto;
+
+display:flex;
+
+flex-wrap:wrap;
+
+align-content:flex-start;
+
+gap:4px;
+
+padding:10px;
+
+border:2px dashed #cbd5e1;
+
+border-radius:12px;
+
+background:rgba(255,255,255,.5);
+
+}
+
+.staging-area::before{
+
+content:"⬇ 대기 인원 (드래그해서 창고 이미지 위로 배치하세요)";
+
+width:100%;
+
+font-size:11px;
+
+color:#94A3B8;
+
+font-weight:600;
+
+margin-bottom:2px;
+
+}
+
+.staging-area.drop-hover{
+
+border-color:#5DADE2;
+
+background:rgba(93,173,226,.08);
 
 }
 
@@ -614,7 +679,7 @@ flex-direction:column;
 
 .dev-note{
 
-height:360px;
+height:180px;
 
 flex-shrink:0;
 
@@ -964,6 +1029,10 @@ min-height:0;
 
 overflow-y:auto;
 
+display:flex;
+
+flex-direction:column;
+
 font-size:22px;
 
 text-align:center;
@@ -974,7 +1043,7 @@ background:#ffffff;
 
 border-radius:20px;
 
-padding:20px;
+padding:14px 16px;
 
 box-shadow:
 0 8px 20px rgba(0,0,0,.12);
@@ -987,9 +1056,11 @@ border:none;
 
 .attendance-panel h2{
 
-font-size:26px;
+font-size:19px;
 
-margin-bottom:5px;
+margin-bottom:2px;
+
+flex-shrink:0;
 
 }
 
@@ -1003,11 +1074,11 @@ justify-content:space-between;
 
 align-items:center;
 
-padding:16px;
+padding:9px 14px;
 
-margin-top:12px;
+margin-top:7px;
 
-border-radius:16px;
+border-radius:12px;
 
 cursor:pointer;
 
@@ -1015,8 +1086,12 @@ transition:.2s;
 
 border:none;
 
+flex:1;
+
+min-height:0;
+
 box-shadow:
-0 3px 10px rgba(0,0,0,.08);
+0 2px 6px rgba(0,0,0,.06);
 
 }
 
@@ -1024,7 +1099,7 @@ box-shadow:
 
 .attendance-item:hover{
 
-transform:translateY(-3px);
+transform:translateY(-2px);
 
 }
 
@@ -1032,7 +1107,7 @@ transform:translateY(-3px);
 
 .attendance-title{
 
-font-size:17px;
+font-size:14px;
 
 font-weight:bold;
 
@@ -1042,7 +1117,7 @@ font-weight:bold;
 
 .attendance-number{
 
-font-size:26px;
+font-size:19px;
 
 font-weight:800;
 
@@ -1378,17 +1453,19 @@ margin-top:10px;
 
 #todayDate{
 
-font-size:16px;
+font-size:13px;
 
 color:#666;
 
-margin-top:8px;
+margin-top:2px;
 
-margin-bottom:15px;
+margin-bottom:2px;
 
 font-weight:bold;
 
 text-align:center;
+
+flex-shrink:0;
 
 }
 
