@@ -6,53 +6,11 @@ const people = document.querySelectorAll(".person");
 const board = document.getElementById("board");
 const warehouse = document.getElementById("warehouse");
 const peopleLayer = document.getElementById("peopleLayer");
+const stagingArea = document.getElementById("stagingArea");
 
 /* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
-const STORAGE_KEY = "personnelBoardLite_v24";
+const STORAGE_KEY = "personnelBoardLite_v25";
 const NOTE_KEY = "personnelBoardLite_note";
-
-const defaultPositions = [
-
-/* 자동화창고 내부 - 왼쪽 */
-
-{ x:0.36, y:0.16 },
-{ x:0.46, y:0.16 },
-
-{ x:0.36, y:0.23 },
-{ x:0.46, y:0.23 },
-
-{ x:0.36, y:0.30 },
-{ x:0.46, y:0.30 },
-
-{ x:0.36, y:0.37 },
-{ x:0.46, y:0.37 },
-
-{ x:0.36, y:0.44 },
-{ x:0.46, y:0.44 },
-
-/* 자동화창고 내부 - 오른쪽 */
-
-{ x:0.56, y:0.16 },
-{ x:0.66, y:0.16 },
-
-{ x:0.56, y:0.23 },
-{ x:0.66, y:0.23 },
-
-{ x:0.56, y:0.30 },
-{ x:0.66, y:0.30 },
-
-{ x:0.56, y:0.37 },
-{ x:0.66, y:0.37 },
-
-{ x:0.56, y:0.44 },
-{ x:0.66, y:0.44 },
-
-/* 신규 인원 추가 배치 */
-
-{ x:0.36, y:0.51 },
-{ x:0.46, y:0.51 }
-
-];
 
 function getWarehouseRect(){
 
@@ -113,26 +71,11 @@ return;
 
 }
 
-document.querySelectorAll(".person")
-.forEach((person,index)=>{
-
-
-setPersonPercent(
-
-person,
-
-defaultPositions[index].x,
-
-defaultPositions[index].y
-
-);
-
-
-});
-
 
 resizePeopleLayer();
 
+
+/* 저장된 배치가 있을 때만 복원 (없으면 전원 대기 영역에 그대로 둠) */
 
 try{
 
@@ -252,22 +195,94 @@ Number(y.toFixed(4));
 }
 
 
-/* 드래그 핸들러만 미리 연결 (좌표 배치는 이미지 로드 후 처리) */
+let isDragging = false;
+
+function isPointInRect(x, y, rect){
+
+return (
+x >= rect.left &&
+x <= rect.right &&
+y >= rect.top &&
+y <= rect.bottom
+);
+
+}
+
+/* 이름표를 창고 이미지 위(온보드 상태)로 배치 */
+function moveToBoard(person, clientX, clientY, persist){
+
+peopleLayer.appendChild(person);
+
+person.classList.remove("staging");
+person.classList.add("on-board");
+
+person.style.position = "absolute";
+
+const imageRect = getWarehouseRect();
+
+const w = person.offsetWidth || 95;
+const h = person.offsetHeight || 38;
+
+let pxX = clientX - imageRect.left - (w/2);
+let pxY = clientY - imageRect.top - (h/2);
+
+const maxX = imageRect.width - w;
+const maxY = imageRect.height - h;
+
+if(pxX < 0) pxX = 0;
+if(pxY < 0) pxY = 0;
+if(pxX > maxX) pxX = maxX;
+if(pxY > maxY) pxY = maxY;
+
+const percent = toPercent(pxX, pxY);
+
+setPersonPercent(person, percent.x, percent.y);
+
+if(persist !== false){
+
+try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
+
+}
+
+}
+
+/* 이름표를 대기 영역으로 되돌림 */
+function moveToStaging(person, persist){
+
+stagingArea.appendChild(person);
+
+person.classList.remove("on-board");
+person.classList.add("staging");
+
+person.style.position = "";
+person.style.left = "";
+person.style.top = "";
+
+delete person.dataset.x;
+delete person.dataset.y;
+
+if(persist !== false){
+
+try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
+
+}
+
+}
+
+/* 드래그 핸들러 연결 */
 people.forEach((person) => {
 
     enableDrag(person);
 
 });
 
-let isDragging = false;
-
 function enableDrag(target){
 
-let startX = 0;
-let startY = 0;
+let startClientX = 0;
+let startClientY = 0;
 
-let moveX = 0;
-let moveY = 0;
+let grabOffsetX = 0;
+let grabOffsetY = 0;
 
 function dragStart(e){
 
@@ -275,13 +290,26 @@ e.preventDefault();
 
 const point = e.touches ? e.touches[0] : e;
 
-startX = point.clientX;
-startY = point.clientY;
+const rect = target.getBoundingClientRect();
 
-moveX = target.offsetLeft;
-moveY = target.offsetTop;
+grabOffsetX = point.clientX - rect.left;
+grabOffsetY = point.clientY - rect.top;
+
+startClientX = point.clientX;
+startClientY = point.clientY;
 
 isDragging = false;
+
+/* 뷰포트 기준 자유 이동을 위해 고정 위치로 전환, body 최상단으로 이동 */
+
+target.style.width = rect.width + "px";
+target.style.height = rect.height + "px";
+target.style.left = rect.left + "px";
+target.style.top = rect.top + "px";
+
+target.classList.add("dragging");
+
+document.body.appendChild(target);
 
 document.addEventListener("mousemove",dragMove);
 document.addEventListener("mouseup",dragEnd);
@@ -297,100 +325,49 @@ e.preventDefault();
 
 const point = e.touches ? e.touches[0] : e;
 
-const imageRect = getWarehouseRect();
-
-
-let localX = moveX + (point.clientX-startX);
-let localY = moveY + (point.clientY-startY);
-
-
-
-const maxX =
-imageRect.width - target.offsetWidth;
-
-
-const maxY =
-imageRect.height - target.offsetHeight;
-
-
-
-if(localX < 0) localX = 0;
-
-if(localY < 0) localY = 0;
-
-
-if(localX > maxX) localX = maxX;
-
-if(localY > maxY) localY = maxY;
-
-
-
 if(
-Math.abs(point.clientX-startX) > 5 ||
-Math.abs(point.clientY-startY) > 5
+Math.abs(point.clientX-startClientX) > 5 ||
+Math.abs(point.clientY-startClientY) > 5
 ){
 
     isDragging = true;
 
 }
 
+target.style.left = (point.clientX - grabOffsetX) + "px";
 
-
-target.style.left =
-localX + "px";
-
-
-target.style.top =
-localY + "px";
+target.style.top = (point.clientY - grabOffsetY) + "px";
 
 }
 
-function dragEnd(){
+function dragEnd(e){
 
+document.removeEventListener("mousemove",dragMove);
+document.removeEventListener("mouseup",dragEnd);
+document.removeEventListener("touchmove",dragMove,{passive:false});
+document.removeEventListener("touchend",dragEnd);
 
-document.removeEventListener(
-"mousemove",
-dragMove
-);
+target.classList.remove("dragging");
 
+target.style.width = "";
+target.style.height = "";
 
-document.removeEventListener(
-"mouseup",
-dragEnd
-);
+const point = (e.changedTouches && e.changedTouches[0]) || e;
 
+const clientX = point.clientX;
+const clientY = point.clientY;
 
-document.removeEventListener(
-"touchmove",
-dragMove
-);
+const imageRect = getWarehouseRect();
 
+if(isPointInRect(clientX, clientY, imageRect)){
 
-document.removeEventListener(
-"touchend",
-dragEnd
-);
+moveToBoard(target, clientX, clientY);
 
+}else{
 
+moveToStaging(target);
 
-/* =====================
-좌표 저장
-드래그 종료 시
-이미지 기준 비율 변환
-===================== */
-
-
-const percent =
-getPersonPercent(target);
-
-
-target.dataset.x =
-Number(percent.x.toFixed(4));
-
-
-target.dataset.y =
-Number(percent.y.toFixed(4));
-
+}
 
 }
 
@@ -410,22 +387,34 @@ const data = [];
 
 document.querySelectorAll(".person").forEach(person => {
 
+const onBoard = person.classList.contains("on-board");
+
+let x, y;
+
+if(onBoard){
 
 const pos = getPersonPercent(person);
 
+x = Number(pos.x.toFixed(4));
 
-person.dataset.x = pos.x;
+y = Number(pos.y.toFixed(4));
 
-person.dataset.y = pos.y;
+person.dataset.x = x;
+
+person.dataset.y = y;
+
+}
 
 
 data.push({
 
 id: person.dataset.id,
 
-x: Number(pos.x.toFixed(4)),
+location: onBoard ? "board" : "staging",
 
-y: Number(pos.y.toFixed(4)),
+x: x,
+
+y: y,
 
 status:
 statusMap[person.dataset.id]
@@ -503,12 +492,22 @@ document.querySelector(
 if (!person) return;
 
 
-/* 이미지 기준 좌표 적용 */
+/* 위치(대기영역/온보드) 복원 */
+
+const location = item.location === "board" ? "board" : "staging";
 
 if(
+location === "board" &&
 item.x !== undefined &&
 item.y !== undefined
 ){
+
+peopleLayer.appendChild(person);
+
+person.classList.remove("staging");
+person.classList.add("on-board");
+
+person.style.position = "absolute";
 
 setPersonPercent(
 
@@ -519,6 +518,20 @@ item.x,
 item.y
 
 );
+
+}else{
+
+stagingArea.appendChild(person);
+
+person.classList.remove("on-board");
+person.classList.add("staging");
+
+person.style.position = "";
+person.style.left = "";
+person.style.top = "";
+
+delete person.dataset.x;
+delete person.dataset.y;
 
 }
 
@@ -565,18 +578,10 @@ function resetPositions() {
 
 
 document.querySelectorAll(".person")
-.forEach((person, index) => {
+.forEach((person) => {
 
 
-setPersonPercent(
-
-person,
-
-defaultPositions[index].x,
-
-defaultPositions[index].y
-
-);
+moveToStaging(person, false);
 
 
 
@@ -656,7 +661,7 @@ savePositions();
 
 });
 
-/* ESC 누르면 초기 위치로 복귀(저장은 유지) */
+/* ESC 누르면 전원 대기 영역으로 되돌림 (저장 데이터는 건드리지 않음) */
 document.addEventListener("keydown", (e) => {
 
 
@@ -664,18 +669,10 @@ if (e.key === "Escape") {
 
 
 document.querySelectorAll(".person")
-.forEach((person,index)=>{
+.forEach((person)=>{
 
 
-setPersonPercent(
-
-person,
-
-defaultPositions[index].x,
-
-defaultPositions[index].y
-
-);
+moveToStaging(person, false);
 
 
 });
@@ -1205,24 +1202,34 @@ const data = [];
 
 document.querySelectorAll(".person").forEach(person=>{
 
+const onBoard = person.classList.contains("on-board");
+
+let x, y;
+
+if(onBoard){
 
 const pos = getPersonPercent(person);
 
+x = pos.x;
 
+y = pos.y;
 
-person.dataset.x = pos.x;
+person.dataset.x = x;
 
-person.dataset.y = pos.y;
+person.dataset.y = y;
 
+}
 
 
 data.push({
 
 id: person.dataset.id,
 
-x: pos.x,
+location: onBoard ? "board" : "staging",
 
-y: pos.y,
+x: x,
+
+y: y,
 
 status:
 statusMap[person.dataset.id]
@@ -1291,7 +1298,7 @@ console.error("특이사항 메모장 초기화 중 오류", err);
 
 try{
 
-const TODO_KEY = "personnelBoardLite_todo";
+const TODO_KEY = "personnelBoardLite_todo_v2";
 
 const todoInput = document.getElementById("todoInput");
 const todoAddBtn = document.getElementById("todoAddBtn");
@@ -1304,7 +1311,39 @@ function loadTodos(){
 
 const saved = localStorage.getItem(TODO_KEY);
 
-todoItems = saved ? JSON.parse(saved) : [];
+let parsed = [];
+
+try{
+
+parsed = saved ? JSON.parse(saved) : [];
+
+if(!Array.isArray(parsed)) parsed = [];
+
+}catch(err){
+
+parsed = [];
+
+}
+
+/* 예전 버전(문자열 배열) 데이터를 새 형식으로 안전하게 변환 */
+
+todoItems = parsed.map(item => {
+
+if(typeof item === "string"){
+
+return { text:item, state:"pending" };
+
+}
+
+return {
+
+text: (item && typeof item.text === "string") ? item.text : "",
+
+state: (item && (item.state === "progress" || item.state === "done")) ? item.state : "pending"
+
+};
+
+}).filter(item => item.text !== "");
 
 renderTodos();
 
