@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 style.css
 =========================== */
 
@@ -223,21 +223,15 @@ flex-shrink:0;
 
 }
 
-.header-tagline .tagline-text{
+.header-tagline .header-emblem{
 
-font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+width:38px;
 
-font-size:12.5px;
+height:38px;
 
-font-weight:300;
+flex-shrink:0;
 
-letter-spacing:2.5px;
-
-color:#D9A566;
-
-opacity:.9;
-
-white-space:nowrap;
+filter:drop-shadow(0 2px 5px rgba(0,0,0,.35));
 
 }
 
@@ -384,7 +378,7 @@ width:100%;
 
 height:100%;
 
-object-fit:contain;
+object-fit:cover;
 
 object-position:center;
 
@@ -620,7 +614,7 @@ flex-direction:column;
 
 .dev-note{
 
-height:120px;
+height:360px;
 
 flex-shrink:0;
 
@@ -636,7 +630,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:18px;
+font-size:20px;
 
 font-weight:700;
 
@@ -695,17 +689,25 @@ flex-direction:column;
 
     display:flex;
 
-    gap:6px;
+    flex-direction:column;
 
-    margin-bottom:12px;
+    gap:8px;
+
+    margin-bottom:14px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:14px;
+
+    padding:10px;
 
 }
 
 #todoInput{
 
-    flex:1;
-
-    min-width:0;
+    width:100%;
 
     height:38px;
 
@@ -721,6 +723,8 @@ flex-direction:column;
 
     outline:none;
 
+    background:#fff;
+
     user-select:text;
 
     -webkit-user-select:text;
@@ -733,12 +737,20 @@ flex-direction:column;
 
 }
 
+.todo-btn-row{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
 #todoAddBtn,
 #todoResetBtn{
 
-    flex-shrink:0;
+    flex:1;
 
-    height:38px;
+    height:36px;
 
     border:none;
 
@@ -749,8 +761,6 @@ flex-direction:column;
     font-weight:bold;
 
     cursor:pointer;
-
-    padding:0 12px;
 
 }
 
@@ -770,7 +780,7 @@ flex-direction:column;
 
 #todoResetBtn{
 
-    background:#F1F5F9;
+    background:#EDF1F5;
 
     color:#64748B;
 
@@ -1042,7 +1052,7 @@ font-weight:800;
 
 .total-card{
 
-background:#F1F5F9;
+background:#EEF1F6;
 
 }
 
@@ -1051,35 +1061,35 @@ background:#F1F5F9;
 /* 출근(주간) */
 .work-day-card{
 
-background:#DCFCE7;
+background:#FFF1D6;
 
 }
 
 /* 출근(석간) */
 .work-seokgan-card{
 
-background:#FEF9C3;
+background:#FFF9E3;
 
 }
 
 /* 출근(광역) */
 .work-gwangyeok-card{
 
-background:#DBEAFE;
+background:#E3EFFC;
 
 }
 
 /* 1층 */
 .floor1-card{
 
-background:#E0F2FE;
+background:#E2F4F6;
 
 }
 
 /* 사무실 */
 .office-card{
 
-background:#FCE7F3;
+background:#F5E9F7;
 
 }
 
@@ -1087,7 +1097,7 @@ background:#FCE7F3;
 
 .absent-card{
 
-background:#FEE2E2;
+background:#FBE4E4;
 
 }
 
@@ -1095,7 +1105,7 @@ background:#FEE2E2;
 
 .etc-card{
 
-background:#EDE9FE;
+background:#EAE6F7;
 
 }
 
