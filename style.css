@@ -469,7 +469,7 @@ position:absolute;
 
 position:static;
 
-margin:4px;
+flex-shrink:0;
 
 }
 
@@ -491,47 +491,43 @@ box-shadow:
 
 .staging-area{
 
-flex-shrink:0;
+flex:1;
 
-margin-top:8px;
-
-min-height:64px;
-
-max-height:150px;
+min-height:0;
 
 overflow-y:auto;
 
 display:flex;
 
-flex-wrap:wrap;
+flex-direction:column;
 
-align-content:flex-start;
+align-items:center;
 
-gap:4px;
+gap:6px;
 
-padding:10px;
+padding:6px;
 
 border:2px dashed #cbd5e1;
 
 border-radius:12px;
 
-background:rgba(255,255,255,.5);
+background:rgba(248,250,252,.6);
 
 }
 
 .staging-area::before{
 
-content:"⬇ 대기 인원 (드래그해서 창고 이미지 위로 배치하세요)";
+content:"⬇ 드래그해서 배치";
 
-width:100%;
-
-font-size:11px;
+font-size:10.5px;
 
 color:#94A3B8;
 
 font-weight:600;
 
 margin-bottom:2px;
+
+text-align:center;
 
 }
 
@@ -629,15 +625,18 @@ border-radius:8px;
 display:flex;
 width:100%;
 height:calc(100vh - 70px);
+gap:1.66%;
+padding:0 0.5%;
+box-sizing:border-box;
 }
 
 /* ==========================
-TODAY 패널 (좌측)
+오늘 할 일 패널 (좌측)
 ========================== */
 
 .left-todo{
 
-width:14%;
+width:15%;
 
 padding:12px;
 
@@ -649,7 +648,7 @@ flex-direction:column;
 
 .center-board{
 
-width:64%;
+width:50%;
 
 position:relative;
 
@@ -705,8 +704,47 @@ color:#999;
 
 }
 
+/* ==========================
+대기 인원 패널 (세로형)
+========================== */
+
+.staging-panel{
+
+width:15%;
+
+padding:12px;
+
+display:flex;
+
+flex-direction:column;
+
+background:#ffffff;
+
+border-radius:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+}
+
+.staging-panel h2{
+
+font-size:16px;
+
+font-weight:800;
+
+color:#334155;
+
+text-align:center;
+
+margin-bottom:10px;
+
+flex-shrink:0;
+
+}
+
 .right-panel{
-width:22%;
+width:15%;
 padding:10px;
 display:flex;
 flex-direction:column;
@@ -1009,6 +1047,7 @@ flex-direction:column;
 
 .left-todo,
 .center-board,
+.staging-panel,
 .right-panel{
 
     transition:all .25s ease;
