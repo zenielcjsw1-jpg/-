@@ -284,9 +284,9 @@ let startClientY = 0;
 let grabOffsetX = 0;
 let grabOffsetY = 0;
 
-function dragStart(e){
+let dragModeActive = false;
 
-e.preventDefault();
+function dragStart(e){
 
 const point = e.touches ? e.touches[0] : e;
 
@@ -300,6 +300,18 @@ startClientY = point.clientY;
 
 isDragging = false;
 
+dragModeActive = false;
+
+document.addEventListener("mousemove",dragMove);
+document.addEventListener("mouseup",dragEnd);
+
+document.addEventListener("touchmove",dragMove,{passive:false});
+document.addEventListener("touchend",dragEnd);
+
+}
+
+function enterDragMode(rect){
+
 /* 뷰포트 기준 자유 이동을 위해 고정 위치로 전환, body 최상단으로 이동 */
 
 target.style.width = rect.width + "px";
@@ -311,28 +323,31 @@ target.classList.add("dragging");
 
 document.body.appendChild(target);
 
-document.addEventListener("mousemove",dragMove);
-document.addEventListener("mouseup",dragEnd);
-
-document.addEventListener("touchmove",dragMove,{passive:false});
-document.addEventListener("touchend",dragEnd);
+dragModeActive = true;
 
 }
 
 function dragMove(e){
 
-e.preventDefault();
-
 const point = e.touches ? e.touches[0] : e;
 
 if(
+!isDragging &&
+(
 Math.abs(point.clientX-startClientX) > 5 ||
 Math.abs(point.clientY-startClientY) > 5
+)
 ){
 
     isDragging = true;
 
+    enterDragMode(target.getBoundingClientRect());
+
 }
+
+if(!dragModeActive) return;
+
+e.preventDefault();
 
 target.style.left = (point.clientX - grabOffsetX) + "px";
 
@@ -346,6 +361,12 @@ document.removeEventListener("mousemove",dragMove);
 document.removeEventListener("mouseup",dragEnd);
 document.removeEventListener("touchmove",dragMove,{passive:false});
 document.removeEventListener("touchend",dragEnd);
+
+
+/* 실제로 드래그 모드까지 진입하지 않았다면(=단순 클릭) DOM을 건드리지 않고 종료 */
+
+if(!dragModeActive) return;
+
 
 target.classList.remove("dragging");
 
