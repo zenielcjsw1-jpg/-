@@ -11,7 +11,7 @@ const input = prompt("비밀번호를 입력하세요.");
     throw new Error("Wrong Password");}
 </script>
 
-  <title>인원현황판 Lite v3.0</title>
+  <title>인원현황판 Lite v2.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -26,14 +26,26 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="title-text">
 <div class="title-row">
 <span class="main-title">인원현황판</span>
-<span class="version-badge">Lite v3.0</span>
+<span class="version-badge">Lite v2.4</span>
 </div>
 </div>
 </div>
 
 <div class="header-tagline">
 <span class="tagline-line"></span>
-<span class="tagline-text">오늘도 안전하고 정확한 인원관리</span>
+<svg class="header-emblem" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<polygon points="32,3 59,17 59,47 32,61 5,47 5,17" fill="none" stroke="url(#emblemGold)" stroke-width="1.6"/>
+<polygon points="32,12 51,22 51,42 32,52 13,42 13,22" fill="none" stroke="url(#emblemGold)" stroke-width="1"/>
+<rect x="23" y="27" width="8" height="14" fill="none" stroke="url(#emblemGold)" stroke-width="1.4"/>
+<rect x="33" y="22" width="8" height="19" fill="none" stroke="url(#emblemGold)" stroke-width="1.4"/>
+<circle cx="32" cy="32" r="1.6" fill="#E8C48A"/>
+<defs>
+<linearGradient id="emblemGold" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#D9A566"/>
+<stop offset="1" stop-color="#F5EFE6"/>
+</linearGradient>
+</defs>
+</svg>
 <span class="tagline-line"></span>
 </div>
 
@@ -49,11 +61,13 @@ const input = prompt("비밀번호를 입력하세요.");
 <!-- 좌측: 오늘업무 -->
 <div class="left-todo">
     <div class="todo-panel">
-        <h2>📋 TODAY</h2>
+        <h2>📋 오늘 할 일</h2>
         <div class="todo-input-row">
             <input type="text" id="todoInput" placeholder="업무를 입력하세요">
-            <button id="todoAddBtn">추가</button>
-            <button id="todoResetBtn">초기화</button>
+            <div class="todo-btn-row">
+                <button id="todoAddBtn">추가</button>
+                <button id="todoResetBtn">초기화</button>
+            </div>
         </div>
 
         <div class="todo-list" id="todoList">
