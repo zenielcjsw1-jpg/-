@@ -1538,6 +1538,352 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 
 /* ==========================
+관리자 모드: 레이아웃 리사이즈 / 이름표 크기 조절
+- 독립 기능이므로 다른 영역 오류의 영향을 받지 않도록 try/catch로 감쌈
+========================== */
+
+try{
+
+const LAYOUT_KEY = "personnelBoardLite_layout_v1";
+
+const DEFAULT_LAYOUT = {
+
+left: 15,
+center: 48,
+staging: 14,
+right: 14,
+devNoteHeight: 180,
+personScale: 100
+
+};
+
+const mainLayout = document.querySelector(".main-layout");
+
+const leftEl = document.querySelector(".left-todo");
+const centerEl = document.querySelector(".center-board");
+const stagingEl = document.querySelector(".staging-panel");
+const rightEl = document.querySelector(".right-panel");
+const devNoteEl = document.querySelector(".dev-note");
+
+const layoutModeBtn = document.getElementById("layoutModeBtn");
+const layoutResetBtn = document.getElementById("layoutResetBtn");
+const personSizeSlider = document.getElementById("personSizeSlider");
+const personSizeValue = document.getElementById("personSizeValue");
+
+let layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
+
+function loadLayoutConfig(){
+
+try{
+
+const saved = localStorage.getItem(LAYOUT_KEY);
+
+if(saved){
+
+const parsed = JSON.parse(saved);
+
+layoutConfig = Object.assign({}, DEFAULT_LAYOUT, parsed);
+
+}
+
+}catch(err){
+
+layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
+
+}
+
+}
+
+function saveLayoutConfig(){
+
+localStorage.setItem(LAYOUT_KEY, JSON.stringify(layoutConfig));
+
+}
+
+function applyLayoutConfig(){
+
+if(leftEl) leftEl.style.width = layoutConfig.left + "%";
+if(centerEl) centerEl.style.width = layoutConfig.center + "%";
+if(stagingEl) stagingEl.style.width = layoutConfig.staging + "%";
+if(rightEl) rightEl.style.width = layoutConfig.right + "%";
+
+if(devNoteEl) devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
+
+const scale = layoutConfig.personScale / 100;
+
+document.documentElement.style.setProperty("--person-w", (95*scale).toFixed(1)+"px");
+document.documentElement.style.setProperty("--person-h", (38*scale).toFixed(1)+"px");
+document.documentElement.style.setProperty("--person-font", (14*scale).toFixed(1)+"px");
+
+if(personSizeSlider) personSizeSlider.value = layoutConfig.personScale;
+
+if(personSizeValue) personSizeValue.innerText = layoutConfig.personScale + "%";
+
+
+try{ resizePeopleLayer(); }catch(err){}
+
+}
+
+loadLayoutConfig();
+
+applyLayoutConfig();
+
+
+/* 관리자 모드 토글 */
+
+if(layoutModeBtn){
+
+layoutModeBtn.addEventListener("click", () => {
+
+document.body.classList.toggle("admin-mode");
+
+try{ resizePeopleLayer(); }catch(err){}
+
+});
+
+}
+
+
+/* 이름표 크기 슬라이더 */
+
+if(personSizeSlider){
+
+personSizeSlider.addEventListener("input", () => {
+
+layoutConfig.personScale = Number(personSizeSlider.value);
+
+applyLayoutConfig();
+
+saveLayoutConfig();
+
+});
+
+}
+
+
+/* 레이아웃 초기화 */
+
+if(layoutResetBtn){
+
+layoutResetBtn.addEventListener("click", () => {
+
+if(!confirm("패널 크기와 이름표 크기를 기본값으로 되돌릴까요?")) return;
+
+layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
+
+applyLayoutConfig();
+
+saveLayoutConfig();
+
+});
+
+}
+
+
+/* 가로 리사이즈 핸들 (좌↔중앙, 중앙↔대기인원, 대기인원↔출근현황) */
+
+const panelByClass = {
+
+"left-todo": leftEl,
+
+"center-board": centerEl,
+
+"staging-panel": stagingEl,
+
+"right-panel": rightEl
+
+};
+
+const keyByClass = {
+
+"left-todo": "left",
+
+"center-board": "center",
+
+"staging-panel": "staging",
+
+"right-panel": "right"
+
+};
+
+document.querySelectorAll(".resize-h").forEach(handle => {
+
+const prevKey = handle.dataset.targetPrev;
+const nextKey = handle.dataset.targetNext;
+
+const prevEl = panelByClass[prevKey];
+const nextEl = panelByClass[nextKey];
+
+if(!prevEl || !nextEl) return;
+
+let startX = 0;
+let startPrevPercent = 0;
+let startNextPercent = 0;
+
+const MIN_PERCENT = 8;
+
+function onDown(e){
+
+if(!document.body.classList.contains("admin-mode")) return;
+
+const point = e.touches ? e.touches[0] : e;
+
+startX = point.clientX;
+
+startPrevPercent = layoutConfig[keyByClass[prevKey]];
+startNextPercent = layoutConfig[keyByClass[nextKey]];
+
+handle.classList.add("active");
+
+document.addEventListener("mousemove", onMove);
+document.addEventListener("mouseup", onUp);
+document.addEventListener("touchmove", onMove, {passive:false});
+document.addEventListener("touchend", onUp);
+
+}
+
+function onMove(e){
+
+e.preventDefault();
+
+const point = e.touches ? e.touches[0] : e;
+
+const layoutWidth = mainLayout.getBoundingClientRect().width;
+
+if(!layoutWidth) return;
+
+const deltaPercent = ((point.clientX - startX) / layoutWidth) * 100;
+
+let newPrev = startPrevPercent + deltaPercent;
+let newNext = startNextPercent - deltaPercent;
+
+if(newPrev < MIN_PERCENT){
+
+const diff = MIN_PERCENT - newPrev;
+
+newPrev = MIN_PERCENT;
+
+newNext -= diff;
+
+}
+
+if(newNext < MIN_PERCENT){
+
+const diff = MIN_PERCENT - newNext;
+
+newNext = MIN_PERCENT;
+
+newPrev -= diff;
+
+}
+
+layoutConfig[keyByClass[prevKey]] = Number(newPrev.toFixed(2));
+layoutConfig[keyByClass[nextKey]] = Number(newNext.toFixed(2));
+
+prevEl.style.width = layoutConfig[keyByClass[prevKey]] + "%";
+nextEl.style.width = layoutConfig[keyByClass[nextKey]] + "%";
+
+try{ resizePeopleLayer(); }catch(err){}
+
+}
+
+function onUp(){
+
+document.removeEventListener("mousemove", onMove);
+document.removeEventListener("mouseup", onUp);
+document.removeEventListener("touchmove", onMove, {passive:false});
+document.removeEventListener("touchend", onUp);
+
+handle.classList.remove("active");
+
+saveLayoutConfig();
+
+}
+
+handle.addEventListener("mousedown", onDown);
+handle.addEventListener("touchstart", onDown, {passive:false});
+
+});
+
+
+/* 세로 리사이즈 핸들 (창고 이미지 ↔ 개발예정) */
+
+const devNoteHandle = document.getElementById("devNoteResizeHandle");
+
+if(devNoteHandle && devNoteEl){
+
+let startY = 0;
+let startHeight = 0;
+
+const MIN_DEVNOTE = 60;
+const MAX_DEVNOTE = 600;
+
+function onDownV(e){
+
+if(!document.body.classList.contains("admin-mode")) return;
+
+const point = e.touches ? e.touches[0] : e;
+
+startY = point.clientY;
+
+startHeight = layoutConfig.devNoteHeight;
+
+devNoteHandle.classList.add("active");
+
+document.addEventListener("mousemove", onMoveV);
+document.addEventListener("mouseup", onUpV);
+document.addEventListener("touchmove", onMoveV, {passive:false});
+document.addEventListener("touchend", onUpV);
+
+}
+
+function onMoveV(e){
+
+e.preventDefault();
+
+const point = e.touches ? e.touches[0] : e;
+
+const deltaY = point.clientY - startY;
+
+let newHeight = startHeight - deltaY;
+
+if(newHeight < MIN_DEVNOTE) newHeight = MIN_DEVNOTE;
+if(newHeight > MAX_DEVNOTE) newHeight = MAX_DEVNOTE;
+
+layoutConfig.devNoteHeight = Math.round(newHeight);
+
+devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
+
+try{ resizePeopleLayer(); }catch(err){}
+
+}
+
+function onUpV(){
+
+document.removeEventListener("mousemove", onMoveV);
+document.removeEventListener("mouseup", onUpV);
+document.removeEventListener("touchmove", onMoveV, {passive:false});
+document.removeEventListener("touchend", onUpV);
+
+devNoteHandle.classList.remove("active");
+
+saveLayoutConfig();
+
+}
+
+devNoteHandle.addEventListener("mousedown", onDownV);
+devNoteHandle.addEventListener("touchstart", onDownV, {passive:false});
+
+}
+
+}catch(err){
+
+console.error("관리자 모드(레이아웃 편집) 초기화 중 오류", err);
+
+}
+
+
+/* ==========================
 화면 변경 대응
 ========================== */
 
