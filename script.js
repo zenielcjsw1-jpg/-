@@ -1548,10 +1548,10 @@ const LAYOUT_KEY = "personnelBoardLite_layout_v1";
 
 const DEFAULT_LAYOUT = {
 
-left: 15,
-center: 48,
-staging: 14,
-right: 14,
+left: 16,
+center: 52,
+staging: 16,
+right: 16,
 devNoteHeight: 180,
 personScale: 100
 
