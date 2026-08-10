@@ -1544,15 +1544,15 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v1";
+const LAYOUT_KEY = "personnelBoardLite_layout_v2";
 
 const DEFAULT_LAYOUT = {
 
-left: 16,
-center: 52,
-staging: 16,
-right: 16,
-devNoteHeight: 180,
+left: 14,
+center: 58,
+staging: 14,
+right: 14,
+devNoteHeight: 120,
 personScale: 100
 
 };
@@ -1583,6 +1583,20 @@ if(saved){
 const parsed = JSON.parse(saved);
 
 layoutConfig = Object.assign({}, DEFAULT_LAYOUT, parsed);
+
+/* 폭 합계가 비정상(옛 버전 잔여값 등)이면 기본값으로 안전하게 복구 */
+
+const widthSum =
+(Number(layoutConfig.left)||0) +
+(Number(layoutConfig.center)||0) +
+(Number(layoutConfig.staging)||0) +
+(Number(layoutConfig.right)||0);
+
+if(widthSum < 96 || widthSum > 104){
+
+layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
+
+}
 
 }
 
