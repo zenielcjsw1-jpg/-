@@ -3,6 +3,14 @@
 style.css
 =========================== */
 
+:root{
+
+--person-w:95px;
+--person-h:38px;
+--person-font:14px;
+
+}
+
 *{
 margin:0;
 padding:0;
@@ -398,8 +406,8 @@ pointer-events:none;
 
 .person{
 
-width:95px;
-height:38px;
+width:var(--person-w);
+height:var(--person-h);
 
 display:flex;
 
@@ -420,7 +428,7 @@ border-radius:14px;
 
 /* 글자 */
 
-font-size:14px;
+font-size:var(--person-font);
 
 font-weight:700;
 
@@ -621,13 +629,236 @@ border-radius:8px;
 
 }
 
+#adminBar{
+
+display:none;
+
+position:fixed;
+
+top:70px;
+
+left:0;
+
+right:0;
+
+height:42px;
+
+background:#1E293B;
+
+color:#fff;
+
+align-items:center;
+
+gap:12px;
+
+padding:0 22px;
+
+z-index:150;
+
+box-shadow:0 4px 10px rgba(0,0,0,.18);
+
+}
+
+body.admin-mode #adminBar{
+
+display:flex;
+
+}
+
+body.admin-mode .main-layout{
+
+margin-top:42px;
+
+height:calc(100vh - 70px - 42px);
+
+}
+
+.admin-bar-label{
+
+font-size:12.5px;
+
+font-weight:600;
+
+color:#D9A566;
+
+flex-shrink:0;
+
+}
+
+#personSizeSlider{
+
+width:150px;
+
+}
+
+#personSizeValue{
+
+font-size:12px;
+
+width:36px;
+
+flex-shrink:0;
+
+}
+
+#layoutResetBtn{
+
+margin-left:auto;
+
+height:28px;
+
+padding:0 12px;
+
+border:none;
+
+border-radius:8px;
+
+background:#475569;
+
+color:#fff;
+
+font-size:12px;
+
+font-weight:700;
+
+cursor:pointer;
+
+flex-shrink:0;
+
+}
+
+#layoutResetBtn:hover{
+
+background:#334155;
+
+}
+
+/* ==========================
+리사이즈 핸들 (관리자 모드에서만 활성)
+========================== */
+
+.resize-handle{
+
+flex-shrink:0;
+
+position:relative;
+
+background:transparent;
+
+pointer-events:none;
+
+}
+
+body.admin-mode .resize-handle{
+
+pointer-events:auto;
+
+}
+
+.resize-h{
+
+width:3%;
+
+}
+
+.resize-h::after{
+
+content:"";
+
+position:absolute;
+
+left:50%;
+
+top:10%;
+
+bottom:10%;
+
+width:3px;
+
+margin-left:-1.5px;
+
+background:transparent;
+
+border-radius:3px;
+
+transition:background .15s;
+
+}
+
+body.admin-mode .resize-h{
+
+cursor:col-resize;
+
+}
+
+body.admin-mode .resize-h::after{
+
+background:#c7cdd6;
+
+}
+
+body.admin-mode .resize-h:hover::after,
+.resize-h.active::after{
+
+background:#5DADE2;
+
+}
+
+.resize-v{
+
+height:8px;
+
+width:100%;
+
+}
+
+.resize-v::after{
+
+content:"";
+
+position:absolute;
+
+top:50%;
+
+left:10%;
+
+right:10%;
+
+height:3px;
+
+margin-top:-1.5px;
+
+background:transparent;
+
+border-radius:3px;
+
+transition:background .15s;
+
+}
+
+body.admin-mode .resize-v{
+
+cursor:row-resize;
+
+}
+
+body.admin-mode .resize-v::after{
+
+background:#c7cdd6;
+
+}
+
+body.admin-mode .resize-v:hover::after,
+.resize-v.active::after{
+
+background:#5DADE2;
+
+}
+
 .main-layout{
 display:flex;
 width:100%;
 height:calc(100vh - 70px);
-gap:1.66%;
-padding:0 0.5%;
-box-sizing:border-box;
 }
 
 /* ==========================
@@ -648,7 +879,7 @@ flex-direction:column;
 
 .center-board{
 
-width:50%;
+width:48%;
 
 position:relative;
 
@@ -710,7 +941,7 @@ color:#999;
 
 .staging-panel{
 
-width:15%;
+width:14%;
 
 padding:12px;
 
@@ -744,7 +975,7 @@ flex-shrink:0;
 }
 
 .right-panel{
-width:15%;
+width:14%;
 padding:10px;
 display:flex;
 flex-direction:column;
@@ -1521,7 +1752,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:15px;
+font-size:calc(var(--person-font) + 1px);
 
 }
 
@@ -1532,7 +1763,7 @@ display:inline-flex;
 
 align-items:center;
 
-font-size:14px;
+font-size:var(--person-font);
 
 font-weight:700;
 
