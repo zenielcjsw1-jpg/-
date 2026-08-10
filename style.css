@@ -757,7 +757,7 @@ pointer-events:auto;
 
 .resize-h{
 
-width:3%;
+width:18px;
 
 }
 
@@ -867,7 +867,7 @@ height:calc(100vh - 70px);
 
 .left-todo{
 
-width:15%;
+width:16%;
 
 padding:12px;
 
@@ -879,7 +879,7 @@ flex-direction:column;
 
 .center-board{
 
-width:48%;
+width:52%;
 
 position:relative;
 
@@ -941,7 +941,7 @@ color:#999;
 
 .staging-panel{
 
-width:14%;
+width:16%;
 
 padding:12px;
 
@@ -975,7 +975,7 @@ flex-shrink:0;
 }
 
 .right-panel{
-width:14%;
+width:16%;
 padding:10px;
 display:flex;
 flex-direction:column;
