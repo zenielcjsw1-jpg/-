@@ -50,11 +50,20 @@ const input = prompt("비밀번호를 입력하세요.");
 </div>
 
 <div id="toolbar">
+<button id="layoutModeBtn">🛠 레이아웃 편집</button>
 <button id="saveBtn">저장</button>
 <button id="loadBtn">불러오기</button>
 <button id="resetBtn">초기화</button>
 </div>
 </header>
+
+<!-- 관리자 모드 도구 (레이아웃 편집 시에만 표시) -->
+<div id="adminBar" class="admin-bar">
+<span class="admin-bar-label">이름표 크기</span>
+<input type="range" id="personSizeSlider" min="70" max="140" step="5" value="100">
+<span id="personSizeValue">100%</span>
+<button id="layoutResetBtn">레이아웃 초기화</button>
+</div>
 
 <div class="main-layout">
 
@@ -78,6 +87,9 @@ const input = prompt("비밀번호를 입력하세요.");
     </div>
 </div>
 
+<!-- 좌측 ↔ 중앙 경계 -->
+<div class="resize-handle resize-h" data-target-prev="left-todo" data-target-next="center-board"></div>
+
 <!-- 중앙: 창고 도면 -->
 <div class="center-board">
 
@@ -95,11 +107,17 @@ alt="창고 도면">
 
 </main>
 
+<!-- 창고이미지 ↔ 개발예정 경계 -->
+<div class="resize-handle resize-v" id="devNoteResizeHandle"></div>
+
 <div class="dev-note">🚧 개발예정 v4.0</div>
 
 </div>  <!-- board-wrap -->
 
 </div>  <!-- center-board -->
+
+<!-- 중앙 ↔ 대기인원 경계 -->
+<div class="resize-handle resize-h" data-target-prev="center-board" data-target-next="staging-panel"></div>
 
 <!-- 대기 인원 (세로) -->
 <div class="staging-panel">
@@ -138,6 +156,9 @@ alt="창고 도면">
 </div>  <!-- staging-area -->
 
 </div>  <!-- staging-panel -->
+
+<!-- 대기인원 ↔ 출근현황 경계 -->
+<div class="resize-handle resize-h" data-target-prev="staging-panel" data-target-next="right-panel"></div>
 
 <!-- 우측: 출근 현황 + 특이사항 -->
 <div class="right-panel">
