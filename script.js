@@ -1544,7 +1544,7 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v2";
+const LAYOUT_KEY = "personnelBoardLite_layout_v3";
 
 const DEFAULT_LAYOUT = {
 
@@ -1552,7 +1552,7 @@ left: 14,
 center: 58,
 staging: 14,
 right: 14,
-devNoteHeight: 120,
+devNoteHeight: 80,
 personScale: 100
 
 };
