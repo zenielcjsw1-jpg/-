@@ -730,7 +730,7 @@ const statusConfig = {
 
 "주간":{
     color:"#D8F3DC",
-    icon:"☀️"
+    icon:"🔆"
 },
 
 "석간":{
@@ -750,7 +750,7 @@ const statusConfig = {
 
 "사무실":{
     color:"#FCE7F3",
-    icon:"🏢"
+    icon:"💻"
 },
 
 "휴가":{
@@ -760,7 +760,8 @@ const statusConfig = {
 
 "병가":{
     color:"#FFD8A8",
-    icon:"🩹"
+    icon:"➕",
+    iconColor:"#E03131"
 },
 
 "결근":{
@@ -1067,9 +1068,15 @@ person.innerText;
 person.dataset.name = name;
 
 
+const iconColorStyle =
+config.iconColor
+? ` style="color:${config.iconColor}"`
+: "";
+
+
 person.innerHTML =
 `
-<span class="status-icon">
+<span class="status-icon"${iconColorStyle}>
 ${config.icon}
 </span>
 <span class="person-name">
