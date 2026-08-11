@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.0
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -1052,9 +1052,13 @@ statusConfig[status];
 if(!config) return;
 
 
-/* 색상 */
+/* 배경은 항상 흰색으로 고정, 상태 색상은 테두리에 적용 (가독성 개선) */
 
 person.style.background =
+"#ffffff";
+
+
+person.style.borderColor =
 config.color;
 
 
