@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 style.css
 =========================== */
 
@@ -1858,5 +1858,159 @@ align-items:center;
 font-size:var(--person-font);
 
 font-weight:700;
+
+}
+
+/* ==========================
+모바일 하단 탭바 (기본: 숨김, 768px 이하에서만 표시)
+========================== */
+
+.mobile-tabbar{
+
+display:none;
+
+position:fixed;
+
+left:0;
+right:0;
+bottom:0;
+
+height:60px;
+
+background:
+linear-gradient(
+135deg,
+#182533 0%,
+#233A50 55%,
+#2C4A64 100%
+);
+
+box-shadow:
+0 -4px 14px rgba(0,0,0,.28);
+
+z-index:300;
+
+align-items:stretch;
+
+}
+
+.mobile-tab-btn{
+
+flex:1;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
+gap:2px;
+
+border:none;
+
+background:transparent;
+
+color:#9FB0C2;
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+.mobile-tab-icon{
+
+font-size:20px;
+
+line-height:1;
+
+}
+
+.mobile-tab-label{
+
+font-size:11px;
+
+letter-spacing:.5px;
+
+}
+
+.mobile-tab-btn.active{
+
+color:#F5EFE6;
+
+}
+
+.mobile-tab-btn.active .mobile-tab-icon{
+
+filter:
+drop-shadow(0 0 6px rgba(217,165,102,.7));
+
+}
+
+/* ==========================
+768px 이하: 탭 전환형 모바일 레이아웃
+========================== */
+
+@media (max-width:768px){
+
+.mobile-tabbar{
+
+display:flex;
+
+}
+
+#toolbar #layoutModeBtn,
+.toolbar-divider{
+
+display:none;
+
+}
+
+.main-layout{
+
+flex-direction:column;
+
+height:calc(100vh - 70px - 60px);
+
+}
+
+.resize-handle{
+
+display:none !important;
+
+}
+
+.left-todo,
+.center-board,
+.staging-panel,
+.right-panel{
+
+display:none;
+
+width:100% !important;
+
+height:100%;
+
+border-radius:0;
+
+}
+
+.left-todo.mobile-active,
+.center-board.mobile-active,
+.staging-panel.mobile-active,
+.right-panel.mobile-active{
+
+display:flex;
+
+}
+
+.staging-panel.mobile-active,
+.right-panel.mobile-active{
+
+box-shadow:none;
+
+}
 
 }
