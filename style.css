@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.0
 style.css
 =========================== */
 
@@ -231,15 +231,85 @@ flex-shrink:0;
 
 }
 
-.header-tagline .header-emblem{
+.header-emblem-text{
 
-width:38px;
+display:flex;
 
-height:38px;
+align-items:baseline;
+
+gap:8px;
 
 flex-shrink:0;
 
-filter:drop-shadow(0 2px 5px rgba(0,0,0,.35));
+white-space:nowrap;
+
+}
+
+.header-emblem-text .emblem-brand{
+
+font-family:"Gowun Batang","Malgun Gothic",serif;
+
+font-size:16px;
+
+font-weight:700;
+
+letter-spacing:1.8px;
+
+background:
+linear-gradient(
+135deg,
+#D9A566,
+#F5EFE6 45%,
+#D9A566
+);
+
+-webkit-background-clip:text;
+
+background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+text-shadow:0 1px 2px rgba(0,0,0,.25);
+
+}
+
+.header-emblem-text .emblem-dot{
+
+font-size:12px;
+
+color:#D9A566;
+
+opacity:.75;
+
+}
+
+.header-emblem-text .emblem-site{
+
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+
+font-size:12.5px;
+
+font-weight:600;
+
+letter-spacing:2px;
+
+color:#F5EFE6;
+
+opacity:.92;
+
+}
+
+.header-emblem-text .emblem-paren{
+
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+
+font-size:11px;
+
+font-weight:500;
+
+letter-spacing:1px;
+
+color:#B9C4D0;
 
 }
 
@@ -354,6 +424,20 @@ transform:scale(.96);
 
 }
 
+.toolbar-divider{
+
+width:0;
+
+height:26px;
+
+border-left:1px dashed rgba(255,255,255,.35);
+
+margin:0 4px;
+
+flex-shrink:0;
+
+}
+
 
 
 #board{
@@ -419,9 +503,9 @@ gap:4px;
 
 /* 이름표 카드 디자인 */
 
-background:rgba(255,255,255,0.85);
+background:#ffffff;
 
-border:1px solid rgba(255,255,255,0.9);
+border:3px solid rgba(0,0,0,0.12);
 
 border-radius:14px;
 
@@ -1686,6 +1770,14 @@ transform:translateY(-2px);
 .status-btn span{
 
 font-size:20px;
+
+}
+
+.icon-sickleave{
+
+color:#E03131;
+
+font-weight:900;
 
 }
 
