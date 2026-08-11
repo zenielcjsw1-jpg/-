@@ -11,7 +11,7 @@ const input = prompt("비밀번호를 입력하세요.");
     throw new Error("Wrong Password");}
 </script>
 
-  <title>인원현황판 Lite v2.4</title>
+  <title>인원현황판 Lite v3.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -22,38 +22,29 @@ const input = prompt("비밀번호를 입력하세요.");
 <header>
 
 <div class="title">
-<span class="title-icon">🏭</span>
+<span class="title-icon">📦</span>
 <div class="title-text">
 <div class="title-row">
 <span class="main-title">인원현황판</span>
-<span class="version-badge">Lite v2.4</span>
+<span class="version-badge">Lite v3.0</span>
 </div>
 </div>
 </div>
 
 <div class="header-tagline">
 <span class="tagline-line"></span>
-<svg class="header-emblem" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<polygon points="32,3 59,17 59,47 32,61 5,47 5,17" fill="none" stroke="url(#emblemGold)" stroke-width="1.6"/>
-<polygon points="32,12 51,22 51,42 32,52 13,42 13,22" fill="none" stroke="url(#emblemGold)" stroke-width="1"/>
-<rect x="23" y="27" width="8" height="14" fill="none" stroke="url(#emblemGold)" stroke-width="1.4"/>
-<rect x="33" y="22" width="8" height="19" fill="none" stroke="url(#emblemGold)" stroke-width="1.4"/>
-<circle cx="32" cy="32" r="1.6" fill="#E8C48A"/>
-<defs>
-<linearGradient id="emblemGold" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#D9A566"/>
-<stop offset="1" stop-color="#F5EFE6"/>
-</linearGradient>
-</defs>
-</svg>
+<span class="header-emblem-text">
+<span class="emblem-brand">CJ FreshWay</span><span class="emblem-dot">·</span><span class="emblem-site">SUWON 1</span><span class="emblem-paren">(ZENIEL)</span>
+</span>
 <span class="tagline-line"></span>
 </div>
 
 <div id="toolbar">
-<button id="layoutModeBtn">🛠 레이아웃 편집</button>
 <button id="saveBtn">저장</button>
 <button id="loadBtn">불러오기</button>
 <button id="resetBtn">초기화</button>
+<span class="toolbar-divider"></span>
+<button id="layoutModeBtn">🛠 레이아웃 편집</button>
 </div>
 </header>
 
@@ -175,7 +166,7 @@ alt="창고 도면">
 </div>
 
 <div class="attendance-item work-day-card" id="dayBox">
-<div class="attendance-title">☀️ 출근(주간)</div>
+<div class="attendance-title">🔆 출근(주간)</div>
 <div class="attendance-number"><span id="dayCount">0</span>명</div>
 </div>
 
@@ -195,7 +186,7 @@ alt="창고 도면">
 </div>
 
 <div class="attendance-item office-card" id="officeBox">
-<div class="attendance-title">🏢 사무실</div>
+<div class="attendance-title">💻 사무실</div>
 <div class="attendance-number"><span id="officeCount">0</span>명</div>
 </div>
 
@@ -236,7 +227,7 @@ alt="창고 도면">
 <h3 id="statusTitle">직원 상태</h3>
 
     <button class="status-btn" data-status="주간">
-<span>☀️</span> 출근(주간)
+<span>🔆</span> 출근(주간)
 </button>
 
     <button class="status-btn" data-status="석간">
@@ -252,7 +243,7 @@ alt="창고 도면">
 </button>
 
 <button class="status-btn" data-status="사무실">
-<span>🏢</span> 사무실
+<span>💻</span> 사무실
 </button>
 
 <button class="status-btn" data-status="결근">
@@ -264,7 +255,7 @@ alt="창고 도면">
 </button>
 
 <button class="status-btn" data-status="병가">
-<span>🩹</span> 병가
+<span class="icon-sickleave">➕</span> 병가
 </button>
 
 <button class="status-btn" data-status="조퇴">
