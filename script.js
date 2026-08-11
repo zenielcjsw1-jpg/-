@@ -1,1961 +1,1862 @@
-/* ==========================
+/* ===========================
 인원현황판 Lite v2.3
-========================== */
+style.css
+=========================== */
 
-const people = document.querySelectorAll(".person");
-const board = document.getElementById("board");
-const warehouse = document.getElementById("warehouse");
-const peopleLayer = document.getElementById("peopleLayer");
-const stagingArea = document.getElementById("stagingArea");
+:root{
 
-/* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
-const STORAGE_KEY = "personnelBoardLite_v25";
-const NOTE_KEY = "personnelBoardLite_note";
-
-function getWarehouseRect(){
-
-return warehouse.getBoundingClientRect();
-
-}
-function resizePeopleLayer(){
-
-const rect = getWarehouseRect();
-
-const boardRect = getBoardRect();
-
-
-peopleLayer.style.position = "absolute";
-
-
-peopleLayer.style.left =
-(rect.left - boardRect.left) + "px";
-
-
-peopleLayer.style.top =
-(rect.top - boardRect.top) + "px";
-
-
-peopleLayer.style.width =
-rect.width + "px";
-
-
-peopleLayer.style.height =
-rect.height + "px";
+--person-w:95px;
+--person-h:38px;
+--person-font:14px;
 
 }
 
-
-function getBoardRect(){
-
-return board.getBoundingClientRect();
-
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-user-select:none;
+user-select:none;
+font-family:"Malgun Gothic","맑은 고딕",sans-serif;
 }
 
-/* ==========================
-초기 배치 (레이아웃 안정화 후 실행)
-- 뒤쪽 코드에서 오류가 나더라도 이름표 배치/드래그가
-  항상 정상 동작하도록 최대한 앞쪽에서 등록해둠
-========================== */
-
-function initBoardPositions(){
-
-/* 이미지가 아직 실제 크기로 렌더링되지 않았다면 다음 프레임에 재시도 */
-
-const rect = getWarehouseRect();
-
-if(rect.width === 0 || rect.height === 0){
-
-requestAnimationFrame(initBoardPositions);
-
-return;
-
+body{
+background:#ececec;
+overflow:hidden;
 }
 
+/* ===========================
+   고급 헤더 디자인
+=========================== */
 
-resizePeopleLayer();
+header{
 
+width:100%;
 
-/* 저장된 배치가 있을 때만 복원 (없으면 전원 대기 영역에 그대로 둠) */
+height:70px;
 
-try{
+position:relative;
 
-const saved =
-localStorage.getItem(STORAGE_KEY);
-
-
-if(saved){
-
-    loadPositions(true);
-
-}
-
-}catch(err){
-
-console.error("저장된 배치 불러오기 중 오류", err);
-
-}
-
-}
-
-/* 이미지가 캐시되어 이미 로드된 경우도 대응 */
-
-if(warehouse.complete){
-
-requestAnimationFrame(initBoardPositions);
-
-}else{
-
-warehouse.addEventListener("load", () => {
-
-requestAnimationFrame(initBoardPositions);
-
-});
-
-}
-
-/* ==========================
-좌표 엔진
-========================== */
-
-/* 이미지 기준 px → 비율 */
-function toPercent(pxX, pxY){
-
-    const rect = getWarehouseRect();
-
-    return {
-
-        x : pxX / rect.width,
-
-        y : pxY / rect.height
-
-    };
-
-}
-
-/* 이미지 기준 비율 → px */
-function toPixel(percentX, percentY){
-
-    const rect = getWarehouseRect();
-
-    return {
-
-        x : rect.width * percentX,
-
-        y : rect.height * percentY
-
-    };
-
-}
-
-/* 현재 이름표의 이미지 기준 비율 좌표 */
-function getPersonPercent(person){
-
-    const x =
-    parseFloat(person.style.left);
-
-
-    const y =
-    parseFloat(person.style.top);
-
-
-    return toPercent(
-        x,
-        y
-    );
-
-}
-
-/* 비율 좌표를 화면에 적용 */
-function setPersonPercent(person, x, y){
-
-
-const pos = toPixel(x, y);
-
-
-/* 화면 표시 */
-
-person.style.left =
-pos.x + "px";
-
-
-person.style.top =
-pos.y + "px";
-
-
-/* 좌표 기억 */
-
-person.dataset.x =
-Number(x.toFixed(4));
-
-
-person.dataset.y =
-Number(y.toFixed(4));
-
-
-}
-
-
-let isDragging = false;
-
-function isPointInRect(x, y, rect){
-
-return (
-x >= rect.left &&
-x <= rect.right &&
-y >= rect.top &&
-y <= rect.bottom
+background:
+linear-gradient(
+135deg,
+#182533 0%,
+#233A50 55%,
+#2C4A64 100%
 );
 
-}
+color:white;
 
-/* 이름표를 창고 이미지 위(온보드 상태)로 배치 */
-function moveToBoard(person, clientX, clientY, persist){
+display:flex;
 
-peopleLayer.appendChild(person);
+align-items:center;
 
-person.classList.remove("staging");
-person.classList.add("on-board");
+justify-content:space-between;
 
-person.style.position = "absolute";
+padding:0 25px;
 
-const imageRect = getWarehouseRect();
+font-weight:bold;
 
-const w = person.offsetWidth || 95;
-const h = person.offsetHeight || 38;
+box-shadow:
+0 4px 16px rgba(0,0,0,0.32);
 
-let pxX = clientX - imageRect.left - (w/2);
-let pxY = clientY - imageRect.top - (h/2);
+z-index:200;
 
-const maxX = imageRect.width - w;
-const maxY = imageRect.height - h;
-
-if(pxX < 0) pxX = 0;
-if(pxY < 0) pxY = 0;
-if(pxX > maxX) pxX = maxX;
-if(pxY > maxY) pxY = maxY;
-
-const percent = toPercent(pxX, pxY);
-
-setPersonPercent(person, percent.x, percent.y);
-
-if(persist !== false){
-
-try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
+gap:20px;
 
 }
 
-}
-
-/* 이름표를 대기 영역으로 되돌림 */
-function moveToStaging(person, persist){
-
-stagingArea.appendChild(person);
-
-person.classList.remove("on-board");
-person.classList.add("staging");
-
-person.style.position = "";
-person.style.left = "";
-person.style.top = "";
-
-delete person.dataset.x;
-delete person.dataset.y;
-
-if(persist !== false){
-
-try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
-
-}
-
-}
-
-/* 드래그 핸들러 연결 */
-people.forEach((person) => {
-
-    enableDrag(person);
-
-});
-
-function enableDrag(target){
-
-let startClientX = 0;
-let startClientY = 0;
-
-let grabOffsetX = 0;
-let grabOffsetY = 0;
-
-let dragModeActive = false;
-
-function dragStart(e){
-
-const point = e.touches ? e.touches[0] : e;
-
-const rect = target.getBoundingClientRect();
-
-grabOffsetX = point.clientX - rect.left;
-grabOffsetY = point.clientY - rect.top;
-
-startClientX = point.clientX;
-startClientY = point.clientY;
-
-isDragging = false;
-
-dragModeActive = false;
-
-document.addEventListener("mousemove",dragMove);
-document.addEventListener("mouseup",dragEnd);
-
-document.addEventListener("touchmove",dragMove,{passive:false});
-document.addEventListener("touchend",dragEnd);
-
-}
-
-function enterDragMode(rect){
-
-/* 뷰포트 기준 자유 이동을 위해 고정 위치로 전환, body 최상단으로 이동 */
-
-target.style.width = rect.width + "px";
-target.style.height = rect.height + "px";
-target.style.left = rect.left + "px";
-target.style.top = rect.top + "px";
-
-target.classList.add("dragging");
-
-document.body.appendChild(target);
-
-dragModeActive = true;
-
-}
-
-function dragMove(e){
-
-const point = e.touches ? e.touches[0] : e;
-
-if(
-!isDragging &&
-(
-Math.abs(point.clientX-startClientX) > 5 ||
-Math.abs(point.clientY-startClientY) > 5
-)
-){
-
-    isDragging = true;
-
-    enterDragMode(target.getBoundingClientRect());
-
-}
-
-if(!dragModeActive) return;
-
-e.preventDefault();
-
-target.style.left = (point.clientX - grabOffsetX) + "px";
-
-target.style.top = (point.clientY - grabOffsetY) + "px";
-
-}
-
-function dragEnd(e){
-
-document.removeEventListener("mousemove",dragMove);
-document.removeEventListener("mouseup",dragEnd);
-document.removeEventListener("touchmove",dragMove,{passive:false});
-document.removeEventListener("touchend",dragEnd);
-
-
-/* 실제로 드래그 모드까지 진입하지 않았다면(=단순 클릭) DOM을 건드리지 않고 종료 */
-
-if(!dragModeActive) return;
-
-
-target.classList.remove("dragging");
-
-target.style.width = "";
-target.style.height = "";
-
-const point = (e.changedTouches && e.changedTouches[0]) || e;
-
-const clientX = point.clientX;
-const clientY = point.clientY;
-
-const imageRect = getWarehouseRect();
-
-if(isPointInRect(clientX, clientY, imageRect)){
-
-moveToBoard(target, clientX, clientY);
-
-}else{
-
-moveToStaging(target);
-
-}
-
-}
-
-target.addEventListener("mousedown",dragStart);
-target.addEventListener("touchstart",dragStart,{passive:false});
-
-}
-
-/* ==========================
-저장 / 불러오기 / 초기화
-========================== */
-
-/* 저장 */
-function savePositions() {
-
-const data = [];
-
-document.querySelectorAll(".person").forEach(person => {
-
-const onBoard = person.classList.contains("on-board");
-
-let x, y;
-
-if(onBoard){
-
-const pos = getPersonPercent(person);
-
-x = Number(pos.x.toFixed(4));
-
-y = Number(pos.y.toFixed(4));
-
-person.dataset.x = x;
-
-person.dataset.y = y;
-
-}
-
-
-data.push({
-
-id: person.dataset.id,
-
-location: onBoard ? "board" : "staging",
-
-x: x,
-
-y: y,
-
-status:
-statusMap[person.dataset.id]
-
-});
-
-});
-
-
-localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
+/* 하단 골드 라인 - 시그니처 요소 */
+header::after{
+
+content:"";
+
+position:absolute;
+
+left:0;
+right:0;
+bottom:0;
+
+height:2px;
+
+background:
+linear-gradient(
+90deg,
+transparent,
+#D9A566 45%,
+#E8C48A 50%,
+#D9A566 55%,
+transparent
 );
 
-
-saveNote();
-
-
-alert("저장되었습니다.");
-
-}
-
-/* 불러오기 */
-function loadPositions(silent) {
-
-const saved = localStorage.getItem(STORAGE_KEY);
-
-
-if (!saved) {
-
-if(!silent) alert("저장된 데이터가 없습니다.");
-
-return;
+opacity:.85;
 
 }
 
 
-let data;
+/* ==========================
+제목 디자인
+========================== */
 
-try{
+.title{
 
-data = JSON.parse(saved);
+display:flex;
 
-}catch(err){
+align-items:center;
 
-console.error("저장 데이터 파싱 실패, 초기화합니다.", err);
+gap:14px;
 
-localStorage.removeItem(STORAGE_KEY);
-
-return;
-
-}
-
-
-if(!Array.isArray(data)){
-
-localStorage.removeItem(STORAGE_KEY);
-
-return;
+flex-shrink:0;
 
 }
 
 
-data.forEach(item => {
+.title-icon{
 
-try{
+font-size:46px;
+
+line-height:1;
+
+filter:
+drop-shadow(0 0 10px rgba(217,165,102,.6))
+drop-shadow(0 2px 4px rgba(0,0,0,.4));
+
+}
 
 
-const person =
-document.querySelector(
-'.person[data-id="' + item.id + '"]'
+.title-text{
+
+display:flex;
+
+flex-direction:column;
+
+line-height:1.15;
+
+}
+
+
+.title-row{
+
+display:flex;
+
+align-items:baseline;
+
+gap:10px;
+
+}
+
+
+.main-title{
+
+font-family:"Gowun Batang","Malgun Gothic",serif;
+
+font-size:29px;
+
+font-weight:700;
+
+letter-spacing:1.5px;
+
+color:#F5EFE6;
+
+text-shadow:0 2px 8px rgba(0,0,0,.4);
+
+}
+
+
+.version-badge{
+
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+
+font-size:11px;
+
+font-weight:600;
+
+letter-spacing:1.5px;
+
+text-transform:uppercase;
+
+color:#182533;
+
+background:
+linear-gradient(
+135deg,
+#D9A566,
+#E8C48A
 );
 
+padding:3px 11px;
 
-if (!person) return;
+border-radius:20px;
+
+box-shadow:0 2px 6px rgba(0,0,0,.25);
+
+}
 
 
-/* 위치(대기영역/온보드) 복원 */
+/* ==========================
+헤더 중앙 태그라인
+========================== */
 
-const location = item.location === "board" ? "board" : "staging";
+.header-tagline{
 
-if(
-location === "board" &&
-item.x !== undefined &&
-item.y !== undefined
-){
+flex:1;
 
-peopleLayer.appendChild(person);
+display:flex;
 
-person.classList.remove("staging");
-person.classList.add("on-board");
+align-items:center;
 
-person.style.position = "absolute";
+justify-content:center;
 
-setPersonPercent(
+gap:14px;
 
-person,
+min-width:0;
 
-item.x,
+}
 
-item.y
+.header-tagline .tagline-line{
 
+width:44px;
+
+height:1px;
+
+background:
+linear-gradient(
+90deg,
+transparent,
+#D9A566,
+transparent
 );
 
-}else{
-
-stagingArea.appendChild(person);
-
-person.classList.remove("on-board");
-person.classList.add("staging");
-
-person.style.position = "";
-person.style.left = "";
-person.style.top = "";
-
-delete person.dataset.x;
-delete person.dataset.y;
+flex-shrink:0;
 
 }
 
+.header-emblem-text{
 
-/* 상태 복원 (알 수 없는 상태값은 '기타'로 안전하게 처리) */
+display:flex;
 
-const restoredStatus =
-(item.status && statusConfig[item.status])
-? item.status
-: "기타";
+align-items:baseline;
 
-statusMap[item.id] = restoredStatus;
+gap:8px;
 
-updatePersonColor(
-person,
-restoredStatus
+flex-shrink:0;
+
+white-space:nowrap;
+
+}
+
+.header-emblem-text .emblem-brand{
+
+font-family:"Gowun Batang","Malgun Gothic",serif;
+
+font-size:16px;
+
+font-weight:700;
+
+letter-spacing:1.8px;
+
+background:
+linear-gradient(
+135deg,
+#D9A566,
+#F5EFE6 45%,
+#D9A566
 );
 
-}catch(err){
+-webkit-background-clip:text;
 
-console.error("한 명의 데이터를 복원하는 중 오류가 발생해 건너뜁니다.", err);
+background-clip:text;
 
-}
+-webkit-text-fill-color:transparent;
 
-});
-
-
-try{
-
-updateAttendance();
-
-}catch(err){
-
-console.error("출근 현황 갱신 중 오류", err);
+text-shadow:0 1px 2px rgba(0,0,0,.25);
 
 }
 
+.header-emblem-text .emblem-dot{
+
+font-size:12px;
+
+color:#D9A566;
+
+opacity:.75;
 
 }
 
-/* 초기화 */
+.header-emblem-text .emblem-site{
 
-function resetPositions() {
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
 
+font-size:12.5px;
 
-document.querySelectorAll(".person")
-.forEach((person) => {
+font-weight:600;
 
+letter-spacing:2px;
 
-moveToStaging(person, false);
+color:#F5EFE6;
 
-
-
-statusMap[person.dataset.id] = "주간";
-
-
-updatePersonColor(
-
-person,
-
-"주간"
-
-);
-
-
-});
-
-
-updateAttendance();
-
-
-localStorage.removeItem(STORAGE_KEY);
-
+opacity:.92;
 
 }
 
-/* 버튼 연결 */
+.header-emblem-text .emblem-paren{
 
-document
-.getElementById("saveBtn")
-.addEventListener("click", savePositions);
+font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
 
-document
-.getElementById("loadBtn")
-.addEventListener("click", loadPositions);
+font-size:11px;
 
-document
-.getElementById("resetBtn")
-.addEventListener("click", resetPositions);
+font-weight:500;
+
+letter-spacing:1px;
+
+color:#B9C4D0;
+
+}
+
+
+#toolbar{
+
+height:auto;
+
+background:transparent;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+border:none;
+
+flex-shrink:0;
+
+}
+
+#toolbar button{
+
+width:90px;
+
+height:38px;
+
+border:none;
+
+border-radius:12px;
+
+color:white;
+
+font-size:14px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:
+transform .2s,
+box-shadow .2s;
+
+box-shadow:
+0 3px 8px rgba(0,0,0,0.15);
+
+}
+
+
+/* 버튼 hover */
+
+#toolbar button:hover{
+
+transform:translateY(-2px);
+
+box-shadow:
+0 6px 12px rgba(0,0,0,0.22);
+
+}
+
+
+/* 저장 버튼 */
+
+#saveBtn{
+
+background:#55B88A;
+
+}
+
+#saveBtn:hover{
+
+background:#3FA36F;
+
+}
+
+
+/* 불러오기 버튼 */
+
+#loadBtn{
+
+background:#5DADE2;
+
+}
+
+#loadBtn:hover{
+
+background:#3488C7;
+
+}
+
+
+/* 초기화 버튼 */
+
+#resetBtn{
+
+background:#E57373;
+
+}
+
+#resetBtn:hover{
+
+background:#C94F4F;
+
+}
+
+
+
+#toolbar button:active{
+
+transform:scale(.96);
+
+}
+
+.toolbar-divider{
+
+width:0;
+
+height:26px;
+
+border-left:1px dashed rgba(255,255,255,.35);
+
+margin:0 4px;
+
+flex-shrink:0;
+
+}
+
+
+
+#board{
+
+    position:relative;
+
+    width:100%;
+
+    flex:1;
+
+    min-height:0;
+
+    overflow:visible;
+
+    background:transparent;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+#warehouse{
+
+display:block;
+
+width:100%;
+
+height:100%;
+
+object-fit:contain;
+
+object-position:center;
+
+filter:brightness(1.12) contrast(1.05);
+
+}
+
+#peopleLayer{
+
+position:absolute;
+
+z-index:100;
+
+pointer-events:none;
+
+}
+
+.person{
+
+width:var(--person-w);
+height:var(--person-h);
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+gap:4px;
+
+
+/* 이름표 카드 디자인 */
+
+background:rgba(255,255,255,0.85);
+
+border:1px solid rgba(255,255,255,0.9);
+
+border-radius:14px;
+
+
+/* 글자 */
+
+font-size:var(--person-font);
+
+font-weight:700;
+
+color:#333;
+
+letter-spacing:-0.3px;
+
+
+/* 드래그 */
+
+cursor:grab;
+
+touch-action:none;
+
+
+/* 입체감 */
+
+box-shadow:
+0 5px 14px rgba(0,0,0,0.22);
+
+
+/* 배경 융합 */
+
+backdrop-filter:blur(4px);
+
+
+transition:
+box-shadow .2s ease;
+
+
+pointer-events:auto;
+
+padding:0;
+
+}
+
+/* 창고 이미지 위에 배치된 상태 */
+.person.on-board{
+
+position:absolute;
+
+}
+
+/* 대기 영역(초기 상태)에 놓인 상태 */
+.person.staging{
+
+position:static;
+
+flex-shrink:0;
+
+}
+
+/* 드래그 중 (뷰포트 기준 자유 이동) */
+.person.dragging{
+
+position:fixed;
+
+z-index:99999;
+
+cursor:grabbing;
+
+transform:scale(1.08);
+
+box-shadow:
+0 8px 18px rgba(0,0,0,.28);
+
+}
+
+.staging-area{
+
+flex:1;
+
+min-height:0;
+
+overflow-y:auto;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:6px;
+
+padding:6px;
+
+border:2px dashed #cbd5e1;
+
+border-radius:12px;
+
+background:rgba(248,250,252,.6);
+
+}
+
+.staging-area::before{
+
+content:"⬇ 드래그해서 배치";
+
+font-size:10.5px;
+
+color:#94A3B8;
+
+font-weight:600;
+
+margin-bottom:2px;
+
+text-align:center;
+
+}
+
+.staging-area.drop-hover{
+
+border-color:#5DADE2;
+
+background:rgba(93,173,226,.08);
+
+}
+
+@media (max-width:900px){
+
+header{
+
+font-size:18px;
+
+}
+
+.header-tagline{
+
+display:none;
+
+}
+
+#toolbar{
+
+gap:8px;
+
+padding:0 8px;
+
+}
+
+#toolbar button{
+
+flex:1;
+
+height:44px;
+
+font-size:14px;
+
+}
+
+.person{
+
+width:90px;
+height:36px;
+
+padding:0;
+
+font-size:13px;
+
+}
+
+}
+
+@media (max-width:500px){
+
+header{
+
+height:50px;
+
+font-size:17px;
+
+}
+
+#toolbar{
+
+height:55px;
+
+}
+
+#board{
+
+height:calc(100vh - 50px);
+
+}
+
+.person{
+
+width:80px;
+height:32px;
+
+font-size:12px;
+
+padding:0;
+
+border-radius:8px;
+
+}
+
+}
+
+#adminBar{
+
+display:none;
+
+position:fixed;
+
+top:70px;
+
+left:0;
+
+right:0;
+
+height:42px;
+
+background:#1E293B;
+
+color:#fff;
+
+align-items:center;
+
+gap:12px;
+
+padding:0 22px;
+
+z-index:150;
+
+box-shadow:0 4px 10px rgba(0,0,0,.18);
+
+}
+
+body.admin-mode #adminBar{
+
+display:flex;
+
+}
+
+body.admin-mode .main-layout{
+
+margin-top:42px;
+
+height:calc(100vh - 70px - 42px);
+
+}
+
+.admin-bar-label{
+
+font-size:12.5px;
+
+font-weight:600;
+
+color:#D9A566;
+
+flex-shrink:0;
+
+}
+
+#personSizeSlider{
+
+width:150px;
+
+}
+
+#personSizeValue{
+
+font-size:12px;
+
+width:36px;
+
+flex-shrink:0;
+
+}
+
+#layoutResetBtn{
+
+margin-left:auto;
+
+height:28px;
+
+padding:0 12px;
+
+border:none;
+
+border-radius:8px;
+
+background:#475569;
+
+color:#fff;
+
+font-size:12px;
+
+font-weight:700;
+
+cursor:pointer;
+
+flex-shrink:0;
+
+}
+
+#layoutResetBtn:hover{
+
+background:#334155;
+
+}
+
+/* ==========================
+리사이즈 핸들 (관리자 모드에서만 활성)
+========================== */
+
+.resize-handle{
+
+flex-shrink:0;
+
+position:relative;
+
+background:transparent;
+
+pointer-events:none;
+
+}
+
+body.admin-mode .resize-handle{
+
+pointer-events:auto;
+
+}
+
+.resize-h{
+
+width:18px;
+
+}
+
+.resize-h::after{
+
+content:"";
+
+position:absolute;
+
+left:50%;
+
+top:10%;
+
+bottom:10%;
+
+width:3px;
+
+margin-left:-1.5px;
+
+background:transparent;
+
+border-radius:3px;
+
+transition:background .15s;
+
+}
+
+body.admin-mode .resize-h{
+
+cursor:col-resize;
+
+}
+
+body.admin-mode .resize-h::after{
+
+background:#c7cdd6;
+
+}
+
+body.admin-mode .resize-h:hover::after,
+.resize-h.active::after{
+
+background:#5DADE2;
+
+}
+
+.resize-v{
+
+height:8px;
+
+width:100%;
+
+}
+
+.resize-v::after{
+
+content:"";
+
+position:absolute;
+
+top:50%;
+
+left:10%;
+
+right:10%;
+
+height:3px;
+
+margin-top:-1.5px;
+
+background:transparent;
+
+border-radius:3px;
+
+transition:background .15s;
+
+}
+
+body.admin-mode .resize-v{
+
+cursor:row-resize;
+
+}
+
+body.admin-mode .resize-v::after{
+
+background:#c7cdd6;
+
+}
+
+body.admin-mode .resize-v:hover::after,
+.resize-v.active::after{
+
+background:#5DADE2;
+
+}
+
+.main-layout{
+display:flex;
+width:100%;
+height:calc(100vh - 70px);
+}
+
+/* ==========================
+오늘 할 일 패널 (좌측)
+========================== */
+
+.left-todo{
+
+width:14%;
+
+padding:12px;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.center-board{
+
+width:58%;
+
+position:relative;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:visible;
+
+padding:0;
+
+}
+
+.board-wrap{
+
+width:100%;
+
+height:100%;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.dev-note{
+
+height:80px;
+
+flex-shrink:0;
+
+margin-top:0;
+
+border:2px dashed #bbb;
+
+border-radius:10px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:20px;
+
+font-weight:700;
+
+letter-spacing:1px;
+
+color:#999;
+
+}
+
+/* ==========================
+대기 인원 패널 (세로형)
+========================== */
+
+.staging-panel{
+
+width:14%;
+
+padding:12px;
+
+display:flex;
+
+flex-direction:column;
+
+background:#ffffff;
+
+border-radius:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+}
+
+.staging-panel h2{
+
+font-size:16px;
+
+font-weight:800;
+
+color:#334155;
+
+text-align:center;
+
+margin-bottom:10px;
+
+flex-shrink:0;
+
+}
+
+.right-panel{
+width:14%;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+/* =========================================================
+오늘업무 카드 디자인
+========================================================= */
+
+.todo-panel{
+
+height:100%;
+
+background:#ffffff;
+
+border-radius:20px;
+
+padding:18px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.todo-panel h2{
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#334155;
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+.todo-input-row{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin-bottom:14px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:14px;
+
+    padding:10px;
+
+}
+
+#todoInput{
+
+    width:100%;
+
+    height:38px;
+
+    border:1px solid #E2E8F0;
+
+    border-radius:10px;
+
+    padding:0 10px;
+
+    font-size:13px;
+
+    font-family:inherit;
+
+    outline:none;
+
+    background:#fff;
+
+    user-select:text;
+
+    -webkit-user-select:text;
+
+}
+
+#todoInput:focus{
+
+    border-color:#5DADE2;
+
+}
+
+.todo-btn-row{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+#todoAddBtn,
+#todoResetBtn{
+
+    flex:1;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+#todoAddBtn{
+
+    background:#334155;
+
+    color:#fff;
+
+}
+
+#todoAddBtn:hover{
+
+    background:#1E293B;
+
+}
+
+#todoResetBtn{
+
+    background:#EDF1F5;
+
+    color:#64748B;
+
+}
+
+#todoResetBtn:hover{
+
+    background:#E2E8F0;
+
+}
+
+.todo-list{
+
+    flex:1;
+
+    overflow-y:auto;
+
+}
+
+.todo-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    background:#F8FAFC;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    color:#334155;
+
+    transition:background .2s;
+
+}
+
+.todo-item.is-progress{
+
+    background:#FEF3C7;
+
+}
+
+.todo-item.is-done{
+
+    background:#DCFCE7;
+
+}
+
+.todo-num{
+
+    flex-shrink:0;
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    background:#E2E8F0;
+
+    color:#475569;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.todo-item span.todo-text{
+
+    flex:1;
+
+    min-width:0;
+
+    word-break:break-all;
+
+}
+
+.todo-item.is-done span.todo-text{
+
+    text-decoration:line-through;
+
+    color:#94A3B8;
+
+}
+
+.todo-actions{
+
+    display:flex;
+
+    gap:4px;
+
+    flex-shrink:0;
+
+}
+
+.todo-action-btn{
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#EEF2F6;
+
+    color:#64748B;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    padding:6px 8px;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+
+}
+
+.todo-action-btn.progress-btn.active{
+
+    background:#F59E0B;
+
+    color:#fff;
+
+}
+
+.todo-action-btn.done-btn.active{
+
+    background:#22C55E;
+
+    color:#fff;
+
+}
+
+.todo-empty{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#94A3B8;
+
+    line-height:1.8;
+
+}
+
+.left-todo,
+.center-board,
+.staging-panel,
+.right-panel{
+
+    transition:all .25s ease;
+
+}
 
 
 /* ==========================
-최종 마무리
+출근 현황판 디자인
 ========================== */
 
-/* 드래그 중 텍스트 선택 방지 */
-document.addEventListener("dragstart", (e) => {
-e.preventDefault();
-});
 
+.attendance-panel{
 
-/* 더블클릭 확대 방지(모바일) */
-let lastTouchEnd = 0;
+flex:7 1 0;
 
-document.addEventListener("touchend", function (event) {
+min-height:0;
 
-const now = Date.now();
+overflow-y:auto;
 
-if (now - lastTouchEnd <= 300) {
-event.preventDefault();
-}
+display:flex;
 
-lastTouchEnd = now;
+flex-direction:column;
 
-}, { passive: false });
+font-size:22px;
 
-/* 저장 단축키(Ctrl + S) */
-document.addEventListener("keydown", (e) => {
+text-align:center;
 
-if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+color:#334155;
 
-e.preventDefault();
+background:#ffffff;
 
-savePositions();
+border-radius:20px;
 
-}
+padding:14px 16px;
 
-});
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
 
-/* ESC 누르면 전원 대기 영역으로 되돌림 (저장 데이터는 건드리지 않음) */
-document.addEventListener("keydown", (e) => {
-
-
-if (e.key === "Escape") {
-
-
-document.querySelectorAll(".person")
-.forEach((person)=>{
-
-
-moveToStaging(person, false);
-
-
-});
-
+border:none;
 
 }
 
 
-});
 
+.attendance-panel h2{
 
-/* ==========================
-직원 상태 관리
-========================== */
+font-size:19px;
 
-const totalPeople = [];
-const dayPeople = [];
-const seokganPeople = [];
-const gwangyeokPeople = [];
-const floor1People = [];
-const officePeople = [];
-const absentPeople = [];
-const etcPeople = [];
+margin-bottom:2px;
 
-
-
-const statusMap = {};
-
-/* ==========================
-   상태 디자인 설정
-========================== */
-
-const statusConfig = {
-
-"주간":{
-    color:"#D8F3DC",
-    icon:"🔆"
-},
-
-"석간":{
-    color:"#FEF9C3",
-    icon:"🌙"
-},
-
-"광역":{
-    color:"#D0EBFF",
-    icon:"🚌"
-},
-
-"1층":{
-    color:"#E0F2FE",
-    icon:"1️⃣"
-},
-
-"사무실":{
-    color:"#FCE7F3",
-    icon:"💻"
-},
-
-"휴가":{
-    color:"#FDE68A",
-    icon:"🏝️"
-},
-
-"병가":{
-    color:"#FFD8A8",
-    icon:"➕",
-    iconColor:"#E03131"
-},
-
-"결근":{
-    color:"#FFC9C9",
-    icon:"⛔"
-},
-
-"조퇴":{
-    color:"#BAE6FD",
-    icon:"🚪"
-},
-
-"연장":{
-    color:"#E5DBFF",
-    icon:"🌇"
-
-},
-
-"기타":{
-    color:"#E5E7EB",
-    icon:"📌"
+flex-shrink:0;
 
 }
 
-};
 
-/* 근무 성격의 상태 (더블클릭 순환 판별용) */
-const WORK_STATUSES = ["주간", "석간", "광역", "1층", "사무실"];
 
-/* 결근 카드에 함께 집계할 상태 */
-const ABSENT_STATUSES = ["결근", "휴가", "병가", "조퇴"];
+.attendance-item{
 
+display:flex;
 
+justify-content:space-between;
 
+align-items:center;
 
+padding:9px 14px;
 
+margin-top:7px;
 
+border-radius:12px;
 
-document.querySelectorAll(".person").forEach(person=>{
+cursor:pointer;
 
-statusMap[person.dataset.id]="주간";
+transition:.2s;
 
-updatePersonColor(person,"주간");
+border:none;
 
-});
+flex:1;
 
-try{
+min-height:0;
 
-updateAttendance();
-
-}catch(err){
-
-console.error("초기 출근 현황 계산 중 오류", err);
-
-}
-
-function updateAttendance(){
-
-const total=[];
-
-const day=[];
-
-const seokgan=[];
-
-const gwangyeok=[];
-
-const floor1=[];
-
-const office=[];
-
-const absent=[];
-
-const etc=[];
-
-document.querySelectorAll(".person").forEach(person=>{
-
-const name =
-person.dataset.name || person.innerText;
-
-const state=statusMap[person.dataset.id];
-
-total.push(name);
-
-if(state==="주간"){
-
-day.push(name);
-
-}else if(state==="석간"){
-
-seokgan.push(name);
-
-}else if(state==="광역"){
-
-gwangyeok.push(name);
-
-}else if(state==="1층"){
-
-floor1.push(name);
-
-}else if(state==="사무실"){
-
-office.push(name);
-
-}else if(ABSENT_STATUSES.includes(state)){
-
-absent.push(name);
-
-}else{
-
-etc.push(name);
-
-}
-
-});
-
-function setCountText(id, value){
-
-const el = document.getElementById(id);
-
-if(el) el.innerText = value;
-
-}
-
-setCountText("totalCount", total.length);
-setCountText("dayCount", day.length);
-setCountText("seokganCount", seokgan.length);
-setCountText("gwangyeokCount", gwangyeok.length);
-setCountText("floor1Count", floor1.length);
-setCountText("officeCount", office.length);
-setCountText("absentCount", absent.length);
-setCountText("etcCount", etc.length);
-
-  totalPeople.length = 0;
-
-dayPeople.length = 0;
-
-seokganPeople.length = 0;
-
-gwangyeokPeople.length = 0;
-
-floor1People.length = 0;
-
-officePeople.length = 0;
-
-absentPeople.length = 0;
-
-etcPeople.length = 0;
-
-totalPeople.push(...total);
-
-dayPeople.push(...day);
-
-seokganPeople.push(...seokgan);
-
-gwangyeokPeople.push(...gwangyeok);
-
-floor1People.push(...floor1);
-
-officePeople.push(...office);
-
-absentPeople.push(...absent);
-
-etcPeople.push(...etc);
-
-}
-
-document.querySelectorAll(".person").forEach(person=>{
-
-person.addEventListener("dblclick",()=>{
-
-const current=statusMap[person.dataset.id];
-
-let next="주간";
-
-if(WORK_STATUSES.includes(current)){
-
-next="결근";
-
-}else if(current==="결근"){
-
-next="기타";
-
-}else{
-
-next="주간";
-
-}
-
-statusMap[person.dataset.id]=next;
-
-updatePersonColor(person, next);
-
-updateAttendance();
-
-
-});
-
-});
-
-/* ==========================
-직원 상태 팝업
-========================== */
-
-let selectedPerson = null;
-
-document.querySelectorAll(".person").forEach(person=>{
-
-person.addEventListener("click",()=>{
-
-if(isDragging){
-
-isDragging = false;
-
-return;
-
-}
-
-selectedPerson = person;
-
-document.getElementById("statusTitle").innerText =
-person.dataset.name || person.innerText;
-
-document.getElementById("statusPopup").style.display="flex";
-
-});
-
-});
-
-document.getElementById("closeStatusPopup").onclick = function () {
-
-    document.getElementById("statusPopup").style.display = "none";
-
-    selectedPerson = null;
-
-};
-
-/* ==========================
-상태 변경 연동
-이름표 ↔ 출근부
-========================== */
-
-document.querySelectorAll(".status-btn").forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        if (!selectedPerson) return;
-
-
-        const status = btn.dataset.status;
-
-
-        // 상태 저장
-        statusMap[selectedPerson.dataset.id] = status;
-
-
-        // 이름표 색상 변경
-        updatePersonColor(
-            selectedPerson,
-            status
-        );
-
-
-        // 출근부 숫자 즉시 갱신
-        updateAttendance();
-
-
-        // 변경 즉시 자동 저장
-        saveStatusOnly();
-
-
-        // 팝업 닫기
-        document.getElementById("statusPopup").style.display = "none";
-
-
-        selectedPerson = null;
-
-
-    });
-
-});
-
-function updatePersonColor(person,status){
-
-const config =
-statusConfig[status];
-
-
-if(!config) return;
-
-
-/* 색상 */
-
-person.style.background =
-config.color;
-
-
-/* 아이콘 + 이름 표시 */
-
-const name =
-person.dataset.name ||
-person.innerText;
-
-
-person.dataset.name = name;
-
-
-const iconColorStyle =
-config.iconColor
-? ` style="color:${config.iconColor}"`
-: "";
-
-
-person.innerHTML =
-`
-<span class="status-icon"${iconColorStyle}>
-${config.icon}
-</span>
-<span class="person-name">
-${name}
-</span>
-`;
-
-}
-
-/* ==========================
-출근부 팝업
-========================== */
-
-function openPopup(title,list){
-
-document.getElementById("popupTitle").innerText = title;
-
-const box = document.getElementById("popupList");
-
-box.innerHTML = "";
-
-list.forEach(name=>{
-
-const div = document.createElement("div");
-
-div.innerText = name;
-
-div.style.cursor = "pointer";
-div.style.padding = "10px";
-
-div.onclick = function(){
-
-const person = [...document.querySelectorAll(".person")]
-.find(p=>p.dataset.name===name);
-
-if(!person) return;
-
-selectedPerson = person;
-
-document.getElementById("popup").style.display = "none";
-
-document.getElementById("statusTitle").innerText = name;
-
-document.getElementById("statusPopup").style.display = "flex";
-
-};
-
-box.appendChild(div);
-
-});
-
-document.getElementById("popup").style.display = "flex";
-
-}
-
-document.getElementById("closePopup").onclick=function(){
-
-document.getElementById("popup").style.display="none";
-
-};
-
-document.getElementById("totalBox").onclick=function(){
-
-openPopup("총원",totalPeople);
-
-};
-
-document.getElementById("dayBox").onclick=function(){
-
-openPopup("출근(주간)",dayPeople);
-
-};
-
-document.getElementById("seokganBox").onclick=function(){
-
-openPopup("출근(석간)",seokganPeople);
-
-};
-
-document.getElementById("gwangyeokBox").onclick=function(){
-
-openPopup("출근(광역)",gwangyeokPeople);
-
-};
-
-document.getElementById("floor1Box").onclick=function(){
-
-openPopup("1층",floor1People);
-
-};
-
-document.getElementById("officeBox").onclick=function(){
-
-openPopup("사무실",officePeople);
-
-};
-
-document.getElementById("absentBox").onclick=function(){
-
-openPopup("결근",absentPeople);
-
-};
-
-document.getElementById("etcBox").onclick=function(){
-
-openPopup("기타",etcPeople);
-
-};
-
-/* ==========================
-출근부 날짜 표시
-========================== */
-
-function updateTodayDate(){
-
-const today = new Date();
-
-const year = today.getFullYear();
-
-const month = today.getMonth()+1;
-
-const date = today.getDate();
-
-const day = [
-"일",
-"월",
-"화",
-"수",
-"목",
-"금",
-"토"
-][today.getDay()];
-
-
-document.getElementById("todayDate").innerText =
-`${year}년 ${month}월 ${date}일 (${day})`;
+box-shadow:
+0 2px 6px rgba(0,0,0,.06);
 
 }
 
 
-updateTodayDate();
 
+.attendance-item:hover{
 
-/* ==========================
-상태만 저장
-========================== */
-function saveStatusOnly(){
-
-const data = [];
-
-
-document.querySelectorAll(".person").forEach(person=>{
-
-const onBoard = person.classList.contains("on-board");
-
-let x, y;
-
-if(onBoard){
-
-const pos = getPersonPercent(person);
-
-x = pos.x;
-
-y = pos.y;
-
-person.dataset.x = x;
-
-person.dataset.y = y;
+transform:translateY(-2px);
 
 }
 
 
-data.push({
 
-id: person.dataset.id,
+.attendance-title{
 
-location: onBoard ? "board" : "staging",
+font-size:14px;
 
-x: x,
-
-y: y,
-
-status:
-statusMap[person.dataset.id]
-
-});
-
-
-});
-
-
-localStorage.setItem(
-
-STORAGE_KEY,
-
-JSON.stringify(data)
-
-);
-
+font-weight:bold;
 
 }
+
+
+
+.attendance-number{
+
+font-size:19px;
+
+font-weight:800;
+
+}
+
+
+
+.total-card{
+
+background:#EEF1F6;
+
+}
+
+
+
+/* 출근(주간) */
+.work-day-card{
+
+background:#FFF1D6;
+
+}
+
+/* 출근(석간) */
+.work-seokgan-card{
+
+background:#FFF9E3;
+
+}
+
+/* 출근(광역) */
+.work-gwangyeok-card{
+
+background:#E3EFFC;
+
+}
+
+/* 1층 */
+.floor1-card{
+
+background:#E2F4F6;
+
+}
+
+/* 사무실 */
+.office-card{
+
+background:#F5E9F7;
+
+}
+
+
+
+.absent-card{
+
+background:#FBE4E4;
+
+}
+
+
+
+.etc-card{
+
+background:#EAE6F7;
+
+}
+
 
 /* ==========================
 특이사항 메모장
 ========================== */
 
-function saveNote(){
+.note-panel{
 
-const el = document.getElementById("noteText");
+flex:3 1 0;
 
-if(!el) return;
+min-height:0;
 
-localStorage.setItem(
-NOTE_KEY,
-el.value
-);
+background:#ffffff;
+
+border-radius:20px;
+
+padding:16px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
+display:flex;
+
+flex-direction:column;
 
 }
 
-try{
+.note-panel h2{
 
-const noteText = document.getElementById("noteText");
+font-size:18px;
 
-/* 불러오기 */
-noteText.value = localStorage.getItem(NOTE_KEY) || "";
+font-weight:800;
 
-/* 입력할 때마다 자동 저장 */
-noteText.addEventListener("input", () => {
+color:#334155;
 
-saveNote();
+margin-bottom:10px;
 
-});
+text-align:center;
 
-}catch(err){
+}
 
-console.error("특이사항 메모장 초기화 중 오류", err);
+#noteText{
+
+flex:1;
+
+resize:none;
+
+border:1px solid #E2E8F0;
+
+border-radius:12px;
+
+padding:12px;
+
+font-family:inherit;
+
+font-size:14px;
+
+line-height:1.6;
+
+color:#334155;
+
+outline:none;
+
+user-select:text;
+
+-webkit-user-select:text;
+
+}
+
+#noteText:focus{
+
+border-color:#5DADE2;
+
+}
+
+
+/* ===========================
+출근부 팝업
+=========================== */
+
+.popup{
+
+display:none;
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.45);
+
+justify-content:center;
+align-items:center;
+
+z-index:99999;
+
+}
+
+.popup-box{
+
+width:320px;
+
+background:#fff;
+
+border-radius:12px;
+
+padding:20px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+max-height:85vh;
+
+overflow-y:auto;
+
+}
+
+.popup-box h3{
+
+margin-bottom:15px;
+
+text-align:center;
+
+color:#1976d2;
+
+}
+
+#popupList{
+
+max-height:350px;
+
+overflow:auto;
+
+margin-bottom:20px;
+
+}
+
+#popupList div{
+
+padding:8px;
+
+border-bottom:1px solid #ddd;
+
+}
+
+#closePopup{
+
+width:100%;
+
+height:42px;
+
+border:none;
+
+border-radius:8px;
+
+background:#1976d2;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+
+/* ==========================
+직원 상태 팝업
+========================== */
+
+.status-btn{
+
+width:100%;
+
+height:48px;
+
+margin-bottom:10px;
+
+border:none;
+
+border-radius:14px;
+
+
+font-size:17px;
+
+font-weight:700;
+
+
+cursor:pointer;
+
+
+background:#F8FAFC;
+
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:8px;
+
+
+box-shadow:
+0 3px 8px rgba(0,0,0,.08);
+
+
+transition:
+transform .2s,
+background .2s;
+
+}
+
+
+
+.status-btn:hover{
+
+background:#1976d2;
+
+color:white;
+
+transform:translateY(-2px);
+
+}
+
+
+
+.status-btn span{
+
+font-size:20px;
+
+}
+
+.icon-sickleave{
+
+color:#E03131;
+
+font-weight:900;
+
+}
+
+#closeStatusPopup{
+
+
+width:100%;
+
+height:45px;
+
+border:none;
+
+border-radius:12px;
+
+
+background:#64748B;
+
+color:white;
+
+
+font-size:16px;
+
+font-weight:bold;
+
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+/* ==========================
+출근부 날짜 표시
+========================== */
+
+#todayDate{
+
+font-size:13px;
+
+color:#666;
+
+margin-top:2px;
+
+margin-bottom:2px;
+
+font-weight:bold;
+
+text-align:center;
+
+flex-shrink:0;
 
 }
 
 
 /* ==========================
-오늘업무 (TODO)
-- 번호 자동 생성
-- 삭제 대신 '작업중' / '완료' 버튼으로 처리 상태 표시
-- 다른 영역에서 오류가 나도 이 블록은 독립적으로 항상 동작하도록 try/catch로 감쌈
+상태 아이콘 정렬
 ========================== */
 
-try{
+.status-icon{
 
-const TODO_KEY = "personnelBoardLite_todo_v2";
+display:inline-flex;
 
-const todoInput = document.getElementById("todoInput");
-const todoAddBtn = document.getElementById("todoAddBtn");
-const todoResetBtn = document.getElementById("todoResetBtn");
-const todoList = document.getElementById("todoList");
+align-items:center;
 
-let todoItems = [];
+justify-content:center;
 
-function loadTodos(){
-
-const saved = localStorage.getItem(TODO_KEY);
-
-let parsed = [];
-
-try{
-
-parsed = saved ? JSON.parse(saved) : [];
-
-if(!Array.isArray(parsed)) parsed = [];
-
-}catch(err){
-
-parsed = [];
+font-size:calc(var(--person-font) + 1px);
 
 }
 
-/* 예전 버전(문자열 배열) 데이터를 새 형식으로 안전하게 변환 */
 
-todoItems = parsed.map(item => {
+.person-name{
 
-if(typeof item === "string"){
+display:inline-flex;
 
-return { text:item, state:"pending" };
+align-items:center;
 
-}
+font-size:var(--person-font);
 
-return {
-
-text: (item && typeof item.text === "string") ? item.text : "",
-
-state: (item && (item.state === "progress" || item.state === "done")) ? item.state : "pending"
-
-};
-
-}).filter(item => item.text !== "");
-
-renderTodos();
+font-weight:700;
 
 }
-
-function saveTodos(){
-
-localStorage.setItem(
-TODO_KEY,
-JSON.stringify(todoItems)
-);
-
-}
-
-function renderTodos(){
-
-todoList.innerHTML = "";
-
-if(todoItems.length === 0){
-
-const empty = document.createElement("p");
-
-empty.className = "todo-empty";
-
-empty.id = "todoEmpty";
-
-empty.innerText = "오늘 업무를 추가하세요.";
-
-todoList.appendChild(empty);
-
-return;
-
-}
-
-todoItems.forEach((todo, index) => {
-
-const item = document.createElement("div");
-
-item.className = "todo-item";
-
-if(todo.state === "progress") item.classList.add("is-progress");
-
-if(todo.state === "done") item.classList.add("is-done");
-
-
-const num = document.createElement("span");
-
-num.className = "todo-num";
-
-num.innerText = index + 1;
-
-
-const span = document.createElement("span");
-
-span.className = "todo-text";
-
-span.innerText = todo.text;
-
-
-const actions = document.createElement("div");
-
-actions.className = "todo-actions";
-
-
-const progressBtn = document.createElement("button");
-
-progressBtn.className = "todo-action-btn progress-btn";
-
-if(todo.state === "progress") progressBtn.classList.add("active");
-
-progressBtn.innerText = "작업중";
-
-progressBtn.addEventListener("click", () => {
-
-todo.state = (todo.state === "progress") ? "pending" : "progress";
-
-saveTodos();
-
-renderTodos();
-
-});
-
-
-const doneBtn = document.createElement("button");
-
-doneBtn.className = "todo-action-btn done-btn";
-
-if(todo.state === "done") doneBtn.classList.add("active");
-
-doneBtn.innerText = "완료";
-
-doneBtn.addEventListener("click", () => {
-
-todo.state = (todo.state === "done") ? "pending" : "done";
-
-saveTodos();
-
-renderTodos();
-
-});
-
-
-actions.appendChild(progressBtn);
-
-actions.appendChild(doneBtn);
-
-
-item.appendChild(num);
-
-item.appendChild(span);
-
-item.appendChild(actions);
-
-todoList.appendChild(item);
-
-});
-
-}
-
-function addTodo(){
-
-const value = todoInput.value.trim();
-
-if(value === "") return;
-
-todoItems.push({ text:value, state:"pending" });
-
-todoInput.value = "";
-
-saveTodos();
-
-renderTodos();
-
-}
-
-todoAddBtn.addEventListener("click", addTodo);
-
-todoInput.addEventListener("keydown", (e) => {
-
-if(e.key === "Enter"){
-
-e.preventDefault();
-
-addTodo();
-
-}
-
-});
-
-todoResetBtn.addEventListener("click", () => {
-
-if(todoItems.length === 0) return;
-
-if(!confirm("오늘 업무 목록을 모두 초기화할까요?")) return;
-
-todoItems = [];
-
-saveTodos();
-
-renderTodos();
-
-});
-
-loadTodos();
-
-}catch(err){
-
-console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
-
-}
-
-
-/* ==========================
-관리자 모드: 레이아웃 리사이즈 / 이름표 크기 조절
-- 독립 기능이므로 다른 영역 오류의 영향을 받지 않도록 try/catch로 감쌈
-========================== */
-
-try{
-
-const LAYOUT_KEY = "personnelBoardLite_layout_v3";
-
-const DEFAULT_LAYOUT = {
-
-left: 14,
-center: 58,
-staging: 14,
-right: 14,
-devNoteHeight: 80,
-personScale: 100
-
-};
-
-const mainLayout = document.querySelector(".main-layout");
-
-const leftEl = document.querySelector(".left-todo");
-const centerEl = document.querySelector(".center-board");
-const stagingEl = document.querySelector(".staging-panel");
-const rightEl = document.querySelector(".right-panel");
-const devNoteEl = document.querySelector(".dev-note");
-
-const layoutModeBtn = document.getElementById("layoutModeBtn");
-const layoutResetBtn = document.getElementById("layoutResetBtn");
-const personSizeSlider = document.getElementById("personSizeSlider");
-const personSizeValue = document.getElementById("personSizeValue");
-
-let layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
-
-function loadLayoutConfig(){
-
-try{
-
-const saved = localStorage.getItem(LAYOUT_KEY);
-
-if(saved){
-
-const parsed = JSON.parse(saved);
-
-layoutConfig = Object.assign({}, DEFAULT_LAYOUT, parsed);
-
-/* 폭 합계가 비정상(옛 버전 잔여값 등)이면 기본값으로 안전하게 복구 */
-
-const widthSum =
-(Number(layoutConfig.left)||0) +
-(Number(layoutConfig.center)||0) +
-(Number(layoutConfig.staging)||0) +
-(Number(layoutConfig.right)||0);
-
-if(widthSum < 96 || widthSum > 104){
-
-layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
-
-}
-
-}
-
-}catch(err){
-
-layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
-
-}
-
-}
-
-function saveLayoutConfig(){
-
-localStorage.setItem(LAYOUT_KEY, JSON.stringify(layoutConfig));
-
-}
-
-function applyLayoutConfig(){
-
-if(leftEl) leftEl.style.width = layoutConfig.left + "%";
-if(centerEl) centerEl.style.width = layoutConfig.center + "%";
-if(stagingEl) stagingEl.style.width = layoutConfig.staging + "%";
-if(rightEl) rightEl.style.width = layoutConfig.right + "%";
-
-if(devNoteEl) devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
-
-const scale = layoutConfig.personScale / 100;
-
-document.documentElement.style.setProperty("--person-w", (95*scale).toFixed(1)+"px");
-document.documentElement.style.setProperty("--person-h", (38*scale).toFixed(1)+"px");
-document.documentElement.style.setProperty("--person-font", (14*scale).toFixed(1)+"px");
-
-if(personSizeSlider) personSizeSlider.value = layoutConfig.personScale;
-
-if(personSizeValue) personSizeValue.innerText = layoutConfig.personScale + "%";
-
-
-try{ resizePeopleLayer(); }catch(err){}
-
-}
-
-loadLayoutConfig();
-
-applyLayoutConfig();
-
-
-/* 관리자 모드 토글 */
-
-if(layoutModeBtn){
-
-layoutModeBtn.addEventListener("click", () => {
-
-document.body.classList.toggle("admin-mode");
-
-try{ resizePeopleLayer(); }catch(err){}
-
-});
-
-}
-
-
-/* 이름표 크기 슬라이더 */
-
-if(personSizeSlider){
-
-personSizeSlider.addEventListener("input", () => {
-
-layoutConfig.personScale = Number(personSizeSlider.value);
-
-applyLayoutConfig();
-
-saveLayoutConfig();
-
-});
-
-}
-
-
-/* 레이아웃 초기화 */
-
-if(layoutResetBtn){
-
-layoutResetBtn.addEventListener("click", () => {
-
-if(!confirm("패널 크기와 이름표 크기를 기본값으로 되돌릴까요?")) return;
-
-layoutConfig = Object.assign({}, DEFAULT_LAYOUT);
-
-applyLayoutConfig();
-
-saveLayoutConfig();
-
-});
-
-}
-
-
-/* 가로 리사이즈 핸들 (좌↔중앙, 중앙↔대기인원, 대기인원↔출근현황) */
-
-const panelByClass = {
-
-"left-todo": leftEl,
-
-"center-board": centerEl,
-
-"staging-panel": stagingEl,
-
-"right-panel": rightEl
-
-};
-
-const keyByClass = {
-
-"left-todo": "left",
-
-"center-board": "center",
-
-"staging-panel": "staging",
-
-"right-panel": "right"
-
-};
-
-document.querySelectorAll(".resize-h").forEach(handle => {
-
-const prevKey = handle.dataset.targetPrev;
-const nextKey = handle.dataset.targetNext;
-
-const prevEl = panelByClass[prevKey];
-const nextEl = panelByClass[nextKey];
-
-if(!prevEl || !nextEl) return;
-
-let startX = 0;
-let startPrevPercent = 0;
-let startNextPercent = 0;
-
-const MIN_PERCENT = 8;
-
-function onDown(e){
-
-if(!document.body.classList.contains("admin-mode")) return;
-
-const point = e.touches ? e.touches[0] : e;
-
-startX = point.clientX;
-
-startPrevPercent = layoutConfig[keyByClass[prevKey]];
-startNextPercent = layoutConfig[keyByClass[nextKey]];
-
-handle.classList.add("active");
-
-document.addEventListener("mousemove", onMove);
-document.addEventListener("mouseup", onUp);
-document.addEventListener("touchmove", onMove, {passive:false});
-document.addEventListener("touchend", onUp);
-
-}
-
-function onMove(e){
-
-e.preventDefault();
-
-const point = e.touches ? e.touches[0] : e;
-
-const layoutWidth = mainLayout.getBoundingClientRect().width;
-
-if(!layoutWidth) return;
-
-const deltaPercent = ((point.clientX - startX) / layoutWidth) * 100;
-
-let newPrev = startPrevPercent + deltaPercent;
-let newNext = startNextPercent - deltaPercent;
-
-if(newPrev < MIN_PERCENT){
-
-const diff = MIN_PERCENT - newPrev;
-
-newPrev = MIN_PERCENT;
-
-newNext -= diff;
-
-}
-
-if(newNext < MIN_PERCENT){
-
-const diff = MIN_PERCENT - newNext;
-
-newNext = MIN_PERCENT;
-
-newPrev -= diff;
-
-}
-
-layoutConfig[keyByClass[prevKey]] = Number(newPrev.toFixed(2));
-layoutConfig[keyByClass[nextKey]] = Number(newNext.toFixed(2));
-
-prevEl.style.width = layoutConfig[keyByClass[prevKey]] + "%";
-nextEl.style.width = layoutConfig[keyByClass[nextKey]] + "%";
-
-try{ resizePeopleLayer(); }catch(err){}
-
-}
-
-function onUp(){
-
-document.removeEventListener("mousemove", onMove);
-document.removeEventListener("mouseup", onUp);
-document.removeEventListener("touchmove", onMove, {passive:false});
-document.removeEventListener("touchend", onUp);
-
-handle.classList.remove("active");
-
-saveLayoutConfig();
-
-}
-
-handle.addEventListener("mousedown", onDown);
-handle.addEventListener("touchstart", onDown, {passive:false});
-
-});
-
-
-/* 세로 리사이즈 핸들 (창고 이미지 ↔ 개발예정) */
-
-const devNoteHandle = document.getElementById("devNoteResizeHandle");
-
-if(devNoteHandle && devNoteEl){
-
-let startY = 0;
-let startHeight = 0;
-
-const MIN_DEVNOTE = 60;
-const MAX_DEVNOTE = 600;
-
-function onDownV(e){
-
-if(!document.body.classList.contains("admin-mode")) return;
-
-const point = e.touches ? e.touches[0] : e;
-
-startY = point.clientY;
-
-startHeight = layoutConfig.devNoteHeight;
-
-devNoteHandle.classList.add("active");
-
-document.addEventListener("mousemove", onMoveV);
-document.addEventListener("mouseup", onUpV);
-document.addEventListener("touchmove", onMoveV, {passive:false});
-document.addEventListener("touchend", onUpV);
-
-}
-
-function onMoveV(e){
-
-e.preventDefault();
-
-const point = e.touches ? e.touches[0] : e;
-
-const deltaY = point.clientY - startY;
-
-let newHeight = startHeight - deltaY;
-
-if(newHeight < MIN_DEVNOTE) newHeight = MIN_DEVNOTE;
-if(newHeight > MAX_DEVNOTE) newHeight = MAX_DEVNOTE;
-
-layoutConfig.devNoteHeight = Math.round(newHeight);
-
-devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
-
-try{ resizePeopleLayer(); }catch(err){}
-
-}
-
-function onUpV(){
-
-document.removeEventListener("mousemove", onMoveV);
-document.removeEventListener("mouseup", onUpV);
-document.removeEventListener("touchmove", onMoveV, {passive:false});
-document.removeEventListener("touchend", onUpV);
-
-devNoteHandle.classList.remove("active");
-
-saveLayoutConfig();
-
-}
-
-devNoteHandle.addEventListener("mousedown", onDownV);
-devNoteHandle.addEventListener("touchstart", onDownV, {passive:false});
-
-}
-
-}catch(err){
-
-console.error("관리자 모드(레이아웃 편집) 초기화 중 오류", err);
-
-}
-
-
-/* ==========================
-화면 변경 대응
-========================== */
-
-
-function refreshPeoplePosition(){
-
-
-resizePeopleLayer();
-
-
-document.querySelectorAll(".person")
-.forEach(person=>{
-
-
-const savedX = person.dataset.x;
-
-const savedY = person.dataset.y;
-
-
-if(
-savedX !== undefined &&
-savedY !== undefined
-){
-
-
-setPersonPercent(
-
-person,
-
-Number(savedX),
-
-Number(savedY)
-
-);
-
-
-}
-
-
-});
-
-
-}
-
-
-/* 화면 크기 변경 */
-
-window.addEventListener("resize",()=>{
-
-
-refreshPeoplePosition();
-
-
-});
