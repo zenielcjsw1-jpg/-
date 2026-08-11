@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v3.0
+인원현황판 Lite v2.3
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -1963,3 +1963,82 @@ refreshPeoplePosition();
 
 
 });
+
+
+/* ==========================
+모바일 탭 전환
+- 독립 기능이므로 다른 영역 오류의 영향을 받지 않도록 try/catch로 감쌈
+========================== */
+
+try{
+
+const mobileTabbar = document.getElementById("mobileTabbar");
+
+const mobileTabBtns = document.querySelectorAll(".mobile-tab-btn");
+
+const mobilePanels = document.querySelectorAll("[data-mobile-tab]");
+
+function switchMobileTab(tabName){
+
+mobilePanels.forEach(panel => {
+
+panel.classList.toggle(
+"mobile-active",
+panel.dataset.mobileTab === tabName
+);
+
+});
+
+mobileTabBtns.forEach(btn => {
+
+btn.classList.toggle(
+"active",
+btn.dataset.tab === tabName
+);
+
+});
+
+/* 창고 탭으로 전환 시, display:none이었다가 다시 보여지므로
+   실제 렌더링 크기 기준으로 이름표 레이어/좌표를 다시 계산 */
+
+if(tabName === "board"){
+
+requestAnimationFrame(() => {
+
+try{
+
+resizePeopleLayer();
+
+refreshPeoplePosition();
+
+}catch(err){
+
+console.error("모바일 창고 탭 전환 중 좌표 재계산 오류", err);
+
+}
+
+});
+
+}
+
+}
+
+if(mobileTabbar){
+
+mobileTabBtns.forEach(btn => {
+
+btn.addEventListener("click", () => {
+
+switchMobileTab(btn.dataset.tab);
+
+});
+
+});
+
+}
+
+}catch(err){
+
+console.error("모바일 탭 전환 기능 초기화 중 오류", err);
+
+}
