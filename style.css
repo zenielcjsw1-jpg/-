@@ -663,17 +663,6 @@ font-size:14px;
 
 }
 
-.person{
-
-width:90px;
-height:36px;
-
-padding:0;
-
-font-size:13px;
-
-}
-
 }
 
 @media (max-width:500px){
@@ -695,19 +684,6 @@ height:55px;
 #board{
 
 height:calc(100vh - 50px);
-
-}
-
-.person{
-
-width:80px;
-height:32px;
-
-font-size:12px;
-
-padding:0;
-
-border-radius:8px;
 
 }
 
@@ -1871,22 +1847,29 @@ display:none;
 
 position:fixed;
 
-left:0;
-right:0;
-bottom:0;
+left:50%;
 
-height:60px;
+bottom:14px;
+
+transform:translateX(-50%);
+
+width:auto;
+
+height:56px;
+
+padding:6px;
+
+gap:4px;
+
+border-radius:30px;
 
 background:
-linear-gradient(
-135deg,
-#182533 0%,
-#233A50 55%,
-#2C4A64 100%
-);
+rgba(24,37,51,.92);
+
+backdrop-filter:blur(10px);
 
 box-shadow:
-0 -4px 14px rgba(0,0,0,.28);
+0 8px 22px rgba(0,0,0,.35);
 
 z-index:300;
 
@@ -1896,8 +1879,6 @@ align-items:stretch;
 
 .mobile-tab-btn{
 
-flex:1;
-
 display:flex;
 
 flex-direction:column;
@@ -1906,9 +1887,13 @@ align-items:center;
 
 justify-content:center;
 
-gap:2px;
+gap:1px;
+
+width:52px;
 
 border:none;
+
+border-radius:22px;
 
 background:transparent;
 
@@ -1918,11 +1903,15 @@ font-weight:700;
 
 cursor:pointer;
 
+transition:
+background .2s,
+color .2s;
+
 }
 
 .mobile-tab-icon{
 
-font-size:20px;
+font-size:19px;
 
 line-height:1;
 
@@ -1930,22 +1919,22 @@ line-height:1;
 
 .mobile-tab-label{
 
-font-size:11px;
+font-size:9.5px;
 
-letter-spacing:.5px;
+letter-spacing:.3px;
 
 }
 
 .mobile-tab-btn.active{
 
-color:#F5EFE6;
+color:#182533;
 
-}
-
-.mobile-tab-btn.active .mobile-tab-icon{
-
-filter:
-drop-shadow(0 0 6px rgba(217,165,102,.7));
+background:
+linear-gradient(
+135deg,
+#D9A566,
+#E8C48A
+);
 
 }
 
@@ -1972,7 +1961,7 @@ display:none;
 
 flex-direction:column;
 
-height:calc(100vh - 70px - 60px);
+height:calc(100vh - 70px);
 
 }
 
@@ -1994,6 +1983,8 @@ width:100% !important;
 height:100%;
 
 border-radius:0;
+
+padding-bottom:84px;
 
 }
 
