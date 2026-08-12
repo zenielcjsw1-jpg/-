@@ -1634,11 +1634,38 @@ if(rightEl) rightEl.style.width = layoutConfig.right + "%";
 
 if(devNoteEl) devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
 
-const scale = layoutConfig.personScale / 100;
+/* 모바일 화면(768px 이하)에서는 관리자 슬라이더 값 대신
+   화면 폭 기준으로 이름표 크기를 자동 계산 */
+
+const isMobileWidth = window.innerWidth <= 768;
+
+let scale;
+
+if(isMobileWidth){
+
+const MIN_W = 320;
+const MAX_W = 768;
+
+const MIN_SCALE = 0.62;
+const MAX_SCALE = 0.95;
+
+let ratio = (window.innerWidth - MIN_W) / (MAX_W - MIN_W);
+
+ratio = Math.max(0, Math.min(1, ratio));
+
+scale = MIN_SCALE + (MAX_SCALE - MIN_SCALE) * ratio;
+
+}else{
+
+scale = layoutConfig.personScale / 100;
+
+}
 
 document.documentElement.style.setProperty("--person-w", (95*scale).toFixed(1)+"px");
 document.documentElement.style.setProperty("--person-h", (38*scale).toFixed(1)+"px");
 document.documentElement.style.setProperty("--person-font", (14*scale).toFixed(1)+"px");
+
+/* 관리자 슬라이더는 데스크탑 값 기준으로만 표시 (모바일 자동 스케일과 무관) */
 
 if(personSizeSlider) personSizeSlider.value = layoutConfig.personScale;
 
@@ -1652,6 +1679,14 @@ try{ resizePeopleLayer(); }catch(err){}
 loadLayoutConfig();
 
 applyLayoutConfig();
+
+/* 화면 폭이 모바일 ↔ 데스크탑 기준을 넘나들 때마다 이름표 크기 재계산 */
+
+window.addEventListener("resize", () => {
+
+try{ applyLayoutConfig(); }catch(err){}
+
+});
 
 
 /* 관리자 모드 토글 */
