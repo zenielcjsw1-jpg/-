@@ -1838,120 +1838,13 @@ font-weight:700;
 }
 
 /* ==========================
-모바일 하단 탭바 (기본: 숨김, 768px 이하에서만 표시)
-========================== */
-
-.mobile-tabbar{
-
-display:none;
-
-position:fixed;
-
-left:50%;
-
-bottom:14px;
-
-transform:translateX(-50%);
-
-width:auto;
-
-height:56px;
-
-padding:6px;
-
-gap:4px;
-
-border-radius:30px;
-
-background:
-rgba(24,37,51,.92);
-
-backdrop-filter:blur(10px);
-
-box-shadow:
-0 8px 22px rgba(0,0,0,.35);
-
-z-index:300;
-
-align-items:stretch;
-
-}
-
-.mobile-tab-btn{
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-justify-content:center;
-
-gap:1px;
-
-width:52px;
-
-border:none;
-
-border-radius:22px;
-
-background:transparent;
-
-color:#9FB0C2;
-
-font-weight:700;
-
-cursor:pointer;
-
-transition:
-background .2s,
-color .2s;
-
-}
-
-.mobile-tab-icon{
-
-font-size:19px;
-
-line-height:1;
-
-}
-
-.mobile-tab-label{
-
-font-size:9.5px;
-
-letter-spacing:.3px;
-
-}
-
-.mobile-tab-btn.active{
-
-color:#182533;
-
-background:
-linear-gradient(
-135deg,
-#D9A566,
-#E8C48A
-);
-
-}
-
-/* ==========================
-768px 이하: 탭 전환형 모바일 레이아웃
+768px 이하: 모바일은 창고보드만 전체화면으로 표시
+(배치 편집은 PC 전용, 모바일은 조회 + 상태 변경만 가능)
 ========================== */
 
 @media (max-width:768px){
 
-.mobile-tabbar{
-
-display:flex;
-
-}
-
-#toolbar #layoutModeBtn,
-.toolbar-divider{
+#toolbar{
 
 display:none;
 
@@ -1972,11 +1865,14 @@ display:none !important;
 }
 
 .left-todo,
-.center-board,
 .staging-panel,
 .right-panel{
 
-display:none;
+display:none !important;
+
+}
+
+.center-board{
 
 width:100% !important;
 
@@ -1984,23 +1880,25 @@ height:100%;
 
 border-radius:0;
 
-padding-bottom:84px;
+}
+
+.dev-note{
+
+display:none;
 
 }
 
-.left-todo.mobile-active,
-.center-board.mobile-active,
-.staging-panel.mobile-active,
-.right-panel.mobile-active{
+.board-wrap{
 
-display:flex;
+height:100%;
 
 }
 
-.staging-panel.mobile-active,
-.right-panel.mobile-active{
+.person{
 
-box-shadow:none;
+cursor:pointer;
+
+touch-action:manipulation;
 
 }
 
