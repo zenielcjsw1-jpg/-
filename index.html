@@ -59,7 +59,7 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="main-layout">
 
 <!-- 좌측: 오늘업무 -->
-<div class="left-todo" data-mobile-tab="todo">
+<div class="left-todo">
     <div class="todo-panel">
         <h2>📋 오늘 할 일</h2>
         <div class="todo-input-row">
@@ -82,7 +82,7 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="resize-handle resize-h" data-target-prev="left-todo" data-target-next="center-board"></div>
 
 <!-- 중앙: 창고 도면 -->
-<div class="center-board mobile-active" data-mobile-tab="board">
+<div class="center-board">
 
 <div class="board-wrap">
 
@@ -111,7 +111,7 @@ alt="창고 도면">
 <div class="resize-handle resize-h" data-target-prev="center-board" data-target-next="staging-panel"></div>
 
 <!-- 대기 인원 (세로) -->
-<div class="staging-panel" data-mobile-tab="staging">
+<div class="staging-panel">
 
 <h2>🧍 대기 인원</h2>
 
@@ -152,7 +152,7 @@ alt="창고 도면">
 <div class="resize-handle resize-h" data-target-prev="staging-panel" data-target-next="right-panel"></div>
 
 <!-- 우측: 출근 현황 + 특이사항 -->
-<div class="right-panel" data-mobile-tab="attendance">
+<div class="right-panel">
 
 <div class="attendance-panel">
 
@@ -211,26 +211,6 @@ alt="창고 도면">
 </div>  <!-- right-panel -->
 
 </div>  <!-- main-layout -->
-
-<!-- 모바일 전용 하단 탭바 (768px 이하에서만 표시) -->
-<nav class="mobile-tabbar" id="mobileTabbar">
-<button class="mobile-tab-btn active" data-tab="board">
-<span class="mobile-tab-icon">📦</span>
-<span class="mobile-tab-label">창고</span>
-</button>
-<button class="mobile-tab-btn" data-tab="staging">
-<span class="mobile-tab-icon">🧍</span>
-<span class="mobile-tab-label">대기</span>
-</button>
-<button class="mobile-tab-btn" data-tab="attendance">
-<span class="mobile-tab-icon">📋</span>
-<span class="mobile-tab-label">출근</span>
-</button>
-<button class="mobile-tab-btn" data-tab="todo">
-<span class="mobile-tab-icon">📝</span>
-<span class="mobile-tab-label">업무</span>
-</button>
-</nav>
 
 <!-- 출근부 팝업 -->
 <div id="popup" class="popup">
