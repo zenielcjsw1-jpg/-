@@ -11,7 +11,7 @@ const input = prompt("비밀번호를 입력하세요.");
     throw new Error("Wrong Password");}
 </script>
 
-  <title>인원현황판 Lite v3.0</title>
+  <title>인원현황판 Lite v3.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="title-text">
 <div class="title-row">
 <span class="main-title">인원현황판</span>
-<span class="version-badge">Lite v3.0</span>
+<span class="version-badge">Lite v3.3</span>
 </div>
 </div>
 </div>
@@ -58,7 +58,7 @@ const input = prompt("비밀번호를 입력하세요.");
 
 <div class="main-layout">
 
-<!-- 좌측: 오늘업무 -->
+<!-- 좌측: 오늘업무 + 특이사항 -->
 <div class="left-todo">
     <div class="todo-panel">
         <h2>📋 오늘 할 일</h2>
@@ -75,6 +75,11 @@ const input = prompt("비밀번호를 입력하세요.");
                 오늘 업무를 추가하세요.
             </p>
         </div>
+    </div>
+
+    <div class="note-panel">
+    <h2>📝 특이사항</h2>
+    <textarea id="noteText" placeholder="특이사항을 입력하세요." spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
     </div>
 </div>
 
@@ -151,7 +156,7 @@ alt="창고 도면">
 <!-- 대기인원 ↔ 출근현황 경계 -->
 <div class="resize-handle resize-h" data-target-prev="staging-panel" data-target-next="right-panel"></div>
 
-<!-- 우측: 출근 현황 + 특이사항 -->
+<!-- 우측: 출근 현황 -->
 <div class="right-panel">
 
 <div class="attendance-panel">
@@ -195,17 +200,26 @@ alt="창고 도면">
 <div class="attendance-number"><span id="absentCount">0</span>명</div>
 </div>
 
-<div class="attendance-item etc-card" id="etcBox">
-<div class="attendance-title">📌 기타</div>
-<div class="attendance-number"><span id="etcCount">0</span>명</div>
+<div class="attendance-item vacation-card" id="vacationBox">
+<div class="attendance-title">🏝️ 휴가</div>
+<div class="attendance-number"><span id="vacationCount">0</span>명</div>
 </div>
 
+<div class="attendance-item sickleave-card" id="sickleaveBox">
+<div class="attendance-title"><span class="icon-sickleave">➕</span> 병가</div>
+<div class="attendance-number"><span id="sickleaveCount">0</span>명</div>
 </div>
 
-<!-- 특이사항 메모장 -->
-<div class="note-panel">
-<h2>📝 특이사항</h2>
-<textarea id="noteText" placeholder="특이사항을 입력하세요." spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
+<div class="attendance-item earlyleave-card" id="earlyleaveBox">
+<div class="attendance-title">🚪 조퇴</div>
+<div class="attendance-number"><span id="earlyleaveCount">0</span>명</div>
+</div>
+
+<div class="attendance-item overtime-card" id="overtimeBox">
+<div class="attendance-title">🌇 연장</div>
+<div class="attendance-number"><span id="overtimeCount">0</span>명</div>
+</div>
+
 </div>
 
 </div>  <!-- right-panel -->
@@ -219,6 +233,15 @@ alt="창고 도면">
 <div id="popupList"></div>
 <button id="closePopup">닫기</button>
      </div>
+</div>
+
+<!-- 저장 목록 팝업 -->
+<div id="loadPopup" class="popup">
+<div class="popup-box">
+<h3>저장 목록</h3>
+<div id="saveList"></div>
+<button id="closeLoadPopup">닫기</button>
+</div>
 </div>
 
 <!-- 직원 상태 선택 -->
