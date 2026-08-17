@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.3
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -9,8 +9,9 @@ const peopleLayer = document.getElementById("peopleLayer");
 const stagingArea = document.getElementById("stagingArea");
 
 /* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
-const STORAGE_KEY = "personnelBoardLite_v25";
+const STORAGE_KEY = "personnelBoardLite_v33";   // 실시간 자동 저장(자동 배치 유지용)
 const NOTE_KEY = "personnelBoardLite_note";
+const SAVES_KEY = "personnelBoardLite_saves_v33"; // 저장 버튼으로 만든 날짜별 저장 목록
 
 function getWarehouseRect(){
 
@@ -85,7 +86,7 @@ localStorage.getItem(STORAGE_KEY);
 
 if(saved){
 
-    loadPositions(true);
+    loadAutosave(true);
 
 }
 
@@ -408,11 +409,10 @@ target.addEventListener("touchstart",dragStart,{passive:false});
 }
 
 /* ==========================
-저장 / 불러오기 / 초기화
+배치/상태 데이터 만들기 (저장·자동저장 공용)
 ========================== */
 
-/* 저장 */
-function savePositions() {
+function buildSaveData(){
 
 const data = [];
 
@@ -454,60 +454,14 @@ statusMap[person.dataset.id]
 
 });
 
-
-localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-);
-
-
-saveNote();
-
-
-alert("저장되었습니다.");
+return data;
 
 }
 
-/* 불러오기 */
-function loadPositions(silent) {
+/* 저장된 배치/상태 데이터를 화면에 적용 */
+function applySaveData(data){
 
-const saved = localStorage.getItem(STORAGE_KEY);
-
-
-if (!saved) {
-
-if(!silent) alert("저장된 데이터가 없습니다.");
-
-return;
-
-}
-
-
-let data;
-
-try{
-
-data = JSON.parse(saved);
-
-}catch(err){
-
-console.error("저장 데이터 파싱 실패, 초기화합니다.", err);
-
-localStorage.removeItem(STORAGE_KEY);
-
-return;
-
-}
-
-
-if(!Array.isArray(data)){
-
-localStorage.removeItem(STORAGE_KEY);
-
-return;
-
-}
-
+if(!Array.isArray(data)) return;
 
 data.forEach(item => {
 
@@ -567,12 +521,12 @@ delete person.dataset.y;
 }
 
 
-/* 상태 복원 (알 수 없는 상태값은 '기타'로 안전하게 처리) */
+/* 상태 복원 (알 수 없는 상태값은 '주간'으로 안전하게 처리) */
 
 const restoredStatus =
 (item.status && statusConfig[item.status])
 ? item.status
-: "기타";
+: "주간";
 
 statusMap[item.id] = restoredStatus;
 
@@ -600,6 +554,53 @@ console.error("출근 현황 갱신 중 오류", err);
 
 }
 
+}
+
+/* ==========================
+자동 저장 (배치를 옮기거나 상태를 바꿀 때마다 조용히 저장)
+========================== */
+
+function loadAutosave(silent) {
+
+const saved = localStorage.getItem(STORAGE_KEY);
+
+
+if (!saved) {
+
+if(!silent) alert("저장된 데이터가 없습니다.");
+
+return;
+
+}
+
+
+let data;
+
+try{
+
+data = JSON.parse(saved);
+
+}catch(err){
+
+console.error("저장 데이터 파싱 실패, 초기화합니다.", err);
+
+localStorage.removeItem(STORAGE_KEY);
+
+return;
+
+}
+
+
+if(!Array.isArray(data)){
+
+localStorage.removeItem(STORAGE_KEY);
+
+return;
+
+}
+
+
+applySaveData(data);
 
 }
 
@@ -639,6 +640,163 @@ localStorage.removeItem(STORAGE_KEY);
 
 }
 
+/* ==========================
+저장(날짜별 저장 목록) / 불러오기 / 삭제
+========================== */
+
+function loadSaves(){
+
+try{
+
+const raw = localStorage.getItem(SAVES_KEY);
+
+const parsed = raw ? JSON.parse(raw) : [];
+
+return Array.isArray(parsed) ? parsed : [];
+
+}catch(err){
+
+return [];
+
+}
+
+}
+
+function writeSaves(saves){
+
+localStorage.setItem(SAVES_KEY, JSON.stringify(saves));
+
+}
+
+function formatSaveLabel(date){
+
+const y = date.getFullYear();
+
+const m = date.getMonth() + 1;
+
+const d = date.getDate();
+
+const day = [
+"일","월","화","수","목","금","토"
+][date.getDay()];
+
+const hh = String(date.getHours()).padStart(2, "0");
+
+const mm = String(date.getMinutes()).padStart(2, "0");
+
+return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")} (${day}) ${hh}:${mm}`;
+
+}
+
+/* 저장 버튼: 현재 일자/시간을 제목으로 새 저장본을 만듦 */
+function savePositions(){
+
+const now = new Date();
+
+const entry = {
+
+id: String(now.getTime()),
+
+label: formatSaveLabel(now),
+
+data: buildSaveData()
+
+};
+
+const saves = loadSaves();
+
+saves.unshift(entry);
+
+writeSaves(saves);
+
+/* 실시간 자동 저장도 함께 최신화 */
+
+try{ saveStatusOnly(); }catch(err){}
+
+saveNote();
+
+
+alert("저장되었습니다: " + entry.label);
+
+}
+
+function renderSaveList(){
+
+const listEl = document.getElementById("saveList");
+
+if(!listEl) return;
+
+const saves = loadSaves();
+
+listEl.innerHTML = "";
+
+if(saves.length === 0){
+
+const empty = document.createElement("p");
+
+empty.className = "save-empty";
+
+empty.innerText = "저장된 데이터가 없습니다.";
+
+listEl.appendChild(empty);
+
+return;
+
+}
+
+saves.forEach(entry => {
+
+const row = document.createElement("div");
+
+row.className = "save-item";
+
+
+const label = document.createElement("span");
+
+label.className = "save-label";
+
+label.innerText = entry.label;
+
+label.addEventListener("click", () => {
+
+applySaveData(entry.data);
+
+document.getElementById("loadPopup").style.display = "none";
+
+});
+
+
+const delBtn = document.createElement("button");
+
+delBtn.className = "save-delete-btn";
+
+delBtn.innerText = "✕";
+
+delBtn.addEventListener("click", (e) => {
+
+e.stopPropagation();
+
+if(!confirm("이 저장 내용을 삭제할까요?")) return;
+
+const remaining = loadSaves().filter(s => s.id !== entry.id);
+
+writeSaves(remaining);
+
+renderSaveList();
+
+});
+
+
+row.appendChild(label);
+
+row.appendChild(delBtn);
+
+listEl.appendChild(row);
+
+});
+
+}
+
 /* 버튼 연결 */
 
 document
@@ -647,7 +805,21 @@ document
 
 document
 .getElementById("loadBtn")
-.addEventListener("click", loadPositions);
+.addEventListener("click", () => {
+
+renderSaveList();
+
+document.getElementById("loadPopup").style.display = "flex";
+
+});
+
+document
+.getElementById("closeLoadPopup")
+.addEventListener("click", () => {
+
+document.getElementById("loadPopup").style.display = "none";
+
+});
 
 document
 .getElementById("resetBtn")
@@ -726,7 +898,10 @@ const gwangyeokPeople = [];
 const floor1People = [];
 const officePeople = [];
 const absentPeople = [];
-const etcPeople = [];
+const vacationPeople = [];
+const sickleavePeople = [];
+const earlyleavePeople = [];
+const overtimePeople = [];
 
 
 
@@ -801,9 +976,6 @@ const statusConfig = {
 /* 근무 성격의 상태 (더블클릭 순환 판별용) */
 const WORK_STATUSES = ["주간", "석간", "광역", "1층", "사무실"];
 
-/* 결근 카드에 함께 집계할 상태 */
-const ABSENT_STATUSES = ["결근", "휴가", "병가", "조퇴"];
-
 
 
 
@@ -844,7 +1016,13 @@ const office=[];
 
 const absent=[];
 
-const etc=[];
+const vacation=[];
+
+const sickleave=[];
+
+const earlyleave=[];
+
+const overtime=[];
 
 document.querySelectorAll(".person").forEach(person=>{
 
@@ -875,13 +1053,25 @@ floor1.push(name);
 
 office.push(name);
 
-}else if(ABSENT_STATUSES.includes(state)){
+}else if(state==="결근"){
 
 absent.push(name);
 
-}else{
+}else if(state==="휴가"){
 
-etc.push(name);
+vacation.push(name);
+
+}else if(state==="병가"){
+
+sickleave.push(name);
+
+}else if(state==="조퇴"){
+
+earlyleave.push(name);
+
+}else if(state==="연장"){
+
+overtime.push(name);
 
 }
 
@@ -902,7 +1092,10 @@ setCountText("gwangyeokCount", gwangyeok.length);
 setCountText("floor1Count", floor1.length);
 setCountText("officeCount", office.length);
 setCountText("absentCount", absent.length);
-setCountText("etcCount", etc.length);
+setCountText("vacationCount", vacation.length);
+setCountText("sickleaveCount", sickleave.length);
+setCountText("earlyleaveCount", earlyleave.length);
+setCountText("overtimeCount", overtime.length);
 
   totalPeople.length = 0;
 
@@ -918,7 +1111,13 @@ officePeople.length = 0;
 
 absentPeople.length = 0;
 
-etcPeople.length = 0;
+vacationPeople.length = 0;
+
+sickleavePeople.length = 0;
+
+earlyleavePeople.length = 0;
+
+overtimePeople.length = 0;
 
 totalPeople.push(...total);
 
@@ -934,7 +1133,13 @@ officePeople.push(...office);
 
 absentPeople.push(...absent);
 
-etcPeople.push(...etc);
+vacationPeople.push(...vacation);
+
+sickleavePeople.push(...sickleave);
+
+earlyleavePeople.push(...earlyleave);
+
+overtimePeople.push(...overtime);
 
 }
 
@@ -949,10 +1154,6 @@ let next="주간";
 if(WORK_STATUSES.includes(current)){
 
 next="결근";
-
-}else if(current==="결근"){
-
-next="기타";
 
 }else{
 
@@ -1194,9 +1395,27 @@ openPopup("결근",absentPeople);
 
 };
 
-document.getElementById("etcBox").onclick=function(){
+document.getElementById("vacationBox").onclick=function(){
 
-openPopup("기타",etcPeople);
+openPopup("휴가",vacationPeople);
+
+};
+
+document.getElementById("sickleaveBox").onclick=function(){
+
+openPopup("병가",sickleavePeople);
+
+};
+
+document.getElementById("earlyleaveBox").onclick=function(){
+
+openPopup("조퇴",earlyleavePeople);
+
+};
+
+document.getElementById("overtimeBox").onclick=function(){
+
+openPopup("연장",overtimePeople);
 
 };
 
@@ -1235,58 +1454,15 @@ updateTodayDate();
 
 
 /* ==========================
-상태만 저장
+상태만 저장 (자동 저장 - STORAGE_KEY)
 ========================== */
 function saveStatusOnly(){
-
-const data = [];
-
-
-document.querySelectorAll(".person").forEach(person=>{
-
-const onBoard = person.classList.contains("on-board");
-
-let x, y;
-
-if(onBoard){
-
-const pos = getPersonPercent(person);
-
-x = pos.x;
-
-y = pos.y;
-
-person.dataset.x = x;
-
-person.dataset.y = y;
-
-}
-
-
-data.push({
-
-id: person.dataset.id,
-
-location: onBoard ? "board" : "staging",
-
-x: x,
-
-y: y,
-
-status:
-statusMap[person.dataset.id]
-
-});
-
-
-});
-
 
 localStorage.setItem(
 
 STORAGE_KEY,
 
-JSON.stringify(data)
+JSON.stringify(buildSaveData())
 
 );
 
@@ -1565,7 +1741,7 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v3";
+const LAYOUT_KEY = "personnelBoardLite_layout_v33";
 
 const DEFAULT_LAYOUT = {
 
@@ -1573,7 +1749,7 @@ left: 14,
 center: 58,
 staging: 14,
 right: 14,
-devNoteHeight: 80,
+devNoteHeight: 36,
 personScale: 100
 
 };
@@ -1885,7 +2061,7 @@ if(devNoteHandle && devNoteEl){
 let startY = 0;
 let startHeight = 0;
 
-const MIN_DEVNOTE = 60;
+const MIN_DEVNOTE = 24;
 const MAX_DEVNOTE = 600;
 
 function onDownV(e){
