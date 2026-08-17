@@ -1,5 +1,5 @@
 /* ===========================
-인원현황판 Lite v2.3
+인원현황판 Lite v3.3
 style.css
 =========================== */
 
@@ -33,7 +33,7 @@ header{
 
 width:100%;
 
-height:70px;
+height:112px;
 
 position:relative;
 
@@ -150,7 +150,7 @@ gap:10px;
 
 font-family:"Gowun Batang","Malgun Gothic",serif;
 
-font-size:29px;
+font-size:58px;
 
 font-weight:700;
 
@@ -514,11 +514,11 @@ border-radius:14px;
 
 font-size:var(--person-font);
 
-font-weight:700;
+font-weight:800;
 
-color:#333;
+color:#1E293B;
 
-letter-spacing:-0.3px;
+letter-spacing:0;
 
 
 /* 드래그 */
@@ -639,6 +639,18 @@ font-size:18px;
 
 }
 
+.main-title{
+
+font-size:34px;
+
+}
+
+.title-icon{
+
+font-size:36px;
+
+}
+
 .header-tagline{
 
 display:none;
@@ -675,6 +687,26 @@ font-size:17px;
 
 }
 
+.main-title{
+
+font-size:20px;
+
+}
+
+.title-icon{
+
+font-size:22px;
+
+}
+
+.version-badge{
+
+font-size:9px;
+
+padding:2px 7px;
+
+}
+
 #toolbar{
 
 height:55px;
@@ -695,7 +727,7 @@ display:none;
 
 position:fixed;
 
-top:70px;
+top:112px;
 
 left:0;
 
@@ -729,7 +761,7 @@ body.admin-mode .main-layout{
 
 margin-top:42px;
 
-height:calc(100vh - 70px - 42px);
+height:calc(100vh - 112px - 42px);
 
 }
 
@@ -918,11 +950,11 @@ background:#5DADE2;
 .main-layout{
 display:flex;
 width:100%;
-height:calc(100vh - 70px);
+height:calc(100vh - 112px);
 }
 
 /* ==========================
-오늘 할 일 패널 (좌측)
+좌측 패널 (오늘 할 일 + 특이사항)
 ========================== */
 
 .left-todo{
@@ -934,6 +966,8 @@ padding:12px;
 display:flex;
 
 flex-direction:column;
+
+gap:15px;
 
 }
 
@@ -969,15 +1003,15 @@ flex-direction:column;
 
 .dev-note{
 
-height:80px;
+height:36px;
 
 flex-shrink:0;
 
 margin-top:0;
 
-border:2px dashed #bbb;
+border:1px dashed #bbb;
 
-border-radius:10px;
+border-radius:8px;
 
 display:flex;
 
@@ -985,7 +1019,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:20px;
+font-size:13px;
 
 font-weight:700;
 
@@ -1048,7 +1082,9 @@ gap:15px;
 
 .todo-panel{
 
-height:100%;
+flex:7 1 0;
+
+min-height:0;
 
 background:#ffffff;
 
@@ -1353,7 +1389,7 @@ flex-direction:column;
 
 .attendance-panel{
 
-flex:7 1 0;
+flex:1 1 0;
 
 min-height:0;
 
@@ -1404,9 +1440,9 @@ justify-content:space-between;
 
 align-items:center;
 
-padding:9px 14px;
+padding:7px 14px;
 
-margin-top:7px;
+margin-top:5px;
 
 border-radius:12px;
 
@@ -1437,7 +1473,7 @@ transform:translateY(-2px);
 
 .attendance-title{
 
-font-size:14px;
+font-size:13px;
 
 font-weight:bold;
 
@@ -1447,7 +1483,7 @@ font-weight:bold;
 
 .attendance-number{
 
-font-size:19px;
+font-size:17px;
 
 font-weight:800;
 
@@ -1507,10 +1543,31 @@ background:#FBE4E4;
 }
 
 
+/* 휴가 */
+.vacation-card{
 
-.etc-card{
+background:#FDE68A;
 
-background:#EAE6F7;
+}
+
+/* 병가 */
+.sickleave-card{
+
+background:#FFD8A8;
+
+}
+
+/* 조퇴 */
+.earlyleave-card{
+
+background:#BAE6FD;
+
+}
+
+/* 연장 */
+.overtime-card{
+
+background:#E5DBFF;
 
 }
 
@@ -1590,7 +1647,7 @@ border-color:#5DADE2;
 
 
 /* ===========================
-출근부 팝업
+출근부 / 저장목록 팝업
 =========================== */
 
 .popup{
@@ -1660,7 +1717,8 @@ border-bottom:1px solid #ddd;
 
 }
 
-#closePopup{
+#closePopup,
+#closeLoadPopup{
 
 width:100%;
 
@@ -1677,6 +1735,108 @@ color:white;
 font-weight:bold;
 
 cursor:pointer;
+
+}
+
+/* 저장 목록 */
+
+#saveList{
+
+max-height:350px;
+
+overflow:auto;
+
+margin-bottom:20px;
+
+}
+
+.save-empty{
+
+padding:20px 8px;
+
+text-align:center;
+
+color:#94A3B8;
+
+font-size:13px;
+
+}
+
+.save-item{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:8px;
+
+padding:10px 12px;
+
+margin-bottom:8px;
+
+background:#F8FAFC;
+
+border:1px solid #E2E8F0;
+
+border-radius:10px;
+
+}
+
+.save-label{
+
+flex:1;
+
+min-width:0;
+
+cursor:pointer;
+
+font-size:13px;
+
+font-weight:600;
+
+color:#334155;
+
+word-break:break-all;
+
+}
+
+.save-item:hover .save-label{
+
+color:#1976d2;
+
+}
+
+.save-delete-btn{
+
+flex-shrink:0;
+
+width:26px;
+
+height:26px;
+
+border:none;
+
+border-radius:50%;
+
+background:#FBE4E4;
+
+color:#C94F4F;
+
+font-size:13px;
+
+font-weight:800;
+
+cursor:pointer;
+
+}
+
+.save-delete-btn:hover{
+
+background:#E57373;
+
+color:#fff;
 
 }
 
@@ -1833,7 +1993,9 @@ align-items:center;
 
 font-size:var(--person-font);
 
-font-weight:700;
+font-weight:800;
+
+letter-spacing:0;
 
 }
 
@@ -1854,7 +2016,7 @@ display:none;
 
 flex-direction:column;
 
-height:calc(100vh - 70px);
+height:calc(100vh - 112px);
 
 }
 
