@@ -10,7 +10,7 @@ const stagingArea = document.getElementById("stagingArea");
 const attendanceStagingArea = document.getElementById("attendanceStagingArea");
 
 /* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
-const STORAGE_KEY = "personnelBoardLite_v33";   // 실시간 자동 저장(자동 배치 유지용)
+const STORAGE_KEY = "personnelBoardLite_v34";   // 실시간 자동 저장(자동 배치 유지용)
 const NOTE_KEY = "personnelBoardLite_note";
 const SAVES_KEY = "personnelBoardLite_saves_v33"; // 저장 버튼으로 만든 날짜별 저장 목록
 
