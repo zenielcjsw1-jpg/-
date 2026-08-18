@@ -33,7 +33,7 @@ header{
 
 width:100%;
 
-height:112px;
+height:70px;
 
 position:relative;
 
@@ -150,7 +150,7 @@ gap:10px;
 
 font-family:"Gowun Batang","Malgun Gothic",serif;
 
-font-size:58px;
+font-size:29px;
 
 font-weight:700;
 
@@ -249,7 +249,7 @@ white-space:nowrap;
 
 font-family:"Gowun Batang","Malgun Gothic",serif;
 
-font-size:16px;
+font-size:29px;
 
 font-weight:700;
 
@@ -275,7 +275,7 @@ text-shadow:0 1px 2px rgba(0,0,0,.25);
 
 .header-emblem-text .emblem-dot{
 
-font-size:12px;
+font-size:16px;
 
 color:#D9A566;
 
@@ -287,7 +287,7 @@ opacity:.75;
 
 font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
 
-font-size:12.5px;
+font-size:23px;
 
 font-weight:600;
 
@@ -303,7 +303,7 @@ opacity:.92;
 
 font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
 
-font-size:11px;
+font-size:20px;
 
 font-weight:500;
 
@@ -639,18 +639,6 @@ font-size:18px;
 
 }
 
-.main-title{
-
-font-size:34px;
-
-}
-
-.title-icon{
-
-font-size:36px;
-
-}
-
 .header-tagline{
 
 display:none;
@@ -687,26 +675,6 @@ font-size:17px;
 
 }
 
-.main-title{
-
-font-size:20px;
-
-}
-
-.title-icon{
-
-font-size:22px;
-
-}
-
-.version-badge{
-
-font-size:9px;
-
-padding:2px 7px;
-
-}
-
 #toolbar{
 
 height:55px;
@@ -727,7 +695,7 @@ display:none;
 
 position:fixed;
 
-top:112px;
+top:70px;
 
 left:0;
 
@@ -761,7 +729,7 @@ body.admin-mode .main-layout{
 
 margin-top:42px;
 
-height:calc(100vh - 112px - 42px);
+height:calc(100vh - 70px - 42px);
 
 }
 
@@ -950,11 +918,11 @@ background:#5DADE2;
 .main-layout{
 display:flex;
 width:100%;
-height:calc(100vh - 112px);
+height:calc(100vh - 70px);
 }
 
 /* ==========================
-좌측 패널 (오늘 할 일 + 특이사항)
+좌측 패널 (오늘 할 일 + 특이사항, 상하 리사이즈 가능)
 ========================== */
 
 .left-todo{
@@ -967,7 +935,7 @@ display:flex;
 
 flex-direction:column;
 
-gap:15px;
+gap:8px;
 
 }
 
@@ -1019,7 +987,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:13px;
+font-size:26px;
 
 font-weight:700;
 
@@ -1030,7 +998,7 @@ color:#999;
 }
 
 /* ==========================
-대기 인원 패널 (세로형)
+대기 인원 패널 (출근인원 9 : 대기인원 1)
 ========================== */
 
 .staging-panel{
@@ -1043,6 +1011,8 @@ display:flex;
 
 flex-direction:column;
 
+gap:10px;
+
 background:#ffffff;
 
 border-radius:20px;
@@ -1052,9 +1022,19 @@ box-shadow:
 
 }
 
-.staging-panel h2{
+.staging-sub{
 
-font-size:16px;
+display:flex;
+
+flex-direction:column;
+
+min-height:0;
+
+}
+
+.staging-sub h3{
+
+font-size:14px;
 
 font-weight:800;
 
@@ -1062,9 +1042,21 @@ color:#334155;
 
 text-align:center;
 
-margin-bottom:10px;
+margin-bottom:8px;
 
 flex-shrink:0;
+
+}
+
+.attendance-sub{
+
+flex:9 1 0;
+
+}
+
+.waiting-sub{
+
+flex:1 1 0;
 
 }
 
@@ -1082,7 +1074,7 @@ gap:15px;
 
 .todo-panel{
 
-flex:7 1 0;
+flex:1 1 0;
 
 min-height:0;
 
@@ -1495,6 +1487,36 @@ font-weight:800;
 
 background:#EEF1F6;
 
+flex-direction:column;
+
+align-items:stretch;
+
+justify-content:center;
+
+gap:2px;
+
+}
+
+.total-card-main{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.attendance-waiting-line{
+
+font-size:11px;
+
+font-weight:600;
+
+color:#64748B;
+
+text-align:right;
+
 }
 
 
@@ -1578,7 +1600,7 @@ background:#E5DBFF;
 
 .note-panel{
 
-flex:3 1 0;
+flex:0 0 auto;
 
 min-height:0;
 
@@ -2016,7 +2038,7 @@ display:none;
 
 flex-direction:column;
 
-height:calc(100vh - 112px);
+height:calc(100vh - 70px);
 
 }
 
