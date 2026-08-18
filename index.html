@@ -58,7 +58,7 @@ const input = prompt("비밀번호를 입력하세요.");
 
 <div class="main-layout">
 
-<!-- 좌측: 오늘업무 + 특이사항 -->
+<!-- 좌측: 오늘업무 + 특이사항 (리사이즈 가능) -->
 <div class="left-todo">
     <div class="todo-panel">
         <h2>📋 오늘 할 일</h2>
@@ -76,6 +76,8 @@ const input = prompt("비밀번호를 입력하세요.");
             </p>
         </div>
     </div>
+
+    <div class="resize-handle resize-v" id="leftSplitResizeHandle"></div>
 
     <div class="note-panel">
     <h2>📝 특이사항</h2>
@@ -115,11 +117,17 @@ alt="창고 도면">
 <!-- 중앙 ↔ 대기인원 경계 -->
 <div class="resize-handle resize-h" data-target-prev="center-board" data-target-next="staging-panel"></div>
 
-<!-- 대기 인원 (세로) -->
+<!-- 대기 인원 패널 : 출근인원(9) / 대기인원(1) -->
 <div class="staging-panel">
 
-<h2>🧍 대기 인원</h2>
+<div class="staging-sub attendance-sub">
+<h3>🧍‍♂️🧍‍♀️🧍 출근인원</h3>
+<div class="staging-area" id="attendanceStagingArea">
+</div>
+</div>
 
+<div class="staging-sub waiting-sub">
+<h3>🧍 대기 인원</h3>
 <div class="staging-area" id="stagingArea">
 
 <div class="person staging" data-id="1" data-name="성락훈">성락훈</div>
@@ -149,7 +157,8 @@ alt="창고 도면">
 <div class="person staging" data-id="21" data-name="주용진">주용진</div>
 <div class="person staging" data-id="22" data-name="신입">신입</div>
 
-</div>  <!-- staging-area -->
+</div>  <!-- stagingArea -->
+</div>  <!-- waiting-sub -->
 
 </div>  <!-- staging-panel -->
 
@@ -166,8 +175,11 @@ alt="창고 도면">
 <div id="todayDate"></div>
 
 <div class="attendance-item total-card" id="totalBox">
+<div class="total-card-main">
 <div class="attendance-title">👥 총원</div>
 <div class="attendance-number"><span id="totalCount">0</span>명</div>
+</div>
+<div class="attendance-waiting-line">대기 <span id="waitingCount">0</span>명</div>
 </div>
 
 <div class="attendance-item work-day-card" id="dayBox">
