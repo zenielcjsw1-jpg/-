@@ -7,6 +7,7 @@ const board = document.getElementById("board");
 const warehouse = document.getElementById("warehouse");
 const peopleLayer = document.getElementById("peopleLayer");
 const stagingArea = document.getElementById("stagingArea");
+const attendanceStagingArea = document.getElementById("attendanceStagingArea");
 
 /* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
 const STORAGE_KEY = "personnelBoardLite_v33";   // 실시간 자동 저장(자동 배치 유지용)
@@ -395,6 +396,10 @@ if(isPointInRect(clientX, clientY, imageRect)){
 
 moveToBoard(target, clientX, clientY);
 
+}else if(attendanceStagingArea && isPointInRect(clientX, clientY, attendanceStagingArea.getBoundingClientRect())){
+
+moveToAttendanceStaging(target);
+
 }else{
 
 moveToStaging(target);
@@ -405,6 +410,29 @@ moveToStaging(target);
 
 target.addEventListener("mousedown",dragStart);
 target.addEventListener("touchstart",dragStart,{passive:false});
+
+}
+
+/* 이름표를 출근인원(대기 패널 첫번째 칸)으로 이동 */
+function moveToAttendanceStaging(person, persist){
+
+attendanceStagingArea.appendChild(person);
+
+person.classList.remove("on-board");
+person.classList.add("staging");
+
+person.style.position = "";
+person.style.left = "";
+person.style.top = "";
+
+delete person.dataset.x;
+delete person.dataset.y;
+
+if(persist !== false){
+
+try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
+
+}
 
 }
 
@@ -419,6 +447,8 @@ const data = [];
 document.querySelectorAll(".person").forEach(person => {
 
 const onBoard = person.classList.contains("on-board");
+
+const inAttendance = !onBoard && person.parentElement && person.parentElement.id === "attendanceStagingArea";
 
 let x, y;
 
@@ -441,7 +471,7 @@ data.push({
 
 id: person.dataset.id,
 
-location: onBoard ? "board" : "staging",
+location: onBoard ? "board" : (inAttendance ? "attendance" : "staging"),
 
 x: x,
 
@@ -477,9 +507,11 @@ document.querySelector(
 if (!person) return;
 
 
-/* 위치(대기영역/온보드) 복원 */
+/* 위치(대기영역/출근인원/온보드) 복원 */
 
-const location = item.location === "board" ? "board" : "staging";
+const location =
+item.location === "board" ? "board" :
+(item.location === "attendance" ? "attendance" : "staging");
 
 if(
 location === "board" &&
@@ -503,6 +535,20 @@ item.x,
 item.y
 
 );
+
+}else if(location === "attendance" && attendanceStagingArea){
+
+attendanceStagingArea.appendChild(person);
+
+person.classList.remove("on-board");
+person.classList.add("staging");
+
+person.style.position = "";
+person.style.left = "";
+person.style.top = "";
+
+delete person.dataset.x;
+delete person.dataset.y;
 
 }else{
 
@@ -1024,7 +1070,23 @@ const earlyleave=[];
 
 const overtime=[];
 
+let waitingCount = 0;
+
 document.querySelectorAll(".person").forEach(person=>{
+
+/* 대기 인원(두번째 칸)에 있는 인원은 출근현황 집계에서 제외 */
+
+const isWaiting =
+person.parentElement &&
+person.parentElement.id === "stagingArea";
+
+if(isWaiting){
+
+waitingCount++;
+
+return;
+
+}
 
 const name =
 person.dataset.name || person.innerText;
@@ -1086,6 +1148,7 @@ if(el) el.innerText = value;
 }
 
 setCountText("totalCount", total.length);
+setCountText("waitingCount", waitingCount);
 setCountText("dayCount", day.length);
 setCountText("seokganCount", seokgan.length);
 setCountText("gwangyeokCount", gwangyeok.length);
@@ -1750,7 +1813,8 @@ center: 58,
 staging: 14,
 right: 14,
 devNoteHeight: 36,
-personScale: 100
+personScale: 100,
+leftNoteHeight: 220
 
 };
 
@@ -1761,6 +1825,8 @@ const centerEl = document.querySelector(".center-board");
 const stagingEl = document.querySelector(".staging-panel");
 const rightEl = document.querySelector(".right-panel");
 const devNoteEl = document.querySelector(".dev-note");
+const leftNoteEl = document.querySelector(".left-todo .note-panel");
+const leftSplitHandle = document.getElementById("leftSplitResizeHandle");
 
 const layoutModeBtn = document.getElementById("layoutModeBtn");
 const layoutResetBtn = document.getElementById("layoutResetBtn");
@@ -1819,6 +1885,8 @@ if(stagingEl) stagingEl.style.width = layoutConfig.staging + "%";
 if(rightEl) rightEl.style.width = layoutConfig.right + "%";
 
 if(devNoteEl) devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
+
+if(leftNoteEl) leftNoteEl.style.height = layoutConfig.leftNoteHeight + "px";
 
 /* 모바일 화면(768px 이하)에서는 관리자 슬라이더 값 대신
    화면 폭 기준으로 이름표 크기를 자동 계산 */
@@ -2119,6 +2187,73 @@ saveLayoutConfig();
 
 devNoteHandle.addEventListener("mousedown", onDownV);
 devNoteHandle.addEventListener("touchstart", onDownV, {passive:false});
+
+}
+
+
+/* 세로 리사이즈 핸들 (오늘 할 일 ↔ 특이사항) */
+
+if(leftSplitHandle && leftNoteEl){
+
+let startY2 = 0;
+let startHeight2 = 0;
+
+const MIN_LEFTNOTE = 60;
+const MAX_LEFTNOTE = 700;
+
+function onDownLN(e){
+
+if(!document.body.classList.contains("admin-mode")) return;
+
+const point = e.touches ? e.touches[0] : e;
+
+startY2 = point.clientY;
+
+startHeight2 = layoutConfig.leftNoteHeight;
+
+leftSplitHandle.classList.add("active");
+
+document.addEventListener("mousemove", onMoveLN);
+document.addEventListener("mouseup", onUpLN);
+document.addEventListener("touchmove", onMoveLN, {passive:false});
+document.addEventListener("touchend", onUpLN);
+
+}
+
+function onMoveLN(e){
+
+e.preventDefault();
+
+const point = e.touches ? e.touches[0] : e;
+
+const deltaY = point.clientY - startY2;
+
+let newHeight = startHeight2 - deltaY;
+
+if(newHeight < MIN_LEFTNOTE) newHeight = MIN_LEFTNOTE;
+if(newHeight > MAX_LEFTNOTE) newHeight = MAX_LEFTNOTE;
+
+layoutConfig.leftNoteHeight = Math.round(newHeight);
+
+leftNoteEl.style.height = layoutConfig.leftNoteHeight + "px";
+
+}
+
+function onUpLN(){
+
+document.removeEventListener("mousemove", onMoveLN);
+document.removeEventListener("mouseup", onUpLN);
+document.removeEventListener("touchmove", onMoveLN, {passive:false});
+document.removeEventListener("touchend", onUpLN);
+
+leftSplitHandle.classList.remove("active");
+
+saveLayoutConfig();
+
+}
+
+leftSplitHandle.addEventListener("mousedown", onDownLN);
+leftSplitHandle.addEventListener("touchstart", onDownLN, {passive:false});
 
 }
 
