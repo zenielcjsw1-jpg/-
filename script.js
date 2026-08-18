@@ -1326,14 +1326,14 @@ statusConfig[status];
 if(!config) return;
 
 
-/* 배경은 항상 흰색으로 고정, 상태 색상은 테두리에 적용 (가독성 개선) */
+/* 상태 색상을 이름표 배경에 직접 적용, 테두리는 항상 중립 톤으로 고정 */
 
 person.style.background =
-"#ffffff";
+config.color;
 
 
 person.style.borderColor =
-config.color;
+"rgba(0,0,0,0.12)";
 
 
 /* 아이콘 + 이름 표시 */
@@ -1804,7 +1804,7 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v33";
+const LAYOUT_KEY = "personnelBoardLite_layout_v34";
 
 const DEFAULT_LAYOUT = {
 
@@ -1812,7 +1812,7 @@ left: 14,
 center: 58,
 staging: 14,
 right: 14,
-devNoteHeight: 36,
+devNoteHeight: 30,
 personScale: 100,
 leftNoteHeight: 220,
 stagingAttendanceRatio: 90
