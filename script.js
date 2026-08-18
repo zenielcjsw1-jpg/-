@@ -1814,7 +1814,8 @@ staging: 14,
 right: 14,
 devNoteHeight: 36,
 personScale: 100,
-leftNoteHeight: 220
+leftNoteHeight: 220,
+stagingAttendanceRatio: 90
 
 };
 
@@ -1827,6 +1828,10 @@ const rightEl = document.querySelector(".right-panel");
 const devNoteEl = document.querySelector(".dev-note");
 const leftNoteEl = document.querySelector(".left-todo .note-panel");
 const leftSplitHandle = document.getElementById("leftSplitResizeHandle");
+
+const attendanceSubEl = document.querySelector(".attendance-sub");
+const waitingSubEl = document.querySelector(".waiting-sub");
+const stagingSplitHandle = document.getElementById("stagingSplitResizeHandle");
 
 const layoutModeBtn = document.getElementById("layoutModeBtn");
 const layoutResetBtn = document.getElementById("layoutResetBtn");
@@ -1887,6 +1892,10 @@ if(rightEl) rightEl.style.width = layoutConfig.right + "%";
 if(devNoteEl) devNoteEl.style.height = layoutConfig.devNoteHeight + "px";
 
 if(leftNoteEl) leftNoteEl.style.height = layoutConfig.leftNoteHeight + "px";
+
+if(attendanceSubEl) attendanceSubEl.style.flex = layoutConfig.stagingAttendanceRatio + " 1 0";
+
+if(waitingSubEl) waitingSubEl.style.flex = (100 - layoutConfig.stagingAttendanceRatio) + " 1 0";
 
 /* 모바일 화면(768px 이하)에서는 관리자 슬라이더 값 대신
    화면 폭 기준으로 이름표 크기를 자동 계산 */
@@ -2254,6 +2263,81 @@ saveLayoutConfig();
 
 leftSplitHandle.addEventListener("mousedown", onDownLN);
 leftSplitHandle.addEventListener("touchstart", onDownLN, {passive:false});
+
+}
+
+
+/* 세로 리사이즈 핸들 (출근인원 ↔ 대기인원) */
+
+if(stagingSplitHandle && attendanceSubEl && waitingSubEl){
+
+let startY3 = 0;
+let startRatio3 = 90;
+
+const MIN_RATIO = 20;
+const MAX_RATIO = 95;
+
+function onDownSR(e){
+
+if(!document.body.classList.contains("admin-mode")) return;
+
+const point = e.touches ? e.touches[0] : e;
+
+startY3 = point.clientY;
+
+startRatio3 = layoutConfig.stagingAttendanceRatio;
+
+stagingSplitHandle.classList.add("active");
+
+document.addEventListener("mousemove", onMoveSR);
+document.addEventListener("mouseup", onUpSR);
+document.addEventListener("touchmove", onMoveSR, {passive:false});
+document.addEventListener("touchend", onUpSR);
+
+}
+
+function onMoveSR(e){
+
+e.preventDefault();
+
+const point = e.touches ? e.touches[0] : e;
+
+const panelEl = document.querySelector(".staging-panel");
+
+const panelHeight = panelEl ? panelEl.getBoundingClientRect().height : 0;
+
+if(!panelHeight) return;
+
+const deltaRatio = ((point.clientY - startY3) / panelHeight) * 100;
+
+let newRatio = startRatio3 + deltaRatio;
+
+if(newRatio < MIN_RATIO) newRatio = MIN_RATIO;
+if(newRatio > MAX_RATIO) newRatio = MAX_RATIO;
+
+layoutConfig.stagingAttendanceRatio = Number(newRatio.toFixed(1));
+
+attendanceSubEl.style.flex = layoutConfig.stagingAttendanceRatio + " 1 0";
+
+waitingSubEl.style.flex = (100 - layoutConfig.stagingAttendanceRatio) + " 1 0";
+
+}
+
+function onUpSR(){
+
+document.removeEventListener("mousemove", onMoveSR);
+document.removeEventListener("mouseup", onUpSR);
+document.removeEventListener("touchmove", onMoveSR, {passive:false});
+document.removeEventListener("touchend", onUpSR);
+
+stagingSplitHandle.classList.remove("active");
+
+saveLayoutConfig();
+
+}
+
+stagingSplitHandle.addEventListener("mousedown", onDownSR);
+stagingSplitHandle.addEventListener("touchstart", onDownSR, {passive:false});
 
 }
 
