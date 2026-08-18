@@ -476,6 +476,11 @@ object-position:center;
 
 filter:brightness(1.12) contrast(1.05);
 
+border-radius:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,.12);
+
 }
 
 #peopleLayer{
@@ -866,7 +871,7 @@ background:#5DADE2;
 
 .resize-v{
 
-height:8px;
+height:6px;
 
 width:100%;
 
@@ -971,7 +976,7 @@ flex-direction:column;
 
 .dev-note{
 
-height:36px;
+height:30px;
 
 flex-shrink:0;
 
@@ -987,7 +992,7 @@ align-items:center;
 
 justify-content:center;
 
-font-size:26px;
+font-size:20px;
 
 font-weight:700;
 
@@ -1465,7 +1470,7 @@ transform:translateY(-2px);
 
 .attendance-title{
 
-font-size:13px;
+font-size:26px;
 
 font-weight:bold;
 
@@ -1475,7 +1480,7 @@ font-weight:bold;
 
 .attendance-number{
 
-font-size:17px;
+font-size:34px;
 
 font-weight:800;
 
@@ -1509,7 +1514,7 @@ align-items:center;
 
 .attendance-waiting-line{
 
-font-size:11px;
+font-size:22px;
 
 font-weight:600;
 
