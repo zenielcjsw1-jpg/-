@@ -246,6 +246,8 @@ try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", er
 
 }
 
+try{ updateAttendance(); }catch(err){}
+
 }
 
 /* 이름표를 대기 영역으로 되돌림 */
@@ -263,11 +265,18 @@ person.style.top = "";
 delete person.dataset.x;
 delete person.dataset.y;
 
+/* 대기인원 패널에 소속되었음을 기록 (창고 이미지로 이동해도 유지되는 값) */
+person.dataset.group = "waiting";
+
 if(persist !== false){
 
 try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
 
 }
+
+try{ updateAttendance(); }catch(err){}
+
+try{ updateStagingCounts(); }catch(err){}
 
 }
 
@@ -277,6 +286,50 @@ people.forEach((person) => {
     enableDrag(person);
 
 });
+
+/* 초기 소속 그룹 기록 (페이지 로드 시점의 실제 위치 기준) */
+document.querySelectorAll(".person").forEach(person=>{
+
+person.dataset.group =
+(person.parentElement && person.parentElement.id === "stagingArea")
+? "waiting"
+: "attendance";
+
+});
+
+/* 출근인원/대기인원 패널 제목 옆 인원수 갱신
+   (창고 이미지 배치 여부와 무관하게, 두 패널 간 이동에만 반응) */
+function updateStagingCounts(){
+
+let attendanceGroupCount = 0;
+
+let waitingGroupCount = 0;
+
+document.querySelectorAll(".person").forEach(person=>{
+
+if(person.dataset.group === "waiting"){
+
+waitingGroupCount++;
+
+}else{
+
+attendanceGroupCount++;
+
+}
+
+});
+
+const aEl = document.getElementById("attendanceStagingCount");
+
+if(aEl) aEl.innerText = attendanceGroupCount;
+
+const wEl = document.getElementById("waitingStagingCount");
+
+if(wEl) wEl.innerText = waitingGroupCount;
+
+}
+
+try{ updateStagingCounts(); }catch(err){}
 
 function enableDrag(target){
 
@@ -428,11 +481,18 @@ person.style.top = "";
 delete person.dataset.x;
 delete person.dataset.y;
 
+/* 출근인원 패널에 소속되었음을 기록 (창고 이미지로 이동해도 유지되는 값) */
+person.dataset.group = "attendance";
+
 if(persist !== false){
 
 try{ saveStatusOnly(); }catch(err){ console.error("배치 저장 중 오류", err); }
 
 }
+
+try{ updateAttendance(); }catch(err){}
+
+try{ updateStagingCounts(); }catch(err){}
 
 }
 
@@ -472,6 +532,8 @@ data.push({
 id: person.dataset.id,
 
 location: onBoard ? "board" : (inAttendance ? "attendance" : "staging"),
+
+group: person.dataset.group === "waiting" ? "waiting" : "attendance",
 
 x: x,
 
@@ -567,6 +629,13 @@ delete person.dataset.y;
 }
 
 
+/* 소속 그룹 복원 (출근인원/대기인원 패널 인원수 집계용, 창고 이미지 배치와 무관) */
+
+person.dataset.group =
+item.group === "waiting" ? "waiting" :
+(item.group === "attendance" ? "attendance" : (location === "staging" ? "waiting" : "attendance"));
+
+
 /* 상태 복원 (알 수 없는 상태값은 '주간'으로 안전하게 처리) */
 
 const restoredStatus =
@@ -599,6 +668,12 @@ updateAttendance();
 console.error("출근 현황 갱신 중 오류", err);
 
 }
+
+try{
+
+updateStagingCounts();
+
+}catch(err){}
 
 }
 
