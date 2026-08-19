@@ -1333,7 +1333,7 @@ config.color;
 
 
 person.style.borderColor =
-"rgba(0,0,0,0.12)";
+"#ffffff";
 
 
 /* 아이콘 + 이름 표시 */
@@ -1804,7 +1804,7 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v34";
+const LAYOUT_KEY = "personnelBoardLite_layout_v35";
 
 const DEFAULT_LAYOUT = {
 
@@ -1812,7 +1812,7 @@ left: 14,
 center: 58,
 staging: 14,
 right: 14,
-devNoteHeight: 30,
+devNoteHeight: 36,
 personScale: 100,
 leftNoteHeight: 220,
 stagingAttendanceRatio: 90
