@@ -975,7 +975,7 @@ const statusConfig = {
 },
 
 "1층":{
-    color:"#E0F2FE",
+    color:"#FFD8A8",
     icon:"1️⃣"
 },
 
@@ -990,7 +990,7 @@ const statusConfig = {
 },
 
 "병가":{
-    color:"#FFD8A8",
+    color:"#D9DEE3",
     icon:"➕",
     iconColor:"#E03131"
 },
@@ -1732,6 +1732,27 @@ actions.appendChild(progressBtn);
 actions.appendChild(doneBtn);
 
 
+const deleteBtn = document.createElement("button");
+
+deleteBtn.className = "todo-action-btn delete-btn";
+
+deleteBtn.innerText = "✕";
+
+deleteBtn.addEventListener("click", () => {
+
+if(!confirm("선택한 업무를 삭제하시겠습니까?")) return;
+
+todoItems.splice(index, 1);
+
+saveTodos();
+
+renderTodos();
+
+});
+
+actions.appendChild(deleteBtn);
+
+
 item.appendChild(num);
 
 item.appendChild(span);
@@ -1761,18 +1782,6 @@ renderTodos();
 }
 
 todoAddBtn.addEventListener("click", addTodo);
-
-todoInput.addEventListener("keydown", (e) => {
-
-if(e.key === "Enter"){
-
-e.preventDefault();
-
-addTodo();
-
-}
-
-});
 
 todoResetBtn.addEventListener("click", () => {
 
