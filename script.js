@@ -659,7 +659,7 @@ document.querySelectorAll(".person")
 .forEach((person) => {
 
 
-moveToStaging(person, false);
+moveToAttendanceStaging(person, false);
 
 
 
@@ -976,7 +976,7 @@ const statusConfig = {
 
 "1층":{
     color:"#FFD8A8",
-    icon:"1",
+    icon:"①",
     iconColor:"#C2650B"
 },
 
@@ -1003,7 +1003,7 @@ const statusConfig = {
 
 "조퇴":{
     color:"#BAE6FD",
-    icon:"🚪"
+    icon:"🚗"
 },
 
 "연장":{
