@@ -1262,6 +1262,20 @@ flex-direction:column;
 
 }
 
+.todo-num-col{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:4px;
+
+    flex-shrink:0;
+
+}
+
 .todo-num{
 
     flex-shrink:0;
@@ -1285,6 +1299,44 @@ flex-direction:column;
     align-items:center;
 
     justify-content:center;
+
+}
+
+.todo-delete-mini{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    border:none;
+
+    padding:0;
+
+    background:#FBE4E4;
+
+    color:#C94F4F;
+
+    font-size:8px;
+
+    line-height:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+}
+
+.todo-delete-mini:hover{
+
+    background:#E57373;
+
+    color:#fff;
 
 }
 
@@ -1357,26 +1409,6 @@ flex-direction:column;
 .todo-action-btn.done-btn.active{
 
     background:#22C55E;
-
-    color:#fff;
-
-}
-
-.todo-action-btn.delete-btn{
-
-    background:#FBE4E4;
-
-    color:#C94F4F;
-
-    font-size:12px;
-
-    font-weight:800;
-
-}
-
-.todo-action-btn.delete-btn:hover{
-
-    background:#E57373;
 
     color:#fff;
 
@@ -1607,7 +1639,7 @@ background:#FDE68A;
 /* 병가 */
 .sickleave-card{
 
-background:#FFD8A8;
+background:#D9DEE3;
 
 }
 
