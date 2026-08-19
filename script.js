@@ -976,7 +976,8 @@ const statusConfig = {
 
 "1층":{
     color:"#FFD8A8",
-    icon:"1️⃣"
+    icon:"1",
+    iconColor:"#C2650B"
 },
 
 "사무실":{
@@ -1670,11 +1671,40 @@ if(todo.state === "progress") item.classList.add("is-progress");
 if(todo.state === "done") item.classList.add("is-done");
 
 
+const numCol = document.createElement("div");
+
+numCol.className = "todo-num-col";
+
+
 const num = document.createElement("span");
 
 num.className = "todo-num";
 
 num.innerText = index + 1;
+
+
+const deleteBtn = document.createElement("button");
+
+deleteBtn.className = "todo-delete-mini";
+
+deleteBtn.innerText = "✕";
+
+deleteBtn.addEventListener("click", () => {
+
+if(!confirm("선택한 업무를 삭제하시겠습니까?")) return;
+
+todoItems.splice(index, 1);
+
+saveTodos();
+
+renderTodos();
+
+});
+
+
+numCol.appendChild(num);
+
+numCol.appendChild(deleteBtn);
 
 
 const span = document.createElement("span");
@@ -1732,28 +1762,7 @@ actions.appendChild(progressBtn);
 actions.appendChild(doneBtn);
 
 
-const deleteBtn = document.createElement("button");
-
-deleteBtn.className = "todo-action-btn delete-btn";
-
-deleteBtn.innerText = "✕";
-
-deleteBtn.addEventListener("click", () => {
-
-if(!confirm("선택한 업무를 삭제하시겠습니까?")) return;
-
-todoItems.splice(index, 1);
-
-saveTodos();
-
-renderTodos();
-
-});
-
-actions.appendChild(deleteBtn);
-
-
-item.appendChild(num);
+item.appendChild(numCol);
 
 item.appendChild(span);
 
@@ -1782,6 +1791,20 @@ renderTodos();
 }
 
 todoAddBtn.addEventListener("click", addTodo);
+
+todoInput.addEventListener("keydown", (e) => {
+
+if(e.key === "Enter" && !e.altKey){
+
+e.preventDefault();
+
+addTodo();
+
+}
+
+/* Alt+Enter는 기본 동작(줄바꿈)을 그대로 둠 */
+
+});
 
 todoResetBtn.addEventListener("click", () => {
 
