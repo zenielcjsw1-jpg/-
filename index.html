@@ -63,7 +63,7 @@ const input = prompt("비밀번호를 입력하세요.");
     <div class="todo-panel">
         <h2>📋 오늘 할 일</h2>
         <div class="todo-input-row">
-            <textarea id="todoInput" placeholder="업무를 입력하세요 (Enter로 줄바꿈)" rows="3"></textarea>
+            <textarea id="todoInput" placeholder="업무를 입력하세요 (Enter: 추가 / Alt+Enter: 줄바꿈)" rows="3"></textarea>
             <div class="todo-btn-row">
                 <button id="todoAddBtn">추가</button>
                 <button id="todoResetBtn">초기화</button>
@@ -202,7 +202,7 @@ alt="창고 도면">
 </div>
 
 <div class="attendance-item floor1-card" id="floor1Box">
-<div class="attendance-title">1️⃣ 1층</div>
+<div class="attendance-title"><span style="color:#C2650B;font-weight:800;">1</span> 1층</div>
 <div class="attendance-number"><span id="floor1Count">0</span>명</div>
 </div>
 
@@ -278,7 +278,7 @@ alt="창고 도면">
 </button>
 
 <button class="status-btn" data-status="1층">
-<span>1️⃣</span> 1층
+<span style="color:#C2650B;font-weight:800;">1</span> 1층
 </button>
 
 <button class="status-btn" data-status="사무실">
