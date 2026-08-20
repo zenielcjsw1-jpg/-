@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style id="lockGate">body{display:none !important;}</style>
 <script>
-const password = "0070";   // 원하는 비밀번호
-const input = prompt("비밀번호를 입력하세요.");
-    if (input !== password) {
-    document.write("<h2 style='text-align:center;margin-top:100px;'>접근이 거부되었습니다.</h2>");
-    throw new Error("Wrong Password");}
+(function(){
+var password = "0070";   // 원하는 비밀번호
+var input = prompt("비밀번호를 입력하세요.");
+window.__boardAccessGranted = (input === password);
+})();
 </script>
 
-  <title>인원현황판 Lite v3.3</title>
+  <title>인원현황판 Lite v3.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -26,7 +27,7 @@ const input = prompt("비밀번호를 입력하세요.");
 <div class="title-text">
 <div class="title-row">
 <span class="main-title">인원현황판</span>
-<span class="version-badge">Lite v3.3</span>
+<span class="version-badge">Lite v3.5</span>
 </div>
 </div>
 </div>
@@ -310,7 +311,20 @@ alt="창고 도면">
 <button id="closeStatusPopup">닫기</button>
 </div>
 </div>
-<script src="script.js"></script>
+<script>
+(function(){
+if(window.__boardAccessGranted){
+var gate = document.getElementById("lockGate");
+if(gate && gate.parentNode) gate.parentNode.removeChild(gate);
+var s = document.createElement("script");
+s.src = "script.js";
+document.body.appendChild(s);
+}else{
+document.documentElement.innerHTML =
+"<h2 style='text-align:center;margin-top:100px;font-family:sans-serif;'>접근이 거부되었습니다.</h2>";
+}
+})();
+</script>
 
 </body>
 </html>
