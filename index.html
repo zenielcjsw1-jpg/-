@@ -12,7 +12,7 @@ window.__boardAccessGranted = (input === password);
 })();
 </script>
 
-  <title>인원현황판 Lite v3.5</title>
+  <title>인원현황판 Lite v3.8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@ window.__boardAccessGranted = (input === password);
 <div class="title-text">
 <div class="title-row">
 <span class="main-title">인원현황판</span>
-<span class="version-badge">Lite v3.5</span>
+<span class="version-badge">Lite v3.8</span>
 </div>
 </div>
 </div>
@@ -142,7 +142,6 @@ alt="창고 도면">
 <div class="person staging" data-id="13" data-name="임승현">임승현</div>
 
 <div class="person staging" data-id="14" data-name="심항식">심항식</div>
-<div class="person staging" data-id="15" data-name="홍용성">홍용성</div>
 
 <div class="person staging" data-id="16" data-name="남궁정">남궁정</div>
 <div class="person staging" data-id="17" data-name="김경훈">김경훈</div>
@@ -163,6 +162,8 @@ alt="창고 도면">
 
 <div class="person staging" data-id="21" data-name="주용진">주용진</div>
 <div class="person staging" data-id="22" data-name="신입">신입</div>
+<div class="person staging" data-id="25" data-name="이상목">이상목</div>
+<div class="person staging" data-id="26" data-name="김철균">김철균</div>
 
 </div>  <!-- stagingArea -->
 </div>  <!-- waiting-sub -->
@@ -172,8 +173,10 @@ alt="창고 도면">
 <!-- 대기인원 ↔ 출근현황 경계 -->
 <div class="resize-handle resize-h" data-target-prev="staging-panel" data-target-next="right-panel"></div>
 
-<!-- 우측: 출근 현황 -->
+<!-- 우측: 출근 현황 + 정규/비정규 (상하 분리) -->
 <div class="right-panel">
+
+<div class="right-sub right-top-sub">
 
 <div class="attendance-panel">
 
@@ -234,12 +237,31 @@ alt="창고 도면">
 <div class="attendance-number"><span id="earlyleaveCount">0</span>명</div>
 </div>
 
-<div class="attendance-item overtime-card" id="overtimeBox">
-<div class="attendance-title">🌇 연장</div>
-<div class="attendance-number"><span id="overtimeCount">0</span>명</div>
+</div>
+
+</div>  <!-- right-top-sub -->
+
+<div class="resize-handle resize-v" id="rightSplitResizeHandle"></div>
+
+<div class="right-sub right-bottom-sub">
+
+<div class="attendance-panel regular-panel">
+
+<h2>정규/비정규</h2>
+
+<div class="attendance-item regular-card" id="regularBox">
+<div class="attendance-title">🟢 정규</div>
+<div class="attendance-number"><span id="regularCount">0</span>명</div>
+</div>
+
+<div class="attendance-item irregular-card" id="irregularBox">
+<div class="attendance-title">🔵 비정규</div>
+<div class="attendance-number"><span id="irregularCount">0</span>명</div>
 </div>
 
 </div>
+
+</div>  <!-- right-bottom-sub -->
 
 </div>  <!-- right-panel -->
 
@@ -304,8 +326,8 @@ alt="창고 도면">
 <span>🚗</span> 조퇴
 </button>
 
-<button class="status-btn" data-status="연장">
-<span>🌇</span> 연장
+<button id="employmentToggleBtn" class="employment-toggle-btn" type="button">
+<span>🔁</span> 정규 / 비정규 전환
 </button>
 
 <button id="closeStatusPopup">닫기</button>
