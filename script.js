@@ -1,5 +1,5 @@
 /* ==========================
-인원현황판 Lite v3.5
+인원현황판 Lite v3.8
 ========================== */
 
 const people = document.querySelectorAll(".person");
@@ -10,9 +10,9 @@ const stagingArea = document.getElementById("stagingArea");
 const attendanceStagingArea = document.getElementById("attendanceStagingArea");
 
 /* 저장소 키 (다른 코드보다 먼저 정의하여 항상 안전하게 참조 가능) */
-const STORAGE_KEY = "personnelBoardLite_v34";   // 실시간 자동 저장(자동 배치 유지용)
+const STORAGE_KEY = "personnelBoardLite_v38";   // 실시간 자동 저장(자동 배치 유지용)
 const NOTE_KEY = "personnelBoardLite_note";
-const SAVES_KEY = "personnelBoardLite_saves_v33"; // 저장 버튼으로 만든 날짜별 저장 목록
+const SAVES_KEY = "personnelBoardLite_saves_v38"; // 저장 버튼으로 만든 날짜별 저장 목록
 
 function getWarehouseRect(){
 
@@ -540,7 +540,10 @@ x: x,
 y: y,
 
 status:
-statusMap[person.dataset.id]
+statusMap[person.dataset.id],
+
+employment:
+employmentMap[person.dataset.id]
 
 });
 
@@ -650,6 +653,14 @@ person,
 restoredStatus
 );
 
+
+/* 정규/비정규 복원 (알 수 없는 값은 '정규'로 안전하게 처리) */
+
+const restoredEmployment =
+(item.employment === "비정규") ? "비정규" : "정규";
+
+employmentMap[item.id] = restoredEmployment;
+
 }catch(err){
 
 console.error("한 명의 데이터를 복원하는 중 오류가 발생해 건너뜁니다.", err);
@@ -672,6 +683,12 @@ console.error("출근 현황 갱신 중 오류", err);
 try{
 
 updateStagingCounts();
+
+}catch(err){}
+
+try{
+
+updateEmploymentCounts();
 
 }catch(err){}
 
@@ -1022,11 +1039,13 @@ const absentPeople = [];
 const vacationPeople = [];
 const sickleavePeople = [];
 const earlyleavePeople = [];
-const overtimePeople = [];
 
 
 
 const statusMap = {};
+
+/* 정규/비정규 구분 (출근현황 상태와는 별개로 관리) */
+const employmentMap = {};
 
 /* ==========================
    상태 디자인 설정
@@ -1081,12 +1100,6 @@ const statusConfig = {
     icon:"🚗"
 },
 
-"연장":{
-    color:"#E5DBFF",
-    icon:"🌇"
-
-},
-
 "기타":{
     color:"#E5E7EB",
     icon:"📌"
@@ -1110,6 +1123,11 @@ statusMap[person.dataset.id]="주간";
 
 updatePersonColor(person,"주간");
 
+
+/* 정규/비정규 기본값은 '정규' */
+
+employmentMap[person.dataset.id]="정규";
+
 });
 
 try{
@@ -1119,6 +1137,16 @@ updateAttendance();
 }catch(err){
 
 console.error("초기 출근 현황 계산 중 오류", err);
+
+}
+
+try{
+
+updateEmploymentCounts();
+
+}catch(err){
+
+console.error("정규/비정규 인원 집계 중 오류", err);
 
 }
 
@@ -1143,8 +1171,6 @@ const vacation=[];
 const sickleave=[];
 
 const earlyleave=[];
-
-const overtime=[];
 
 let waitingCount = 0;
 
@@ -1207,10 +1233,6 @@ sickleave.push(name);
 
 earlyleave.push(name);
 
-}else if(state==="연장"){
-
-overtime.push(name);
-
 }
 
 });
@@ -1234,7 +1256,6 @@ setCountText("absentCount", absent.length);
 setCountText("vacationCount", vacation.length);
 setCountText("sickleaveCount", sickleave.length);
 setCountText("earlyleaveCount", earlyleave.length);
-setCountText("overtimeCount", overtime.length);
 
   totalPeople.length = 0;
 
@@ -1256,8 +1277,6 @@ sickleavePeople.length = 0;
 
 earlyleavePeople.length = 0;
 
-overtimePeople.length = 0;
-
 totalPeople.push(...total);
 
 dayPeople.push(...day);
@@ -1278,7 +1297,38 @@ sickleavePeople.push(...sickleave);
 
 earlyleavePeople.push(...earlyleave);
 
-overtimePeople.push(...overtime);
+}
+
+/* 정규/비정규 인원수 집계 (출근현황 상태·위치와 무관하게 employmentMap 기준으로만 계산) */
+function updateEmploymentCounts(){
+
+let regular = 0;
+
+let irregular = 0;
+
+document.querySelectorAll(".person").forEach(person=>{
+
+const value = employmentMap[person.dataset.id];
+
+if(value === "비정규"){
+
+irregular++;
+
+}else{
+
+regular++;
+
+}
+
+});
+
+const rEl = document.getElementById("regularCount");
+
+if(rEl) rEl.innerText = regular;
+
+const iEl = document.getElementById("irregularCount");
+
+if(iEl) iEl.innerText = irregular;
 
 }
 
@@ -1317,6 +1367,20 @@ updateAttendance();
 
 let selectedPerson = null;
 
+/* 팝업 상단 이름 옆에 (정규)/(비정규) 표시 */
+function updateStatusTitleDisplay(person){
+
+const name =
+person.dataset.name || person.innerText;
+
+const employment =
+employmentMap[person.dataset.id] === "비정규" ? "비정규" : "정규";
+
+document.getElementById("statusTitle").innerText =
+`${name} (${employment})`;
+
+}
+
 document.querySelectorAll(".person").forEach(person=>{
 
 person.addEventListener("click",()=>{
@@ -1331,8 +1395,7 @@ return;
 
 selectedPerson = person;
 
-document.getElementById("statusTitle").innerText =
-person.dataset.name || person.innerText;
+updateStatusTitleDisplay(person);
 
 document.getElementById("statusPopup").style.display="flex";
 
@@ -1392,6 +1455,34 @@ document.querySelectorAll(".status-btn").forEach(btn => {
     });
 
 });
+
+/* 정규/비정규 전환 버튼 (팝업을 닫지 않고 즉시 토글) */
+
+const employmentToggleBtn = document.getElementById("employmentToggleBtn");
+
+if(employmentToggleBtn){
+
+employmentToggleBtn.addEventListener("click", () => {
+
+if(!selectedPerson) return;
+
+const current =
+employmentMap[selectedPerson.dataset.id] === "비정규" ? "비정규" : "정규";
+
+const next =
+current === "정규" ? "비정규" : "정규";
+
+employmentMap[selectedPerson.dataset.id] = next;
+
+updateStatusTitleDisplay(selectedPerson);
+
+try{ updateEmploymentCounts(); }catch(err){}
+
+try{ saveStatusOnly(); }catch(err){}
+
+});
+
+}
 
 function updatePersonColor(person,status){
 
@@ -1472,7 +1563,7 @@ selectedPerson = person;
 
 document.getElementById("popup").style.display = "none";
 
-document.getElementById("statusTitle").innerText = name;
+updateStatusTitleDisplay(person);
 
 document.getElementById("statusPopup").style.display = "flex";
 
@@ -1549,12 +1640,6 @@ openPopup("병가",sickleavePeople);
 document.getElementById("earlyleaveBox").onclick=function(){
 
 openPopup("조퇴",earlyleavePeople);
-
-};
-
-document.getElementById("overtimeBox").onclick=function(){
-
-openPopup("연장",overtimePeople);
 
 };
 
@@ -1911,7 +1996,7 @@ console.error("오늘업무(TODO) 기능 초기화 중 오류", err);
 
 try{
 
-const LAYOUT_KEY = "personnelBoardLite_layout_v35";
+const LAYOUT_KEY = "personnelBoardLite_layout_v38";
 
 const DEFAULT_LAYOUT = {
 
@@ -1922,7 +2007,8 @@ right: 14,
 devNoteHeight: 36,
 personScale: 100,
 leftNoteHeight: 220,
-stagingAttendanceRatio: 90
+stagingAttendanceRatio: 90,
+rightPanelRatio: 90
 
 };
 
@@ -1939,6 +2025,10 @@ const leftSplitHandle = document.getElementById("leftSplitResizeHandle");
 const attendanceSubEl = document.querySelector(".attendance-sub");
 const waitingSubEl = document.querySelector(".waiting-sub");
 const stagingSplitHandle = document.getElementById("stagingSplitResizeHandle");
+
+const rightTopSubEl = document.querySelector(".right-top-sub");
+const rightBottomSubEl = document.querySelector(".right-bottom-sub");
+const rightSplitHandle = document.getElementById("rightSplitResizeHandle");
 
 const layoutModeBtn = document.getElementById("layoutModeBtn");
 const layoutResetBtn = document.getElementById("layoutResetBtn");
@@ -2003,6 +2093,10 @@ if(leftNoteEl) leftNoteEl.style.height = layoutConfig.leftNoteHeight + "px";
 if(attendanceSubEl) attendanceSubEl.style.flex = layoutConfig.stagingAttendanceRatio + " 1 0";
 
 if(waitingSubEl) waitingSubEl.style.flex = (100 - layoutConfig.stagingAttendanceRatio) + " 1 0";
+
+if(rightTopSubEl) rightTopSubEl.style.flex = layoutConfig.rightPanelRatio + " 1 0";
+
+if(rightBottomSubEl) rightBottomSubEl.style.flex = (100 - layoutConfig.rightPanelRatio) + " 1 0";
 
 /* 모바일 화면(768px 이하)에서는 관리자 슬라이더 값 대신
    화면 폭 기준으로 이름표 크기를 자동 계산 */
@@ -2445,6 +2539,79 @@ saveLayoutConfig();
 
 stagingSplitHandle.addEventListener("mousedown", onDownSR);
 stagingSplitHandle.addEventListener("touchstart", onDownSR, {passive:false});
+
+}
+
+
+/* 세로 리사이즈 핸들 (출근 현황 ↔ 정규/비정규) */
+
+if(rightSplitHandle && rightTopSubEl && rightBottomSubEl){
+
+let startY4 = 0;
+let startRatio4 = 90;
+
+const MIN_RIGHT_RATIO = 20;
+const MAX_RIGHT_RATIO = 95;
+
+function onDownRR(e){
+
+if(!document.body.classList.contains("admin-mode")) return;
+
+const point = e.touches ? e.touches[0] : e;
+
+startY4 = point.clientY;
+
+startRatio4 = layoutConfig.rightPanelRatio;
+
+rightSplitHandle.classList.add("active");
+
+document.addEventListener("mousemove", onMoveRR);
+document.addEventListener("mouseup", onUpRR);
+document.addEventListener("touchmove", onMoveRR, {passive:false});
+document.addEventListener("touchend", onUpRR);
+
+}
+
+function onMoveRR(e){
+
+e.preventDefault();
+
+const point = e.touches ? e.touches[0] : e;
+
+const panelHeight = rightEl ? rightEl.getBoundingClientRect().height : 0;
+
+if(!panelHeight) return;
+
+const deltaRatio = ((point.clientY - startY4) / panelHeight) * 100;
+
+let newRatio = startRatio4 + deltaRatio;
+
+if(newRatio < MIN_RIGHT_RATIO) newRatio = MIN_RIGHT_RATIO;
+if(newRatio > MAX_RIGHT_RATIO) newRatio = MAX_RIGHT_RATIO;
+
+layoutConfig.rightPanelRatio = Number(newRatio.toFixed(1));
+
+rightTopSubEl.style.flex = layoutConfig.rightPanelRatio + " 1 0";
+
+rightBottomSubEl.style.flex = (100 - layoutConfig.rightPanelRatio) + " 1 0";
+
+}
+
+function onUpRR(){
+
+document.removeEventListener("mousemove", onMoveRR);
+document.removeEventListener("mouseup", onUpRR);
+document.removeEventListener("touchmove", onMoveRR, {passive:false});
+document.removeEventListener("touchend", onUpRR);
+
+rightSplitHandle.classList.remove("active");
+
+saveLayoutConfig();
+
+}
+
+rightSplitHandle.addEventListener("mousedown", onDownRR);
+rightSplitHandle.addEventListener("touchstart", onDownRR, {passive:false});
 
 }
 
