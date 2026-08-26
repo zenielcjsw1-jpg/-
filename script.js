@@ -1047,6 +1047,9 @@ const statusMap = {};
 /* 정규/비정규 구분 (출근현황 상태와는 별개로 관리) */
 const employmentMap = {};
 
+const regularPeople = [];
+const irregularPeople = [];
+
 /* ==========================
    상태 디자인 설정
 ========================== */
@@ -1302,21 +1305,23 @@ earlyleavePeople.push(...earlyleave);
 /* 정규/비정규 인원수 집계 (출근현황 상태·위치와 무관하게 employmentMap 기준으로만 계산) */
 function updateEmploymentCounts(){
 
-let regular = 0;
+const regular = [];
 
-let irregular = 0;
+const irregular = [];
 
 document.querySelectorAll(".person").forEach(person=>{
 
 const value = employmentMap[person.dataset.id];
 
+const name = person.dataset.name || person.innerText;
+
 if(value === "비정규"){
 
-irregular++;
+irregular.push(name);
 
 }else{
 
-regular++;
+regular.push(name);
 
 }
 
@@ -1324,11 +1329,19 @@ regular++;
 
 const rEl = document.getElementById("regularCount");
 
-if(rEl) rEl.innerText = regular;
+if(rEl) rEl.innerText = regular.length;
 
 const iEl = document.getElementById("irregularCount");
 
-if(iEl) iEl.innerText = irregular;
+if(iEl) iEl.innerText = irregular.length;
+
+regularPeople.length = 0;
+
+irregularPeople.length = 0;
+
+regularPeople.push(...regular);
+
+irregularPeople.push(...irregular);
 
 }
 
@@ -1640,6 +1653,18 @@ openPopup("병가",sickleavePeople);
 document.getElementById("earlyleaveBox").onclick=function(){
 
 openPopup("조퇴",earlyleavePeople);
+
+};
+
+document.getElementById("regularBox").onclick=function(){
+
+openPopup("정규",regularPeople);
+
+};
+
+document.getElementById("irregularBox").onclick=function(){
+
+openPopup("비정규",irregularPeople);
 
 };
 
@@ -2000,12 +2025,12 @@ const LAYOUT_KEY = "personnelBoardLite_layout_v38";
 
 const DEFAULT_LAYOUT = {
 
-left: 14,
-center: 58,
-staging: 14,
+left: 12,
+center: 62,
+staging: 12,
 right: 14,
 devNoteHeight: 36,
-personScale: 100,
+personScale: 85,
 leftNoteHeight: 220,
 stagingAttendanceRatio: 90,
 rightPanelRatio: 90
