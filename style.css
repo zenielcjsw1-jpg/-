@@ -2132,6 +2132,62 @@ margin-top:10px;
 }
 
 /* ==========================
+이름표 복사 버튼 (카운팅 제외, 시각적 배치 전용)
+========================== */
+
+.copy-person-btn{
+
+width:100%;
+
+height:44px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:12px;
+
+background:#E3EFFC;
+
+color:#2E6DA4;
+
+font-size:14px;
+
+font-weight:800;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:8px;
+
+transition:
+transform .2s,
+background .2s;
+
+}
+
+.copy-person-btn:hover{
+
+background:#5DADE2;
+
+color:#fff;
+
+transform:translateY(-2px);
+
+}
+
+.copy-person-btn span{
+
+font-size:16px;
+
+}
+
+/* ==========================
 이름표 삭제 버튼 (팝업 최하단, 퇴사자 처리용)
 ========================== */
 
