@@ -531,6 +531,8 @@ data.push({
 
 id: person.dataset.id,
 
+name: person.dataset.name,
+
 location: onBoard ? "board" : (inAttendance ? "attendance" : "staging"),
 
 group: person.dataset.group === "waiting" ? "waiting" : "attendance",
@@ -563,10 +565,24 @@ data.forEach(item => {
 try{
 
 
-const person =
+let person =
 document.querySelector(
 '.person[data-id="' + item.id + '"]'
 );
+
+
+/* 저장 당시엔 있었지만 지금은 DOM에 없는 인원(=추가로 생성됐던 이름표)은
+   대기 인원 칸에 다시 만들어 복원한다 */
+
+if(!person && item.name){
+
+person = createPersonElement(item.id, item.name);
+
+stagingArea.appendChild(person);
+
+setupPersonBehaviors(person);
+
+}
 
 
 if (!person) return;
@@ -2643,6 +2659,176 @@ rightSplitHandle.addEventListener("touchstart", onDownRR, {passive:false});
 }catch(err){
 
 console.error("관리자 모드(레이아웃 편집) 초기화 중 오류", err);
+
+}
+
+
+/* ==========================
+인원 추가 / 삭제 기능 (v3.8 상세 수정)
+- 이름표 클릭 팝업 최하단 "삭제" 버튼 → 확인 후 완전히 제거 (퇴사자 처리)
+- 대기 인원 칸 첫 번째 자리 "인원 추가" 버튼 → 이름 입력 시 새 이름표를
+  대기 인원 칸에 즉시 배치 (신규 입사자 처리)
+- 독립 기능이므로 다른 영역 오류의 영향을 받지 않도록 try/catch로 감쌈
+========================== */
+
+/* 새 이름표 DOM 요소를 만드는 부분 (신규 생성 시 / 저장 데이터 복원 시 공용으로 사용) */
+function createPersonElement(id, name){
+
+const person = document.createElement("div");
+
+person.className = "person staging";
+
+person.dataset.id = id;
+
+person.dataset.name = name;
+
+person.innerText = name;
+
+return person;
+
+}
+
+/* 새로 만든 이름표에 기존 인원과 동일한 동작(드래그/클릭/더블클릭/상태)을 연결 */
+function setupPersonBehaviors(person){
+
+person.dataset.group = "waiting";
+
+enableDrag(person);
+
+statusMap[person.dataset.id] = statusMap[person.dataset.id] || "주간";
+
+updatePersonColor(person, statusMap[person.dataset.id]);
+
+employmentMap[person.dataset.id] = employmentMap[person.dataset.id] || "정규";
+
+person.addEventListener("dblclick", () => {
+
+const current = statusMap[person.dataset.id];
+
+let next = "주간";
+
+if(WORK_STATUSES.includes(current)){
+
+next = "결근";
+
+}else{
+
+next = "주간";
+
+}
+
+statusMap[person.dataset.id] = next;
+
+updatePersonColor(person, next);
+
+updateAttendance();
+
+});
+
+person.addEventListener("click", () => {
+
+if(isDragging){
+
+isDragging = false;
+
+return;
+
+}
+
+selectedPerson = person;
+
+updateStatusTitleDisplay(person);
+
+document.getElementById("statusPopup").style.display = "flex";
+
+});
+
+}
+
+try{
+
+const addPersonBtn = document.getElementById("addPersonBtn");
+const deletePersonBtn = document.getElementById("deletePersonBtn");
+
+/* 인원 추가 버튼: 이름 입력 후 대기 인원 칸에 새 이름표 생성 */
+if(addPersonBtn){
+
+addPersonBtn.addEventListener("click", () => {
+
+const input = prompt("추가할 인원의 이름을 입력하세요.");
+
+if(!input) return;
+
+const name = input.trim();
+
+if(name === "") return;
+
+const newId = "new" + Date.now();
+
+const person = createPersonElement(newId, name);
+
+/* 버튼 바로 다음 자리(대기 인원 칸 맨 위)에 배치 */
+
+if(addPersonBtn.nextSibling){
+
+stagingArea.insertBefore(person, addPersonBtn.nextSibling);
+
+}else{
+
+stagingArea.appendChild(person);
+
+}
+
+setupPersonBehaviors(person);
+
+try{ updateAttendance(); }catch(err){}
+
+try{ updateStagingCounts(); }catch(err){}
+
+try{ updateEmploymentCounts(); }catch(err){}
+
+try{ saveStatusOnly(); }catch(err){}
+
+});
+
+}
+
+/* 삭제 버튼: 확인 팝업 후 이름표를 완전히 제거 (퇴사자 처리용) */
+if(deletePersonBtn){
+
+deletePersonBtn.addEventListener("click", () => {
+
+if(!selectedPerson) return;
+
+if(!confirm("정말 삭제하시겠습니까?")) return;
+
+const id = selectedPerson.dataset.id;
+
+selectedPerson.remove();
+
+delete statusMap[id];
+
+delete employmentMap[id];
+
+document.getElementById("statusPopup").style.display = "none";
+
+selectedPerson = null;
+
+try{ updateAttendance(); }catch(err){}
+
+try{ updateStagingCounts(); }catch(err){}
+
+try{ updateEmploymentCounts(); }catch(err){}
+
+try{ saveStatusOnly(); }catch(err){}
+
+});
+
+}
+
+}catch(err){
+
+console.error("인원 추가/삭제 기능 초기화 중 오류", err);
 
 }
 
