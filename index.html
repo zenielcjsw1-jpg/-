@@ -160,6 +160,10 @@ alt="창고 도면">
 <h3>🧍 대기 인원 (<span id="waitingStagingCount">0</span>)</h3>
 <div class="staging-area" id="stagingArea">
 
+<button id="addPersonBtn" class="add-person-btn" type="button">
+<span>➕</span> 인원 추가
+</button>
+
 <div class="person staging" data-id="21" data-name="주용진">주용진</div>
 <div class="person staging" data-id="22" data-name="신입">신입</div>
 <div class="person staging" data-id="25" data-name="이상목">이상목</div>
@@ -331,6 +335,14 @@ alt="창고 도면">
 </button>
 
 <button id="closeStatusPopup">닫기</button>
+
+<button id="copyPersonBtn" class="copy-person-btn" type="button">
+<span>📄</span> 복사(카운팅 제외)
+</button>
+
+<button id="deletePersonBtn" class="delete-person-btn" type="button">
+<span>🗑️</span> 삭제
+</button>
 </div>
 </div>
 <script>
