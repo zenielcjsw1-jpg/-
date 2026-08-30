@@ -2132,6 +2132,121 @@ margin-top:10px;
 }
 
 /* ==========================
+이름표 삭제 버튼 (팝업 최하단, 퇴사자 처리용)
+========================== */
+
+.delete-person-btn{
+
+width:100%;
+
+height:44px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:12px;
+
+background:#FBE4E4;
+
+color:#C94F4F;
+
+font-size:14px;
+
+font-weight:800;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:8px;
+
+transition:
+transform .2s,
+background .2s;
+
+}
+
+.delete-person-btn:hover{
+
+background:#E57373;
+
+color:#fff;
+
+transform:translateY(-2px);
+
+}
+
+.delete-person-btn span{
+
+font-size:16px;
+
+}
+
+/* ==========================
+인원 추가 버튼 (대기 인원 칸 상단, 신규 입사자 처리용)
+========================== */
+
+.add-person-btn{
+
+width:100%;
+
+flex-shrink:0;
+
+height:34px;
+
+margin-bottom:2px;
+
+border:2px dashed #94A3B8;
+
+border-radius:12px;
+
+background:rgba(248,250,252,.9);
+
+color:#64748B;
+
+font-size:12.5px;
+
+font-weight:800;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:6px;
+
+transition:
+background .2s,
+color .2s,
+border-color .2s;
+
+}
+
+.add-person-btn:hover{
+
+background:#EEF2F6;
+
+border-color:#5DADE2;
+
+color:#334155;
+
+}
+
+.add-person-btn span{
+
+font-size:14px;
+
+}
+
+/* ==========================
 출근부 날짜 표시
 ========================== */
 
