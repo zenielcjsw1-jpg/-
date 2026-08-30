@@ -533,6 +533,8 @@ id: person.dataset.id,
 
 name: person.dataset.name,
 
+isCopy: person.dataset.isCopy === "1",
+
 location: onBoard ? "board" : (inAttendance ? "attendance" : "staging"),
 
 group: person.dataset.group === "waiting" ? "waiting" : "attendance",
@@ -586,6 +588,19 @@ setupPersonBehaviors(person);
 
 
 if (!person) return;
+
+
+/* 복사본 여부 복원 (출근현황/정규비정규 카운팅 제외 대상 표시) */
+
+if(item.isCopy){
+
+person.dataset.isCopy = "1";
+
+}else{
+
+delete person.dataset.isCopy;
+
+}
 
 
 /* 위치(대기영역/출근인원/온보드) 복원 */
@@ -1195,6 +1210,14 @@ let waitingCount = 0;
 
 document.querySelectorAll(".person").forEach(person=>{
 
+/* 복사본 이름표는 단순 시각적 배치용이므로 출근현황 집계에서 완전히 제외 */
+
+if(person.dataset.isCopy === "1"){
+
+return;
+
+}
+
 /* 대기 인원(두번째 칸)에 있는 인원은 출근현황 집계에서 제외 */
 
 const isWaiting =
@@ -1326,6 +1349,14 @@ const regular = [];
 const irregular = [];
 
 document.querySelectorAll(".person").forEach(person=>{
+
+/* 복사본 이름표는 단순 시각적 배치용이므로 정규/비정규 집계에서 완전히 제외 */
+
+if(person.dataset.isCopy === "1"){
+
+return;
+
+}
 
 const value = employmentMap[person.dataset.id];
 
@@ -2749,6 +2780,7 @@ try{
 
 const addPersonBtn = document.getElementById("addPersonBtn");
 const deletePersonBtn = document.getElementById("deletePersonBtn");
+const copyPersonBtn = document.getElementById("copyPersonBtn");
 
 /* 인원 추가 버튼: 이름 입력 후 대기 인원 칸에 새 이름표 생성 */
 if(addPersonBtn){
@@ -2780,6 +2812,60 @@ stagingArea.appendChild(person);
 }
 
 setupPersonBehaviors(person);
+
+try{ updateAttendance(); }catch(err){}
+
+try{ updateStagingCounts(); }catch(err){}
+
+try{ updateEmploymentCounts(); }catch(err){}
+
+try{ saveStatusOnly(); }catch(err){}
+
+});
+
+}
+
+/* 복사 버튼: 같은 이름의 이름표를 하나 더 만들어 대기 인원 칸에 추가
+   (출근현황/정규비정규 카운팅에서는 완전히 제외되는 단순 시각적 배치용) */
+if(copyPersonBtn){
+
+copyPersonBtn.addEventListener("click", () => {
+
+if(!selectedPerson) return;
+
+const originalId = selectedPerson.dataset.id;
+
+const name = selectedPerson.dataset.name || selectedPerson.innerText;
+
+const originalStatus = statusMap[originalId] || "주간";
+
+const newId = "copy" + Date.now();
+
+const person = createPersonElement(newId, name);
+
+person.dataset.isCopy = "1";
+
+if(addPersonBtn && addPersonBtn.nextSibling){
+
+stagingArea.insertBefore(person, addPersonBtn.nextSibling);
+
+}else{
+
+stagingArea.appendChild(person);
+
+}
+
+setupPersonBehaviors(person);
+
+/* 원본과 같은 상태색으로 시작 (카운팅에는 반영되지 않음) */
+
+statusMap[newId] = originalStatus;
+
+updatePersonColor(person, originalStatus);
+
+document.getElementById("statusPopup").style.display = "none";
+
+selectedPerson = null;
 
 try{ updateAttendance(); }catch(err){}
 
